@@ -1,0 +1,93 @@
+meta {
+  name: Benchmark 04 - Formulário Curto (Telegráfico)
+  type: http
+  seq: 4
+}
+
+docs {
+  # Benchmark 04 - Formulário Curto (Telegráfico)
+  
+  Testa frases curtas/telegráficas, estilo preenchimento rápido de formulário (2-4 palavras).
+  
+  ## Resultados Esperados
+  
+  | Input | Expected Match | Min Score |
+  |---|---|---|
+  | "coleta sangue" | Coleta de sangue | 0.85 |
+  | "consulta" | Consulta clínica | 0.70 |
+  | "vacina" | Aplicação de vacina | 0.75 |
+  | "exame coração" | Exame cardiológico | 0.80 |
+  | "pressão" | Medição de pressão arterial | 0.70 |
+  | "temperatura" | Aferição de temperatura | 0.75 |
+  | "curativo" | Curativos simples | 0.80 |
+  | "nutrição" | Orientação nutricional | 0.75 |
+  | "fisio" | Fisioterapia | 0.80 |
+  | "TO" | Terapia ocupacional | 0.65 |
+  
+  **Expectativa**: 14+ frases com score ≥ 0.45 (frases curtas podem ter scores mais baixos)
+}
+
+post {
+  url: {{baseUrl}}/match
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "activities": [
+      "coleta sangue",
+      "consulta",
+      "vacina",
+      "exame coração",
+      "pressão",
+      "temperatura",
+      "curativo",
+      "nutrição",
+      "fisio",
+      "terapia ocupacional",
+      "sangue",
+      "atendimento",
+      "imunização",
+      "cardio",
+      "PA",
+      "febre",
+      "ferida",
+      "dieta",
+      "reabilitação",
+      "TO",
+      "hemograma",
+      "clínica geral"
+    ]
+  }
+}
+
+tests {
+  test("status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("returns 22 results", function() {
+    expect(res.getBody().results).to.have.lengthOf(22);
+  });
+  
+  test("short phrases are understood", function() {
+    const results = res.getBody().results;
+    const validMatches = results.filter(r => r.similarity >= 0.45);
+    
+    // Short phrases may have lower scores but should still match
+    expect(validMatches.length).to.be.at.least(14);
+  });
+  
+  test("single word inputs match correctly", function() {
+    const results = res.getBody().results;
+    
+    // "vacina" should match "Aplicação de vacina"
+    const vacina = results.find(r => r.input === "vacina");
+    expect(vacina.matched_activity).to.equal("Aplicação de vacina");
+    
+    // "fisio" should match "Fisioterapia"
+    const fisio = results.find(r => r.input === "fisio");
+    expect(fisio.matched_activity).to.equal("Fisioterapia");
+  });
+}

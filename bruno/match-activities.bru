@@ -1,0 +1,54 @@
+meta {
+  name: Match Activities (Multiple)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/match
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "activities": [
+      "tirar sangue",
+      "consulta médica",
+      "vacinar bebê",
+      "macaxeira"
+    ]
+  }
+}
+
+tests {
+  test("status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("response contains results array", function() {
+    expect(res.getBody().results).to.be.an('array');
+  });
+  
+  test("returns 4 results", function() {
+    expect(res.getBody().results).to.have.lengthOf(4);
+  });
+  
+  test("each result has required fields", function() {
+    const results = res.getBody().results;
+    results.forEach(result => {
+      expect(result).to.have.property('input');
+      expect(result).to.have.property('matched_activity');
+      expect(result).to.have.property('similarity');
+      expect(result).to.have.property('status');
+    });
+  });
+  
+  test("similarity scores are valid", function() {
+    const results = res.getBody().results;
+    results.forEach(result => {
+      expect(result.similarity).to.be.at.least(0.0);
+      expect(result.similarity).to.be.at.most(1.0);
+    });
+  });
+}

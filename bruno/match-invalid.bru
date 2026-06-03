@@ -1,0 +1,28 @@
+meta {
+  name: Match Invalid (Empty List)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/match
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "activities": []
+  }
+}
+
+tests {
+  test("status code is 422 (validation error)", function() {
+    expect(res.getStatus()).to.equal(422);
+  });
+  
+  test("response contains validation error details", function() {
+    const body = res.getBody();
+    expect(body).to.have.property('detail');
+  });
+}

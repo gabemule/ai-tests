@@ -1,0 +1,1 @@
+"""Similarity search layer with adapter pattern (ADR-002)."""

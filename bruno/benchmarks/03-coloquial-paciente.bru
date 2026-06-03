@@ -1,0 +1,92 @@
+meta {
+  name: Benchmark 03 - Linguagem Coloquial de Paciente
+  type: http
+  seq: 3
+}
+
+docs {
+  # Benchmark 03 - Linguagem Coloquial de Paciente
+  
+  Testa como um paciente/leigo descreveria o serviço que recebeu ou precisa.
+  
+  ## Resultados Esperados
+  
+  | Input | Expected Match | Min Score |
+  |---|---|---|
+  | "Vim tirar sangue do braço" | Coleta de sangue | 0.85 |
+  | "Preciso passar no médico" | Consulta clínica | 0.75 |
+  | "Quero tomar a vacina da gripe" | Aplicação de vacina | 0.80 |
+  | "Vou fazer o exame do coração" | Exame cardiológico | 0.75 |
+  | "Preciso ver minha pressão" | Medição de pressão arterial | 0.80 |
+  | "Vou medir se estou com febre" | Aferição de temperatura | 0.75 |
+  | "Preciso trocar o curativo da perna" | Curativos simples | 0.80 |
+  | "Quero uma consulta sobre alimentação" | Orientação nutricional | 0.75 |
+  | "Vou fazer fisioterapia pro joelho" | Fisioterapia | 0.85 |
+  | "Preciso de ajuda pra voltar a trabalhar" | Terapia ocupacional | 0.65 |
+  
+  **Expectativa**: 16+ frases com score ≥ 0.50 (linguagem coloquial é bem compreendida)
+}
+
+post {
+  url: {{baseUrl}}/match
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "activities": [
+      "Vim tirar sangue do braço",
+      "Preciso passar no médico",
+      "Quero tomar a vacina da gripe",
+      "Vou fazer o exame do coração",
+      "Preciso ver minha pressão",
+      "Vou medir se estou com febre",
+      "Preciso trocar o curativo da perna",
+      "Quero uma consulta sobre alimentação",
+      "Vou fazer fisioterapia pro joelho",
+      "Preciso de ajuda pra voltar a trabalhar",
+      "Vou fazer exame de sangue",
+      "Marcar uma consulta",
+      "Tomar vacina",
+      "Fazer eletro do coração",
+      "Medir a pressão",
+      "Ver se tô com febre",
+      "Fazer curativo",
+      "Falar sobre dieta",
+      "Fazer fisio",
+      "Terapia pra voltar às atividades normais",
+      "Colher sangue",
+      "Passar em consulta"
+    ]
+  }
+}
+
+tests {
+  test("status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("returns 22 results", function() {
+    expect(res.getBody().results).to.have.lengthOf(22);
+  });
+  
+  test("colloquial language is understood", function() {
+    const results = res.getBody().results;
+    const validMatches = results.filter(r => r.similarity >= 0.50);
+    
+    expect(validMatches.length).to.be.at.least(16);
+  });
+  
+  test("informal phrases still match correctly", function() {
+    const results = res.getBody().results;
+    
+    // "tirar sangue" should match "Coleta de sangue"
+    const tirarSangue = results.find(r => r.input.includes("tirar sangue"));
+    expect(tirarSangue.matched_activity).to.equal("Coleta de sangue");
+    
+    // "ver minha pressão" should match "Medição de pressão arterial"
+    const verPressao = results.find(r => r.input.includes("ver minha pressão"));
+    expect(verPressao.matched_activity).to.equal("Medição de pressão arterial");
+  });
+}

@@ -1,0 +1,80 @@
+meta {
+  name: Benchmark 02 - Jargão Técnico Hospitalar
+  type: http
+  seq: 2
+}
+
+docs {
+  # Benchmark 02 - Jargão Técnico Hospitalar
+  
+  Testa terminologia de prontuário, relatório técnico, linguagem de enfermagem.
+  
+  ## Resultados Esperados
+  
+  | Input | Expected Match | Min Score |
+  |---|---|---|
+  | "Punção venosa para hemograma completo" | Coleta de sangue | 0.70 |
+  | "Triagem com verificação de SSVV" | Medição de pressão arterial | 0.60 |
+  | "Imunização conforme PNI" | Aplicação de vacina | 0.75 |
+  | "ECG de repouso 12 derivações" | Exame cardiológico | 0.80 |
+  | "Aferição de PA em MMSS" | Medição de pressão arterial | 0.75 |
+  | "Termometria axilar" | Aferição de temperatura | 0.80 |
+  | "Curativo oclusivo estéril" | Curativos simples | 0.75 |
+  | "Avaliação antropométrica e dietética" | Orientação nutricional | 0.70 |
+  | "Cinesioterapia motora" | Fisioterapia | 0.80 |
+  | "TO para AVDs" | Terapia ocupacional | 0.70 |
+  
+  **Expectativa**: 18+ frases com score ≥ 0.50 (jargão técnico pode ter scores variados)
+}
+
+post {
+  url: {{baseUrl}}/match
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "activities": [
+      "Punção venosa para hemograma completo",
+      "Triagem com verificação de SSVV",
+      "Imunização conforme PNI",
+      "ECG de repouso 12 derivações",
+      "Aferição de PA em MMSS",
+      "Termometria axilar",
+      "Curativo oclusivo estéril",
+      "Avaliação antropométrica e dietética",
+      "Cinesioterapia motora",
+      "TO para AVDs",
+      "Coleta de amostra sanguínea",
+      "Atendimento ambulatorial clínico",
+      "Aplicação de vacinas do calendário básico",
+      "Eletrocardiografia diagnóstica",
+      "Verificação de pressão arterial sistólica e diastólica",
+      "Medição de temperatura corporal",
+      "Tratamento de lesões cutâneas",
+      "Prescrição dietoterápica",
+      "Reabilitação funcional motora",
+      "Terapia ocupacional para reintegração",
+      "Flebotomia diagnóstica",
+      "Consulta médica ambulatorial"
+    ]
+  }
+}
+
+tests {
+  test("status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("returns 22 results", function() {
+    expect(res.getBody().results).to.have.lengthOf(22);
+  });
+  
+  test("technical jargon is understood", function() {
+    const results = res.getBody().results;
+    const validMatches = results.filter(r => r.similarity >= 0.50);
+    
+    expect(validMatches.length).to.be.at.least(18);
+  });
+}

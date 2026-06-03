@@ -1,0 +1,82 @@
+{
+  "Aplicação de vacina": [
+    "Aplicação de vacina",
+    "vacinação",
+    "imunização",
+    "vacinar",
+    "aplicar vacina",
+    "tomar vacina"
+  ],
+  "Coleta de sangue": [
+    "Coleta de sangue",
+    "tirar sangue",
+    "exame de sangue",
+    "coleta de material biológico",
+    "punção venosa",
+    "flebotomia",
+    "colher sangue",
+    "coleta sanguínea"
+  ],
+  "Consulta clínica": [
+    "Consulta clínica",
+    "consulta médica",
+    "atendimento clínico",
+    "atendimento médico",
+    "consulta",
+    "passar no médico"
+  ],
+  "Exame cardiológico": [
+    "Exame cardiológico",
+    "exame do coração",
+    "eletrocardiograma",
+    "ECG",
+    "avaliação cardíaca",
+    "exame cardíaco"
+  ],
+  "Medição de pressão arterial": [
+    "Medição de pressão arterial",
+    "medir pressão",
+    "aferir pressão",
+    "verificar pressão",
+    "PA",
+    "pressão arterial",
+    "sinais vitais"
+  ],
+  "Aferição de temperatura": [
+    "Aferição de temperatura",
+    "medir temperatura",
+    "verificar febre",
+    "termometria",
+    "temperatura corporal"
+  ],
+  "Curativos simples": [
+    "Curativos simples",
+    "curativo",
+    "tratamento de feridas",
+    "cuidado com feridas",
+    "trocar curativo"
+  ],
+  "Orientação nutricional": [
+    "Orientação nutricional",
+    "orientação alimentar",
+    "aconselhamento nutricional",
+    "dieta",
+    "nutrição",
+    "alimentação saudável"
+  ],
+  "Fisioterapia": [
+    "Fisioterapia",
+    "fisio",
+    "reabilitação física",
+    "reabilitação motora",
+    "cinesioterapia",
+    "tratamento fisioterápico"
+  ],
+  "Terapia ocupacional": [
+    "Terapia ocupacional",
+    "TO",
+    "reabilitação ocupacional",
+    "terapia para AVDs",
+    "reintegração funcional"
+  ]
+}

@@ -1,0 +1,112 @@
+meta {
+  name: Match Realistic Medical Phrases
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/match
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "activities": [
+      "Faço coleta de material biológico para análise laboratorial",
+      "Realizo atendimento clínico geral",
+      "Ofereço vacinação para todas as idades",
+      "Faço acompanhamento cardíaco e eletrocardiograma",
+      "Monitoramento dos sinais vitais incluindo pressão",
+      "Verificação de temperatura corporal",
+      "Tratamento de feridas e lesões leves",
+      "Acompanhamento alimentar e dietético",
+      "Reabilitação motora e funcional",
+      "Trabalho de reintegração às atividades cotidianas",
+      "Manutenção de equipamentos hospitalares",
+      "Administração financeira do consultório"
+    ]
+  }
+}
+
+tests {
+  test("status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("returns 12 results", function() {
+    expect(res.getBody().results).to.have.lengthOf(12);
+  });
+  
+  // Test medical phrases match correctly - with multi-vector matching, scores should be much higher
+  test("coleta de material biológico → Coleta de sangue", function() {
+    const result = res.getBody().results.find(r => r.input.includes("material biológico"));
+    expect(result.matched_activity).to.equal("Coleta de sangue");
+    expect(result.similarity).to.be.at.least(0.75); // Higher threshold with synonyms
+  });
+  
+  test("atendimento clínico → Consulta clínica", function() {
+    const result = res.getBody().results.find(r => r.input.includes("atendimento clínico"));
+    expect(result.matched_activity).to.equal("Consulta clínica");
+    expect(result.similarity).to.be.at.least(0.80); // "atendimento clínico" is now a synonym
+  });
+  
+  test("vacinação → Aplicação de vacina", function() {
+    const result = res.getBody().results.find(r => r.input.includes("vacinação"));
+    expect(result.matched_activity).to.equal("Aplicação de vacina");
+    expect(result.similarity).to.be.at.least(0.85); // "vacinação" is now a synonym
+  });
+  
+  test("acompanhamento cardíaco → Exame cardiológico", function() {
+    const result = res.getBody().results.find(r => r.input.includes("cardíaco"));
+    expect(result.matched_activity).to.equal("Exame cardiológico");
+    expect(result.similarity).to.be.at.least(0.70);
+  });
+  
+  test("sinais vitais incluindo pressão → Medição de pressão arterial", function() {
+    const result = res.getBody().results.find(r => r.input.includes("sinais vitais"));
+    expect(result.matched_activity).to.equal("Medição de pressão arterial");
+    expect(result.similarity).to.be.at.least(0.75); // "sinais vitais" is now a synonym
+  });
+  
+  test("temperatura corporal → Aferição de temperatura", function() {
+    const result = res.getBody().results.find(r => r.input.includes("temperatura"));
+    expect(result.matched_activity).to.equal("Aferição de temperatura");
+    expect(result.similarity).to.be.at.least(0.80); // "temperatura corporal" is now a synonym
+  });
+  
+  test("tratamento de feridas → Curativos simples", function() {
+    const result = res.getBody().results.find(r => r.input.includes("feridas"));
+    expect(result.matched_activity).to.equal("Curativos simples");
+    expect(result.similarity).to.be.at.least(0.75); // "tratamento de feridas" is now a synonym
+  });
+  
+  test("acompanhamento alimentar → Orientação nutricional", function() {
+    const result = res.getBody().results.find(r => r.input.includes("alimentar"));
+    expect(result.matched_activity).to.equal("Orientação nutricional");
+    expect(result.similarity).to.be.at.least(0.70);
+  });
+  
+  test("reabilitação motora → Fisioterapia", function() {
+    const result = res.getBody().results.find(r => r.input.includes("reabilitação motora"));
+    expect(result.matched_activity).to.equal("Fisioterapia");
+    expect(result.similarity).to.be.at.least(0.80); // "reabilitação motora" is now a synonym
+  });
+  
+  test("reintegração às atividades → Terapia ocupacional", function() {
+    const result = res.getBody().results.find(r => r.input.includes("reintegração"));
+    expect(result.matched_activity).to.equal("Terapia ocupacional");
+    expect(result.similarity).to.be.at.least(0.70); // "reintegração funcional" is a synonym
+  });
+  
+  // Test non-medical phrases are rejected
+  test("manutenção de equipamentos → should be rejected or low score", function() {
+    const result = res.getBody().results.find(r => r.input.includes("equipamentos"));
+    expect(result.status).to.be.oneOf(['rejected', 'review']);
+  });
+  
+  test("administração financeira → should be rejected or low score", function() {
+    const result = res.getBody().results.find(r => r.input.includes("financeira"));
+    expect(result.status).to.be.oneOf(['rejected', 'review']);
+  });
+}

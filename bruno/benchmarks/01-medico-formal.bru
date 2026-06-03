@@ -1,0 +1,91 @@
+meta {
+  name: Benchmark 01 - Linguagem Médica Formal
+  type: http
+  seq: 1
+}
+
+docs {
+  # Benchmark 01 - Linguagem Médica Formal
+  
+  Testa frases como um médico responderia profissionalmente sobre seus serviços.
+  
+  ## Resultados Esperados
+  
+  | Input | Expected Match | Min Score |
+  |---|---|---|
+  | "Realizo coleta de material biológico..." | Coleta de sangue | 0.75 |
+  | "Ofereço atendimento clínico ambulatorial" | Consulta clínica | 0.80 |
+  | "Presto serviços de vacinação..." | Aplicação de vacina | 0.75 |
+  | "Executo avaliação cardiológica..." | Exame cardiológico | 0.75 |
+  | "Promovo monitoramento dos sinais vitais..." | Medição de pressão arterial | 0.70 |
+  | "Realizo verificação de temperatura corporal" | Aferição de temperatura | 0.80 |
+  | "Efetuo tratamento de ferimentos..." | Curativos simples | 0.70 |
+  | "Forneço orientação dietética..." | Orientação nutricional | 0.75 |
+  | "Conduzo sessões de reabilitação física..." | Fisioterapia | 0.75 |
+  | "Desenvolvo programas de reintegração funcional..." | Terapia ocupacional | 0.70 |
+  
+  **Expectativa**: 18+ frases com score ≥ 0.65 (approved ou review)
+}
+
+post {
+  url: {{baseUrl}}/match
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "activities": [
+      "Realizo coleta de material biológico para análise laboratorial",
+      "Ofereço atendimento clínico ambulatorial",
+      "Presto serviços de vacinação para todas as faixas etárias",
+      "Executo avaliação cardiológica com eletrocardiograma",
+      "Promovo monitoramento dos sinais vitais incluindo aferição pressórica",
+      "Realizo verificação de temperatura corporal",
+      "Efetuo tratamento de ferimentos e lesões superficiais",
+      "Forneço orientação dietética e acompanhamento nutricional",
+      "Conduzo sessões de reabilitação física e motora",
+      "Desenvolvo programas de reintegração funcional às atividades diárias",
+      "Executo procedimentos de coleta sanguínea para exames",
+      "Presto consultas médicas de rotina e acompanhamento",
+      "Administro imunobiológicos conforme calendário vacinal",
+      "Realizo exames complementares de função cardíaca",
+      "Efetuo mensuração da pressão arterial sistêmica",
+      "Conduzo aferições de temperatura corporal",
+      "Realizo curativos e cuidados com feridas",
+      "Ofereço aconselhamento em alimentação equilibrada",
+      "Promovo tratamento fisioterápico e reabilitação",
+      "Executo terapia de reabilitação ocupacional",
+      "Presto serviços de flebotomia para diagnóstico",
+      "Realizo anamnese e exame clínico geral"
+    ]
+  }
+}
+
+tests {
+  test("status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("returns 22 results", function() {
+    expect(res.getBody().results).to.have.lengthOf(22);
+  });
+  
+  test("all medical phrases have valid scores", function() {
+    const results = res.getBody().results;
+    const medicalPhrases = results.filter(r => !r.input.includes("edge case"));
+    
+    medicalPhrases.forEach(result => {
+      expect(result.similarity).to.be.at.least(0.50);
+      expect(result.matched_activity).to.be.a('string');
+      expect(result.matched_activity).to.not.be.empty;
+    });
+  });
+  
+  test("most medical phrases score above review threshold", function() {
+    const results = res.getBody().results;
+    const highScores = results.filter(r => r.similarity >= 0.65);
+    
+    expect(highScores.length).to.be.at.least(15);
+  });
+}

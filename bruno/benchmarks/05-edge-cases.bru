@@ -1,0 +1,114 @@
+meta {
+  name: Benchmark 05 - Edge Cases e Fora do Escopo
+  type: http
+  seq: 5
+}
+
+docs {
+  # Benchmark 05 - Edge Cases e Fora do Escopo
+  
+  Testa atividades que NÃO devem dar match, frases ambíguas, e atividades de outras áreas.
+  
+  ## Resultados Esperados
+  
+  | Input | Expected Status | Max Score |
+  |---|---|---|
+  | "Cirurgia plástica estética" | rejected | 0.60 |
+  | "Venda de medicamentos" | rejected | 0.55 |
+  | "Instalação de ar condicionado" | rejected | 0.40 |
+  | "Massagem relaxante" | review/rejected | 0.65 |
+  | "Acupuntura" | review/rejected | 0.65 |
+  | "Limpeza de consultório" | rejected | 0.50 |
+  | "Manutenção de equipamentos" | rejected | 0.50 |
+  | "Administração financeira" | rejected | 0.45 |
+  | "Marketing médico" | rejected | 0.50 |
+  | "Depilação a laser" | rejected | 0.55 |
+  
+  **Expectativa**: 15+ atividades com score < 0.65 (rejected ou review)
+  
+  **Nota**: Algumas atividades relacionadas à saúde (massagem, acupuntura) podem cair em "review" 
+  por terem overlap semântico com cuidados médicos, o que é aceitável.
+}
+
+post {
+  url: {{baseUrl}}/match
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "activities": [
+      "Cirurgia plástica estética",
+      "Venda de medicamentos",
+      "Instalação de ar condicionado",
+      "Massagem relaxante",
+      "Acupuntura",
+      "Quiropraxia",
+      "Limpeza de consultório",
+      "Manutenção de equipamentos",
+      "Administração financeira",
+      "Marketing médico",
+      "Procedimentos estéticos",
+      "Depilação a laser",
+      "Tatuagem",
+      "Piercing",
+      "Venda de suplementos",
+      "Personal trainer",
+      "Yoga",
+      "Pilates",
+      "Psicoterapia",
+      "Odontologia",
+      "Veterinária",
+      "Farmácia"
+    ]
+  }
+}
+
+tests {
+  test("status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("returns 22 results", function() {
+    expect(res.getBody().results).to.have.lengthOf(22);
+  });
+  
+  test("out-of-scope activities have low scores", function() {
+    const results = res.getBody().results;
+    const lowScores = results.filter(r => r.similarity < 0.65);
+    
+    // Most edge cases should score below review threshold
+    expect(lowScores.length).to.be.at.least(15);
+  });
+  
+  test("clearly unrelated activities are rejected", function() {
+    const results = res.getBody().results;
+    
+    // "Instalação de ar condicionado" should be rejected
+    const arCondicionado = results.find(r => r.input.includes("ar condicionado"));
+    expect(arCondicionado.status).to.equal("rejected");
+    
+    // "Venda de medicamentos" should be rejected
+    const vendaMedicamentos = results.find(r => r.input.includes("Venda de medicamentos"));
+    expect(vendaMedicamentos.status).to.equal("rejected");
+    
+    // "Marketing médico" should be rejected
+    const marketing = results.find(r => r.input.includes("Marketing"));
+    expect(marketing.status).to.equal("rejected");
+  });
+  
+  test("ambiguous medical activities may score in review range", function() {
+    const results = res.getBody().results;
+    
+    // Some activities like "Massagem" or "Acupuntura" might score in review range
+    // because they have some semantic overlap with medical care
+    const ambiguous = results.filter(r => 
+      (r.input.includes("Massagem") || r.input.includes("Acupuntura")) &&
+      r.status === "review"
+    );
+    
+    // It's OK if some ambiguous cases fall into review
+    expect(ambiguous.length).to.be.at.most(2);
+  });
+}

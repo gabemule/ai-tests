@@ -1,0 +1,45 @@
+meta {
+  name: Match Single Activity
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/match
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "activities": [
+      "aferir pressão"
+    ]
+  }
+}
+
+tests {
+  test("status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("returns single result", function() {
+    expect(res.getBody().results).to.have.lengthOf(1);
+  });
+  
+  test("result has correct input", function() {
+    const result = res.getBody().results[0];
+    expect(result.input).to.equal("aferir pressão");
+  });
+  
+  test("matched activity is valid", function() {
+    const result = res.getBody().results[0];
+    expect(result.matched_activity).to.be.a('string');
+    expect(result.matched_activity).to.not.be.empty;
+  });
+  
+  test("status is valid", function() {
+    const result = res.getBody().results[0];
+    expect(result.status).to.be.oneOf(['approved', 'review', 'rejected']);
+  });
+}

@@ -1,0 +1,1 @@
+"""Embedding generation layer with adapter pattern (ADR-001)."""
