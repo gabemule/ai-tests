@@ -1,0 +1,78 @@
+name: CNAE Monitor
+
+on:
+  # schedule:
+  #   - cron: '0 3 1 * *'  # Monthly — 1st day at 3am UTC
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    working-directory: pkgs/cnae-checker
+
+jobs:
+  scrape:
+    name: Check for new CNAE data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Scrape IBGE for new URLs
+        id: scrape
+        run: |
+          set +e
+          npm run scrape 2>&1 | tee /tmp/scrape-output.txt
+          EXIT_CODE=${PIPESTATUS[0]}
+          set -e
+
+          if [ "$EXIT_CODE" -eq 1 ]; then
+            echo "new_urls=true" >> $GITHUB_OUTPUT
+            echo "::warning::New URLs detected on IBGE download page!"
+          else
+            echo "new_urls=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download files from IBGE
+        id: download
+        run: |
+          npm run download 2>&1 | tee /tmp/download-output.txt
+
+          if grep -q "File changed" /tmp/download-output.txt; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "::warning::CNAE files have changed!"
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Extract and validate
+        if: steps.download.outputs.changed == 'true'
+        run: |
+          npm run extract
+          npm run check
+
+      # Uncomment and set WEBHOOK_URL secret to enable alerts
+      # - name: Send webhook alert
+      #   if: steps.scrape.outputs.new_urls == 'true' || steps.download.outputs.changed == 'true'
+      #   run: |
+      #     curl -X POST "${{ secrets.WEBHOOK_URL }}" \
+      #       -H "Content-Type: application/json" \
+      #       -d "{
+      #         \"text\": \"🚨 CNAE Update Detected!\",
+      #         \"new_urls\": \"${{ steps.scrape.outputs.new_urls }}\",
+      #         \"file_changed\": \"${{ steps.download.outputs.changed }}\"
+      #       }"
+
+      - name: Summary
+        run: |
+          echo "## CNAE Monitor Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| New URLs | ${{ steps.scrape.outputs.new_urls }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Files changed | ${{ steps.download.outputs.changed }} |" >> $GITHUB_STEP_SUMMARY

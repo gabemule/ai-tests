@@ -1,4 +1,15 @@
 {
+  "name": "cnae-checker",
+  "version": "2.0.0",
+  "description": "Extractor and validator for CNAE data from IBGE/CONCLA",
+  "scripts": {
+    "start": "node scripts/start.js",
+    "download": "node scripts/download.js",
+    "extract": "node scripts/extract.js",
+    "extract:subclasses": "node scripts/extract-subclasses.js",
+    "check": "node scripts/check.js",
+    "scrape": "node scripts/scrape-urls.js"
+  },
   "dependencies": {
     "xlsx": "^0.18.5"
   }
