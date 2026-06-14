@@ -2,6 +2,20 @@
 
 Monorepo containing AI/ML experimentation projects.
 
+## 🐣 Incubator
+
+This repo is an **incubator** — a sandbox / brainstorming workspace for AI/ML
+experiments. Projects start here while **embryonic**: rough prototypes, spikes, and
+shared building blocks (e.g. `llm-adapters`, `embedding-adapters`).
+
+Once a project **matures**, it **graduates to its own dedicated repository** before
+any publish/deploy. Nothing here is meant to be production-grade in place — the goal
+is to validate ideas cheaply, share components across experiments, and extract the
+winners into standalone repos.
+
+**Lifecycle:** `idea → spike → embryonic project → matured → graduates to own repo`
+
+
 ## Projects
 
 ### 📊 [similarity-score](./pkgs/similarity-score/)

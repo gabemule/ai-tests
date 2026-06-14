@@ -1,8 +1,9 @@
 # Node
 node_modules/
 
-# Dev
-@todo/
+# Dev - we can commit here our @todo
+# it wont go live from here
+# @todo/
 
 # Python
 __pycache__/
