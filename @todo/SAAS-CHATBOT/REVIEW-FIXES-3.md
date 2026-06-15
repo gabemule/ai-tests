@@ -26,11 +26,19 @@ Sections grouped by *"what drifts together"* (🔁 = re-audited monthly; 🔒 = 
 | `billing.md` | §4 (LLM modes/wallet/safeguards/BYOK add-on), §5 (metering), §9 (payments) | 🔒 | How billing works (modes, wallet, metering, gateway) |
 | `market.md` | §2 (global benchmark §2.1/§2.2 + BR §2.3) | 🔁 | Competitor plans & billing models |
 | `sources.md` | §12 (sources & revalidation links) | 🔁 | OpenRouter links + revalidation procedure |
-| `VALIDATION-PROMPTS.md` | *(new)* | 🔒 | Per-file LLM prompts to re-validate each volatile file (see B7) |
+| `VALIDATION-PROMPTS.md` | *(new)* | 🔒 | Per-file LLM prompts (English) to re-validate each volatile file (see B7) |
 
 > **Anchor convention after the split:** each old `§X` label is **preserved as a heading** inside its
 > new file, so a reference reads `PRICING/models.md §1.5` (file + familiar section number). No
 > renumbering — same reasoning as the ADR numbering stability.
+
+> **Open decision (decide at split time):** consider **moving `ANALYSIS/openrouter-pricing.md` into
+> `PRICING/`** (e.g. as `PRICING/token-costs.md` or folded into `sources.md`). Rationale: it's
+> **live price-per-token data** — the same raw material `models.md`/`embeddings.md` consume — not a
+> support *analysis* like `model-benchmark.md` (quality) or `infra.md` (self-host breakeven), which
+> stay in `ANALYSIS/`. If moved, update PROMPT 3's context list and any `ANALYSIS/openrouter-pricing.md`
+> refs. **Not executed by default — Barney decides when running the split.**
+
 
 ## Summary
 
@@ -167,7 +175,7 @@ content is reachable under `PRICING/`.
 
 ## B7 — Add `PRICING/VALIDATION-PROMPTS.md` 🟡
 
-**What:** mirror the root `VALIDATION-PROMPTS.md` pattern (pt-br prompts for an LLM reviewer), but
+**What:** mirror the root `VALIDATION-PROMPTS.md` pattern (English prompts for an LLM reviewer), but
 **one prompt per volatile file** — the whole point of the split is making re-validation per-file. Each
 prompt tells the validator what to re-check and how to report. Cover at least:
 
@@ -191,7 +199,7 @@ prompt tells the validator what to re-check and how to report. Cover at least:
 Each prompt follows the root file's shape: **role** + **context to read** + **scope** + **how to
 respond** (severity findings, show the math, diff old→new, separate FACT from ASSUMPTION).
 
-**Acceptance:** `PRICING/VALIDATION-PROMPTS.md` exists with ≥6 per-file prompts in pt-br, each
+**Acceptance:** `PRICING/VALIDATION-PROMPTS.md` exists with ≥6 per-file prompts in English, each
 self-contained (a reviewer can run one prompt to re-audit one file), consistent with the root
 `VALIDATION-PROMPTS.md` tone.
 

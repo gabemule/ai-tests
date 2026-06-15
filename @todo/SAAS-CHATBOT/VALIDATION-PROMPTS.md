@@ -1,99 +1,189 @@
-## 🔍 PROMPT 1 — Deep Dive de Arquitetura, Código e Lógica de Negócio
+# Validation Prompts — SAAS-CHATBOT
+
+> Prompts (in English — they're consumed by an LLM reviewer, so English saves tokens) for an LLM
+> reviewer to critically and independently re-validate the project.
+> Three fronts: **(1)** technical/product plan + ADRs + FUTURE, **(2)** financial model/pricing,
+> **(3)** the factual base in `ANALYSIS/` (quality, price-per-token, infra breakeven).
+> Last updated: 2026-06-14
+
+---
+
+## 🔍 PROMPT 1 — Validate the plan (architecture, ADRs, roadmap and FUTURE)
+
+> Phased: **1A** validates the ADRs in isolation; **1B** validates the full plan (incl. FUTURE)
+> against the ADRs and the objectives. Run both phases in sequence, in the same session.
 
 ```
-Você é um Staff/Principal Engineer fazendo um review técnico crítico e independente de um SaaS
-de chatbot RAG whitelabel. Seu objetivo NÃO é elogiar — é encontrar furos, riscos e inconsistências
-antes de a gente escrever código de produção.
+You are a Staff/Principal Engineer doing a critical, independent technical review of a whitelabel
+RAG chatbot SaaS. Your goal is NOT to praise — it's to find holes, risks and inconsistencies before
+we write production code. This review is phased: first the ADRs (1A), then the full plan against the
+ADRs and the FUTURE (1B).
 
-CONTEXTO A LER (nesta ordem):
-1. @todo/SAAS-CHATBOT/CONTEXT.md      — estado compilado do projeto
-2. @todo/SAAS-CHATBOT/PLAN.md         — roadmap, fases, decisões (ADRs)
-3. @todo/SAAS-CHATBOT/ARCHITECTURE.md — componentes, data flow, contratos
-4. @todo/SAAS-CHATBOT/PROGRESS.md     — onde estamos
-5. @todo/SAAS-CHATBOT/FUTURE/*.md     — extensões planejadas (contexto de escopo futuro)
+CONTEXT TO READ (in this order):
+1. @todo/SAAS-CHATBOT/CONTEXT.md      — compiled project state
+2. @todo/SAAS-CHATBOT/adr/*.md        — the architecture decisions (ADRs 001–017) + adr/README.md
+3. @todo/SAAS-CHATBOT/PLAN.md         — roadmap, phases, scope, gaps
+4. @todo/SAAS-CHATBOT/ARCHITECTURE.md — components, data flow, contracts
+5. @todo/SAAS-CHATBOT/PROGRESS.md     — where we are
+6. @todo/SAAS-CHATBOT/FUTURE/*.md     — planned extensions (future scope, but part of the plan)
 
-ESCOPO DESTE REVIEW (foco: técnico/produto, NÃO financeiro):
-- Arquitetura: separação de responsabilidades, modular monolith vs. serviços, multi-tenancy
-  (isolamento de dados, vazamento entre tenants), pontos únicos de falha.
-- Componentes-chave: llm-adapters (metering/governança), router-adapters, embeddings/vector store,
-  ingestion/chunking, knowledge-sync, fila (QStash), API (NestJS), worker (Python), widget.
-- Lógica de negócio: metering local como source of truth, prepaid wallet + auto-recharge + hard cap,
-  idempotência de cobranças, reserve/hold sob concorrência, anti-loop de recharge.
-- Roteamento de modelos: como classificar complexidade da query, fallback entre providers,
-  degradação graciosa, qualidade percebida vs. custo.
-- Escalabilidade: o salto MVP→Early→Growth→Scale faz sentido? Gargalos? Estado/sessão? Cache?
-- Segurança: gestão de chaves (BYOK e Managed), blast radius, PII, data residency, rate limiting.
-- Consistência interna: o PLAN/ARCHITECTURE/CONTEXT se contradizem em algum ponto? ADRs coerentes?
-- Roadmap: as fases F1–F4 estão na ordem certa? Algo crítico foi deixado para depois indevidamente?
-  Algum item de FUTURE/ deveria ser MVP (ou vice-versa)?
+SCOPE RULE: technical/product focus. Do NOT go into financial/margin/cost analysis — that's covered
+by PROMPT 2. Here you may take the PRICING numbers as given data.
 
-COMO RESPONDER:
-1. **Resumo executivo** (5–8 linhas): o plano é tecnicamente sólido? Maior risco? Pode codar?
-2. **Achados por severidade**: 🔴 Crítico / 🟡 Médio / 🟢 Menor. Para cada um:
-   - Onde (arquivo/seção), o problema, por que importa, e a correção sugerida.
-3. **Contradições/lacunas** entre os documentos (lista objetiva).
-4. **Perguntas abertas** que precisam de decisão antes de implementar.
-5. **Top 5 ações priorizadas** (o que eu faria primeiro).
+═══════════════════════════════════════════════════════════════════════════════
+PHASE 1A — Validate the ADRs in isolation
+═══════════════════════════════════════════════════════════════════════════════
+For the set adr/001–017:
+- **Form:** is each ADR well-formed (clear Context / Decision / Consequences, actionable decision)?
+- **Coherence with each other:** does any ADR contradict another? (e.g. isolation, LLM modes,
+  embeddings, metering, billing). Is there overlap or redundancy between ADRs?
+- **Coherence with the business:** does each decision make sense against the business rules and the
+  objectives (multi-tenant whitelabel RAG, Managed-first, BYOK Enterprise-only, polyglot split)?
+- **Gaps:** is there an important decision already made in the plan that has NO ADR and should?
+  Is there an ADR that became stale relative to the current state?
+- **Actionable Consequences:** the "Consequences" that call for validation/test (e.g. RLS leak test,
+  embedding identity columns, queue idempotency) — are they reflected in the plan/PROGRESS?
 
-Regras: seja específico (cite seção/arquivo), proponha alternativas concretas, separe FATO de
-OPINIÃO, e NÃO entre em análise financeira/margem/custo — isso é coberto por outro review.
+═══════════════════════════════════════════════════════════════════════════════
+PHASE 1B — Validate the full plan (PLAN/ARCHITECTURE/CONTEXT/PROGRESS + FUTURE) against the ADRs
+═══════════════════════════════════════════════════════════════════════════════
+- **Plan ↔ ADRs coherence:** does what's in PLAN/ARCHITECTURE/CONTEXT faithfully reflect the ADRs?
+  Does any doc assert something an ADR already decided differently?
+- **Internal coherence between docs:** do PLAN, ARCHITECTURE, CONTEXT and PROGRESS contradict each
+  other anywhere (phase scope, data model, contracts, component names)?
+- **FUTURE as part of the whole:** are the FUTURE/ vectors coherent with the core and the ADRs?
+  Should any FUTURE item be MVP (or should something in MVP be deferred)? Does the FUTURE build order
+  (and the dependencies between 01–09) make sense?
+- **Architecture:** separation of responsibilities, multi-tenancy (cross-tenant leakage), single
+  points of failure, the polyglot seam (NestJS API ↔ Python worker via queue), embedding parity.
+- **Roadmap:** F1–F4 in the right order? Was anything critical pushed back improperly?
+- **Intended objectives:** does the plan as a whole achieve the product's objectives, or is there
+  drift?
+
+HOW TO RESPOND:
+1. **Executive summary** (5–8 lines): is the plan technically sound? Biggest risk? Can we code?
+2. **PHASE 1A findings (ADRs)** by severity 🔴/🟡/🟢: ADR, problem, why it matters, fix.
+3. **PHASE 1B findings (plan+FUTURE)** by severity 🔴/🟡/🟢: file/section, problem, fix.
+4. **Contradictions/gaps** between documents and between docs↔ADRs (objective list).
+5. **Decisions that should become an ADR** (if any).
+6. **Top 5 prioritized actions** (what I'd do first).
+
+Rules: be specific (cite ADR/file/section), propose concrete alternatives, separate FACT from
+OPINION, and do NOT go into financial analysis — that's covered by PROMPT 2.
 ```
 
 ---
 
-## 💰 PROMPT 2 — Deep Dive Financeiro, Margem, Custos e Gestão do Negócio
+## 💰 PROMPT 2 — Validate the financial model (pricing, margin, costs)
+
+> The pricing content lives in `PRICING/` (split by file). The source numbers come from `ANALYSIS/`
+> (and/or the price-per-token source, wherever it lives after the split).
 
 ```
-Você é um CFO/FP&A de SaaS + analista de unit economics fazendo um review financeiro crítico e
-independente de um chatbot RAG whitelabel. Seu objetivo é estressar a precificação, a margem e a
-sustentabilidade do modelo — encontrar onde os números quebram, não validá-los por gentileza.
+You are a SaaS CFO/FP&A + unit-economics analyst doing a critical, independent financial review of a
+whitelabel RAG chatbot. Your goal is to stress-test the pricing, the margin and the model's
+sustainability — to find where the numbers break, not to validate them out of politeness.
 
-CONTEXTO A LER (nesta ordem):
-1. @todo/SAAS-CHATBOT/PRICING.md                    — modelo de custo, planos, margem, billing
-2. @todo/SAAS-CHATBOT/ANALYSIS/openrouter-pricing.md — custo por token dos modelos
-3. @todo/SAAS-CHATBOT/ANALYSIS/model-benchmark.md    — qualidade dos modelos (score)
-4. @todo/SAAS-CHATBOT/ANALYSIS/infra.md              — breakeven de infra local (self-host)
+CONTEXT TO READ (in this order):
+1. @todo/SAAS-CHATBOT/PRICING/README.md         — thesis (no-markup/routing-spread), TCO, roadmap, open Qs
+2. @todo/SAAS-CHATBOT/PRICING/models.md         — generation model prices + routing mix + spread
+3. @todo/SAAS-CHATBOT/PRICING/embeddings.md     — embedding prices (default Qwen3 8B + fallback)
+4. @todo/SAAS-CHATBOT/PRICING/infrastructure.md — provider tiers + infra by scale stage
+5. @todo/SAAS-CHATBOT/PRICING/plans.md          — plans, caps, reingestion, margin analysis (worst-case)
+6. @todo/SAAS-CHATBOT/PRICING/billing.md         — modes (Managed/BYOK), wallet, metering, payments
+7. @todo/SAAS-CHATBOT/PRICING/market.md          — global + BR benchmark
+8. @todo/SAAS-CHATBOT/ANALYSIS/*.md              — factual base (price per token, benchmark, infra)
 
-MODELO A VALIDAR (resumo do que o PRICING.md propõe):
-- Preço público ancorado no CUSTO do modelo premium (Sonnet 4.6 = $9/1M), SEM markup explícito.
-- Margem vem da INTELIGÊNCIA DE ROTEAMENTO: mix Opção B (80% Qwen3.7 Plus + 15% DeepSeek V4 Pro +
-  5% Sonnet 4.6) → custo misto ~$1.35/1M → spread ~85% vs. a âncora de $9.
-- Managed (carteira pré-paga) = padrão em todos os tiers; BYOK = add-on pago só de Enterprise.
-- Planos: Free / Starter $19 / Pro $39 / Business $119 / Enterprise custom.
+MODEL TO VALIDATE (summary):
+- Public price anchored on the COST of the premium model (Sonnet 4.6 = $9/1M), with NO explicit markup.
+- Margin comes from ROUTING INTELLIGENCE: mix Option B (80% Qwen3.7 Plus + 15% DeepSeek V4 Pro +
+  5% Sonnet 4.6) → blended cost ~$1.35/1M → spread ~85% vs. the $9 anchor.
+- Managed (prepaid wallet) = default on all tiers; BYOK = paid Enterprise-only add-on.
+- Plans: Free / Starter $19 (R$99) / Pro $39 (R$199) / Business $119 (R$599) / Enterprise custom.
 
-ESCOPO DESTE REVIEW (foco: financeiro, NÃO arquitetura/código):
-- Unit economics: a margem ~85% do roteamento se sustenta? O que acontece se o mix real divergir
-  (ex.: queries mais difíceis → mais Sonnet)? Faça uma análise de sensibilidade (mix 60/30/10,
-  50/30/20, etc.) e mostre onde a margem desce a níveis perigosos.
-- Risco de preço dos modelos: os preços do OpenRouter são voláteis e há promos temporárias embutidas.
-  O modelo aguenta uma alta de 30–50% no custo do tier principal (Qwen)? E se as promos expirarem?
-- Ancoragem: ancorar no Sonnet 4.6 ($9/1M) é defensável competitivamente, ou estamos cobrando caro
-  demais / barato demais? Compare com o TCO dos concorrentes (§2–§3 do PRICING).
-- Planos & caps: os preços (Starter $19, Pro $39, Business $119) cobrem o pior caso de reingestão
-  (§7.3)? A margem-piso de ~45% é confortável ou apertada? O Free (Managed, saldo incluído) é
-  realmente risco-zero ou pode sangrar em abuso?
-- BYOK Enterprise: a lógica de "piso referenciado no spread abdicado (~$7,6k/mês por 1B tokens)"
-  faz sentido? Como você precificaria esse add-on (fixo, % do volume, híbrido)?
-- Gestão financeira: prepaid wallet + auto-recharge + hard cap protege o caixa? Risco de
-  inadimplência, chargeback, float negativo sob concorrência? Stripe fees e PIX (1.19%) bem modelados?
-- Self-host (infra.md): o breakeven da RTX 5090 (~3,6 meses @ 100M tok/mês) está correto e deveria
-  acelerar a entrada de um tier local de custo-zero-token? Qual o impacto na margem se entrar?
-- Simulações por cliente (§8.2 — 100M a 2B tokens): os números batem? Refaça os cálculos e aponte
-  qualquer erro aritmético.
+SCOPE OF THIS REVIEW (focus: financial, NOT architecture/code):
+- Unit economics: does the ~85% routing margin hold? What if the real mix diverges (harder queries →
+  more Sonnet)? Do a sensitivity analysis (mix 60/30/10, 50/30/20, etc.) and show where the margin
+  drops to dangerous levels.
+- Model price risk: OpenRouter prices are volatile and have promos baked in. Does the model withstand
+  a 30–50% rise in the cost of the principal tier (Qwen)? What if the promos expire?
+- Anchoring: is anchoring on Sonnet 4.6 ($9/1M) defensible, or too expensive/cheap? Compare with the
+  competitors' TCO (market.md + README TCO).
+- Plans & caps: do the prices cover the worst-case reingestion (plans.md, worst-case)? Is the ~45%
+  floor margin comfortable or tight? Is Free (Managed, included balance) zero-risk or can it bleed?
+- BYOK Enterprise: does the "floor referenced on the forgone spread (~$7.6k/mo per 1B tokens)" make
+  sense? How would you price this add-on (fixed, % of volume, hybrid)?
+- Financial management: does prepaid wallet + auto-recharge + hard cap protect cash? Risk of default,
+  chargeback, negative float under competition? Are Stripe fees and PIX (1.19%) well modeled?
+- Self-host (ANALYSIS/infra.md): is the RTX 5090 breakeven (~3.6 months @ 100M tok/mo) correct and
+  should it accelerate the entry of a local zero-token-cost tier? Impact on margin if it enters?
+- Per-client simulations (models.md, 100M to 2B tokens): do the numbers add up? Redo them and flag errors.
 
-COMO RESPONDER:
-1. **Resumo executivo** (5–8 linhas): o modelo financeiro é sustentável? Maior risco à margem?
-2. **Verificação aritmética**: recalcule blended cost, spread, margens dos planos e a tabela §8.2.
-   Aponte qualquer divergência com número corrigido.
-3. **Análise de sensibilidade**: tabela mostrando margem sob diferentes mixes de roteamento e
-   diferentes níveis de preço dos modelos (cenário base / estresse / pessimista).
-4. **Achados por severidade**: 🔴 Crítico / 🟡 Médio / 🟢 Menor — cada um com seção, impacto em R$/%,
-   e correção sugerida.
-5. **Riscos de negócio**: dependência de preço de terceiros, promos, volatilidade cambial, abuso.
-6. **Top 5 ações priorizadas** para blindar a margem.
+HOW TO RESPOND:
+1. **Executive summary** (5–8 lines): is the model sustainable? Biggest risk to the margin?
+2. **Arithmetic check**: recompute blended cost, spread, plan margins and the per-client simulation
+   table. Flag any divergence with the corrected number.
+3. **Sensitivity analysis**: margin table under different routing mixes and different model price
+   levels (base / stress / pessimistic).
+4. **Findings by severity** 🔴/🟡/🟢 — each with file/section, impact in R$/%, and fix.
+5. **Business risks**: third-party price dependency, promos, FX volatility, abuse.
+6. **Top 5 prioritized actions** to protect the margin.
 
-Regras: SEMPRE mostre as contas (não só conclusões), use os números reais dos arquivos, separe FATO
-de PREMISSA, e NÃO entre em arquitetura/código — isso é coberto por outro review.
+Rules: ALWAYS show the math (not just conclusions), use the real numbers from the files, separate
+FACT from ASSUMPTION, and do NOT go into architecture/code — that's covered by PROMPT 1.
 ```
 
 ---
+
+## 📊 PROMPT 3 — Validate the factual base (`ANALYSIS/` ↔ `PRICING/`)
+
+> `ANALYSIS/` is the **factual foundation** the `PRICING/` derives from: model quality
+> (`model-benchmark.md`), price per token (`openrouter-pricing.md`) and self-host breakeven
+> (`infra.md`). This prompt validates the source and the **source→derived coherence**.
+>
+> **Note:** `openrouter-pricing.md` (live price) may migrate into `PRICING/` during the split —
+> read it wherever it lives (`ANALYSIS/` or `PRICING/`).
+
+```
+You are a data/cost analyst doing a critical, independent review of the FACTUAL BASE that underpins
+the pricing of a whitelabel RAG chatbot. Your goal is to check whether the source data is still true,
+whether it's up to date, and whether the numbers the pricing uses DERIVE CORRECTLY from that source.
+You are the link between market reality and the financial model.
+
+CONTEXT TO READ:
+1. @todo/SAAS-CHATBOT/ANALYSIS/model-benchmark.md   — model quality scores
+2. @todo/SAAS-CHATBOT/ANALYSIS/openrouter-pricing.md — price per token (OR @todo/SAAS-CHATBOT/PRICING/,
+                                                       if already migrated in the split)
+3. @todo/SAAS-CHATBOT/ANALYSIS/infra.md             — local infra breakeven (self-host / GPU)
+4. @todo/SAAS-CHATBOT/PRICING/models.md + embeddings.md — where the source is CONSUMED (the derived)
+
+SCOPE OF THIS REVIEW:
+- **model-benchmark.md:** do the quality scores still match reality? Is the score methodology
+  defensible (how it was measured, source)? New models (e.g. Qwen3.7 Plus/Max) without a score — how
+  are they being positioned and is that justifiable? Was any benchmarked model discontinued/renamed?
+- **price per token (openrouter-pricing):** are the prices still valid (re-audit live on OpenRouter)?
+  Are there temporary promos baked in that may expire? Do the cited models still exist under that name?
+  Are the input/output pairs and the average (input+output)/2 computed correctly?
+- **infra.md:** is the RTX 5090 breakeven (~3.6 months @ 100M tok/mo; ~15 days @ 1B) arithmetically
+  correct? Are the assumptions (power draw, token throughput, GPU lifespan/cost, utilization)
+  realistic? Is the entry point of a self-host tier well positioned?
+- **SOURCE → DERIVED COHERENCE (the key point):** do the numbers `PRICING/models.md` and
+  `embeddings.md` use derive correctly from the source? Specifically:
+  - do the blended ~$1.35/1M and the spread ~85% match the prices in `openrouter-pricing.md` and the
+    80/15/5 mix?
+  - does the default embedding price (Qwen3 8B) in `embeddings.md` match the source?
+  - does the Sonnet 4.6 = $9/1M anchor match the source?
+  - any number in PRICING/ that has NO backing in ANALYSIS/ (or that diverges) is a finding.
+
+HOW TO RESPOND:
+1. **Executive summary** (5–8 lines): is the factual base still reliable? Biggest stale-data risk?
+2. **"old → new" diff** per datum that changed (price, score, infra assumption), with the source.
+3. **Arithmetic check**: recompute the price averages, the blended, the spread and the GPU breakeven.
+4. **Source→derived coherence**: a table pointing each PRICING/ number to whether it matches ANALYSIS/
+   (✅ matches / ❌ diverges → corrected number).
+5. **Findings by severity** 🔴/🟡/🟢 — each with file, impact, and fix.
+6. **Cadence recommendation**: what needs re-auditing monthly vs. quarterly.
+
+Rules: ALWAYS show the math, re-validate prices live when possible, separate FACT from ASSUMPTION,
+and make explicit any number in PRICING/ that has no traceable backing in ANALYSIS/.
+```
