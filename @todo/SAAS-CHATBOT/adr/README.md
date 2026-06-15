@@ -8,7 +8,7 @@
 ## Format
 
 Each ADR is short and uniform: **Status · Context · Decision · Consequences**. Numbering is stable
-(1–17, never renumbered) because other docs reference ADRs by number (e.g. "ADR #16").
+(1–18, never renumbered) because other docs reference ADRs by number (e.g. "ADR #16").
 
 ## Index
 
@@ -24,10 +24,11 @@ Each ADR is short and uniform: **Status · Context · Decision · Consequences**
 | [008](./008-conversation-message-persistence.md) | Conversation/Message persisted from F1 | Accepted | History + metering substrate + ticketing/quality hook |
 | [009](./009-llm-managed-default-byok.md) | LLM modes — Managed (default) + BYOK (Enterprise add-on) | Accepted | Managed all tiers; BYOK = paid Enterprise add-on |
 | [010](./010-embeddings-always-managed.md) | Embeddings always managed (never BYOK) | Accepted | Tiny cost; better UX; baked into plan capacity |
-| [011](./011-metering-local-llm-adapters.md) | Metering is local in `llm-adapters` | Accepted | Immediate + uniform → real-time hard cap |
+| [011](./011-metering-local-llm-adapters.md) | Token counting local in `llm-adapters`; product persists usage | Accepted | Lib computes tokens; product (Supabase logger) persists usage |
 | [012](./012-payments-stripe-paymentprovider.md) | Payments — Stripe + `PaymentProvider` abstraction | Accepted | Stripe primary; pluggable BR gateways (PIX) later |
 | [013](./013-managed-first-positioning.md) | Managed-first positioning | Accepted | Managed default on every tier incl. Free; BYOK Enterprise-only |
 | [014](./014-model-routing-margin-lever.md) | Model routing as a margin lever (F4+) | Accepted | Anchor on premium model; route a cheaper mix; spread is margin |
 | [015](./015-incremental-re-embed-by-chunk.md) | Incremental re-embed by chunk | Accepted | Diff per chunk hash → effective K ~1–2, bounds worst-case cost |
 | [016](./016-tenant-isolation-rls.md) | Tenant isolation via Postgres RLS | Accepted | Physical isolation by `tenant_id`; schema-per-tenant rejected |
 | [017](./017-embedding-parity-runtime-invariant.md) | Embedding parity is a runtime invariant | Accepted | Same model/dim/normalization both sides or silent degradation |
+| [018](./018-ingestion-job-contract.md) | Ingestion job contract (the "sacred seam") | Accepted | Versioned API↔worker job schema, validated on both Node + Python |

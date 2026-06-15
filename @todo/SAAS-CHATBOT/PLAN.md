@@ -119,13 +119,14 @@ filter bug must not leak data across tenants.
 | [008](./adr/008-conversation-message-persistence.md) | Conversation/Message persisted from F1 | History + metering substrate + ticketing/quality hook |
 | [009](./adr/009-llm-managed-default-byok.md) | LLM modes — Managed (default) + BYOK (Enterprise add-on) | Managed all tiers; BYOK = paid Enterprise add-on |
 | [010](./adr/010-embeddings-always-managed.md) | Embeddings always managed (never BYOK) | Tiny cost; better UX; baked into plan capacity |
-| [011](./adr/011-metering-local-llm-adapters.md) | Metering is local in `llm-adapters` | Immediate + uniform → real-time hard cap |
+| [011](./adr/011-metering-local-llm-adapters.md) | Token counting local in `llm-adapters`; product persists usage | Lib computes tokens; product (Supabase logger) persists usage |
 | [012](./adr/012-payments-stripe-paymentprovider.md) | Payments — Stripe + `PaymentProvider` abstraction | Stripe primary; pluggable BR gateways (PIX) later |
 | [013](./adr/013-managed-first-positioning.md) | Managed-first positioning | Managed default on every tier incl. Free; BYOK Enterprise-only |
 | [014](./adr/014-model-routing-margin-lever.md) | Model routing as a margin lever (F4+) | Anchor on premium model; route a cheaper mix; spread is margin |
 | [015](./adr/015-incremental-re-embed-by-chunk.md) | Incremental re-embed by chunk | Diff per chunk hash → effective K ~1–2, bounds worst-case cost |
 | [016](./adr/016-tenant-isolation-rls.md) | Tenant isolation via Postgres RLS | Physical isolation by `tenant_id`; schema-per-tenant rejected |
 | [017](./adr/017-embedding-parity-runtime-invariant.md) | Embedding parity is a runtime invariant | Same model/dim/normalization both sides or silent degradation |
+| [018](./adr/018-ingestion-job-contract.md) | Ingestion job contract (the "sacred seam") | Versioned API↔worker job schema, validated on both Node + Python |
 
 
 
@@ -193,6 +194,6 @@ filter bug must not leak data across tenants.
 | Gap | Why deferred | When to address |
 |---|---|---|
 | **LGPD / data protection** — tenant docs likely contain PII; need retention, deletion (right to erasure), and a DPA. BR + PIX focus makes this real. | No real external tenants until Beta; F1 is single internal user. | **F3** (governance), before opening to real tenants. |
-| **BYOK key crypto mechanics** — "encrypted at rest" is decided, but the *how* (KMS vs. envelope encryption, key rotation) is not. | Only one BYOK key (mine) in F1. | When building the BYOK key endpoint (**F2**). |
+| **BYOK key rotation + managed-KMS upgrade** — at-rest **envelope encryption ships in F1** (ADR 005); only key *rotation* and a move to a managed KMS remain open. | Only one BYOK key (mine) in F1; rotation surface is trivial until multiple Enterprise keys exist. | When the key-management surface grows (**F2**). |
 | **RAG retrieval quality eval** — no metric for retrieval quality yet. Strong portfolio differentiator for an "AI product engineering" showcase. | Not needed to prove the loop. | **F4** nice-to-have (or earlier if time allows). |
 

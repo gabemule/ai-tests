@@ -169,7 +169,7 @@ erDiagram
         string embedding_model "identity: parity invariant (ADR #17)"
         int embedding_dim
         bool embedding_normalized
-        int embedding_version "bump on model change → re-embed on mismatch (ADR #15)"
+        int embedding_version "bump on model change → re-embed on mismatch (ADR #17; reuses #15 pipeline)"
     }
     CONVERSATION {
         uuid id PK
@@ -296,24 +296,24 @@ goes out with the **customer's own key** (BYOK) — the platform never sees nor 
 |---|---|---|
 | 1 | NestJS API + Python ingestion worker + Next.js front | Node API (TS unified w/ portal & widget) drives chat + query-embed; Python worker for heavy doc parsing; cross-language orchestration |
 | 2 | Postgres + pgvector (single store) | Relational + vectors together; correct multi-tenant setup |
-| 3 | **Physical** tenant isolation via **RLS** (ADR #16) | A `WHERE` bug must not leak data across customers; schema-per-tenant rejected |
-| 4 | API keys on 2 axes (environment × scope) | `publishable` (widget, domain-locked) vs `secret` (server-side) |
-| 5 | Widget **domain ownership proof** | `Origin` check alone is forgeable; DNS TXT / `.well-known` |
-| 6 | BYOK encrypted at rest | Customer pays their own LLM; platform never sees/bills it |
+| 3 | API keys on 2 axes (environment × scope) | `publishable` (widget, domain-locked) vs `secret` (server-side) |
+| 4 | Widget security = two layers (Origin + **domain ownership proof**) | `Origin` check alone is forgeable; DNS TXT / `.well-known` |
+| 5 | BYOK encrypted at rest | Customer pays their own LLM; platform never sees/bills it |
+| 6 | Guardrails — phased | Prompt scoping + I/O filtering first (F3); `moderation-adapters` later (F4) |
 | 7 | `/ingest` asynchronous (job + polling) | Embeddings are CPU-bound |
-| 8 | Standalone from `xctx` | Keeps `xctx` a clean, separate showcase |
-| 9 | LLM in two modes — Managed (default) + BYOK | Managed = wallet; margin = routing spread (no markup); BYOK = zero financial risk |
-| 10 | Embeddings always managed (never BYOK) | Cost is tiny (~$0.02/1M tok); managed = better UX, baked into plan |
-| 11 | Metering local in `llm-adapters` | Immediate + uniform across providers → enables real-time hard cap |
+| 8 | Conversation/Message persisted from F1 | History + per-message metering substrate + ticketing/quality-metrics hook |
+| 9 | LLM in two modes — Managed (default) + BYOK | Managed = wallet; margin = routing spread (no markup); BYOK = Enterprise-only add-on |
+| 10 | Embeddings always managed (never BYOK) | Cost is tiny; managed = better UX, baked into plan capacity (`PRICING/embeddings.md` §1.3) |
+| 11 | Metering local in `llm-adapters` | Lib **computes** tokens; product **persists** usage → real-time hard cap |
 | 12 | Stripe primary + `PaymentProvider` abstraction | Wallet auto-recharge + plug BR gateways (PIX) later without touching billing |
 | 13 | Managed-first positioning | Managed default on every tier; **BYOK = Enterprise-only paid add-on** |
-| 14 | Model routing / cascading (F4+) | Cheap model under the hood → second margin stream on the anchor price |
+| 14 | Model routing / cascading (F4+) | Cheap model under the hood → routing spread is the margin |
 | 15 | Incremental re-embed by chunk | Diff per chunk hash → keeps effective K ~1–2, bounds worst-case cost |
-| 16 | Tenant isolation via Postgres RLS | Pragmatic, pgvector-friendly; schema-per-tenant multiplies migrations/connections |
+| 16 | Tenant isolation via Postgres RLS | Physical isolation by `tenant_id`; schema-per-tenant rejected |
 | 17 | Embedding parity is a runtime invariant | Same model/dim/normalization on both sides or retrieval degrades silently |
-| 18 | Conversation/Message persisted from F1 | History + per-message metering substrate + ticketing/quality-metrics hook |
+| 18 | Ingestion job contract (the "sacred seam") | Versioned API↔worker job contract validated on both Node and Python sides |
 
-Full rationale lives in `PLAN.md` → *Decisions (feature ADRs)*.
+Full rationale lives in `adr/` (source of truth); `PLAN.md` indexes them.
 
 
 ---

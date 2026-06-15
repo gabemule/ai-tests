@@ -82,6 +82,13 @@ generation. We're strong exactly where they're weak (grounded RAG) and absent wh
   **email fallback** when a human is needed but none is online. Builds on `02`/`03`.
 
 > **Build order:** `02 → 03 → 04 → 09` (each builds on the prior); `01` (channels) is independent.
+>
+> **Note on 02 ↔ 03 (mutual coupling):** `02-agent-console` and `03-ticketing` reference each other —
+> the console *consumes* the ticket lifecycle, and the lifecycle is *born from* the handoff flow. They
+> co-evolve: **02 introduces the minimal ticket states** it needs (`queued`/`with_agent`/`closed`),
+> and `03` then fleshes out the full lifecycle (reopen, tags, close reason, audit) that `04` derives
+> metrics from. Read "02 → 03" as "start with 02 carrying minimal states, then complete 03", not as a
+> strict one-way dependency.
 
 
 ---

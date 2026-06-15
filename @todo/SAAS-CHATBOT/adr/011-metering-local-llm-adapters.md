@@ -1,4 +1,4 @@
-# ADR 011 — Metering is local in `llm-adapters` (source of truth)
+# ADR 011 — Token counting is local in `llm-adapters`; the product persists usage
 
 **Status:** Accepted · 2026-06-14
 
@@ -6,20 +6,30 @@
 
 Managed billing (ADR 009) needs a meter that is immediate (to enforce a real-time hard cap) and
 uniform across providers. Provider usage APIs are delayed and provider-specific, so they can't be the
-primary meter.
+primary meter. At the same time, the **graduation discipline** (see `CONTEXT.md`) requires the
+adapter libraries to stay **decoupled from product domain concepts** (tenant, bot, wallet) so the
+extraction to a dedicated repo stays mechanical — so the adapter must **not** own product persistence.
 
 ## Decision
 
-**Local metering in `llm-adapters` is the source of truth.** Every request counts input/output tokens
-from the provider response and writes `usage` per tenant/bot/message — **immediate** (enables
-real-time hard cap) and **uniform** (same code across all providers, Managed or BYOK).
+Split the meter into a **library** half and a **product** half:
+
+- **`llm-adapters` computes the count (source of truth for the number).** Every request derives
+  input/output tokens from the provider response — **immediate** (enables a real-time hard cap) and
+  **uniform** (same code across all providers, Managed or BYOK). The library returns the counts; it
+  is **pure/agnostic** and knows nothing about tenant/bot/wallet.
+- **The product persists `usage`.** Our backend (the "usage logger") writes the per-tenant/bot/message
+  `usage` rows to **Supabase/Postgres** from the counts the adapter returns. Domain mapping
+  (tenant/bot) and persistence live in the **product**, never in the library.
 
 A **per-tenant provider sub-key** (where supported, e.g. OpenAI Projects) is a **secondary** layer
 only: blast-radius isolation + monthly reconciliation against the provider invoice. Not the meter.
 
 ## Consequences
 
-- Elevates `llm-adapters` from "a wrapper" to the platform's **governance/metering point**.
+- Elevates `llm-adapters` to the platform's **token-counting point** while keeping it free of product
+  domain concepts → graduation stays mechanical (CONTEXT.md "Graduation discipline").
+- The product's usage logger is the system of record for billing; it consumes the adapter's counts.
 - Enables the wallet hard cap to block the *next* request the instant balance/cap is reached
   (`PRICING/billing.md` §4.1 / §5).
 

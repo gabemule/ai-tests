@@ -16,6 +16,7 @@ Blocker: none.
 ### Phase 1 — MVP
 - [ ] `chatbot-api` NestJS skeleton + project setup
 - [ ] `chatbot-ingestion-worker` Python skeleton + job handoff from the API
+- [ ] **Ingestion job contract** (ADR #18): explicit, versioned schema for the API↔worker job, validated on **both** the Node (enqueue) and Python (consume) sides
 - [ ] Postgres + pgvector provisioned (local docker)
 - [ ] Basic auth + single org (no RBAC)
 - [ ] Document upload endpoint (`.txt`, `.md`, `.html`, native-text `.pdf`)
@@ -26,12 +27,22 @@ Blocker: none.
 - [ ] Chat endpoint (SSE) via `llm-adapters` (Node) with retrieved context
 - [ ] `chatbot-widget` v0: script + basic chat UI (single hardcoded domain)
 
+### Phase 1 — Acceptance gates (the ADR "Consequences" made verifiable)
+> These are not features — they are the **tests** the F1 ADRs require. Each maps to an ADR's
+> Acceptance clause; F1 is not "done" until they pass.
+- [ ] **RLS leak test** (ADR #16): two interleaved A/B requests over the **same** pooled connection never read each other's rows; a query with no `app.tenant_id` set returns **zero** rows (fail-closed)
+- [ ] **Embedding parity test** (ADR #17): build fails if Python ingestion and Node query resolve to different model/dim/normalization; + migration test that old `embedding_version` rows are detected and re-embedded, not queried across spaces
+- [ ] **Ingest idempotency + DLQ + signature** (ADR #7): a redelivered job produces **no** duplicate chunks; a permanently failing job lands in the DLQ + document `failed`; an unsigned QStash payload is rejected
+- [ ] **Conversation windowing/summary** (ADR #8): a very long conversation still produces a prompt under the model's context budget via a bounded window + running summary
+- [ ] **BYOK at-rest check** (ADR #5): stored `byok_llm_key` is ciphertext (no plaintext at rest); logs never contain the key
+
 
 ### Phase 2 — Multi-tenant platform
 - [ ] Multi-org + bots data model
-- [ ] RBAC roles (owner / admin / editor / viewer)
+- [ ] RBAC roles (owner / admin / editor / viewer) — leave room for a future `agent` actor without migration (`FUTURE/02`)
 - [ ] API keys: sandbox/production × secret/publishable (+ rotation/revocation)
 - [ ] Usage counter (messages, tokens, docs) per tenant/bot
+- [ ] **Incremental re-embed by chunk** (ADR #15): on document re-upload, diff per chunk hash → delete changed chunks' old vectors → embed only the new ones (effective K ~1–2)
 - [ ] Widget domain validation (allowlist + ownership proof: DNS TXT / `.well-known`)
 - [ ] `chatbot-portal` (Next.js) screens for orgs/bots/docs/keys
 - [ ] **Metering in shadow mode** — record usage + reconcile vs. provider invoice, no charging yet (gate for F4 billing; validate the meter before money depends on it)
