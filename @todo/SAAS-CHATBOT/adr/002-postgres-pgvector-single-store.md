@@ -18,5 +18,5 @@ the simplest correct multi-tenant vector setup and keeps one source of truth.
 - Tenant isolation is enforced in the same store via Row-Level Security (ADR 016).
 - Object storage (S3-compatible / Supabase Storage) is still used for **raw uploaded files**; only
   parsed chunks + vectors land in pgvector.
-- Scaling is handled by graduating Postgres compute tiers (see `PRICING.md` §1.1/§1.2), not by
+- Scaling is handled by graduating Postgres compute tiers (see `PRICING/infrastructure.md` §1.1/§1.2), not by
   adding a separate vector service.

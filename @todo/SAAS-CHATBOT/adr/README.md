@@ -2,7 +2,7 @@
 
 > Source of truth for the platform's architecture & product decisions. One file per ADR.
 > `PLAN.md`, `ARCHITECTURE.md` and `CONTEXT.md` **reference** these by number — they do not
-> restate them. Economic rationale (price/margin) lives in `PRICING.md`; billing ADRs link to it.
+> restate them. Economic rationale (price/margin) lives in `PRICING/`; billing ADRs link to it.
 > Last updated: 2026-06-14
 
 ## Format

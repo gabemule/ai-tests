@@ -21,3 +21,17 @@ burden at scale, whereas RLS is the pragmatic, pgvector-friendly default.
 - The `tenant_id` must be set per request in a way that survives connection pooling (transaction-local
   session variable, pooler in transaction mode) — a critical correctness detail to validate with a
   leak test.
+
+## Implementation contract (F1)
+
+- Set the tenant **transaction-locally** at the start of every request's transaction:
+  `set_config('app.tenant_id', $1, true)` (or `SET LOCAL`) — the `true` keeps it local to the
+  current transaction, so it can't bleed into the next request on a reused pooled connection.
+- Run the pooler in **transaction mode** (PgBouncer/Supabase) so a connection is held only for the
+  duration of a transaction, never across requests.
+- RLS policy is **default-deny / fail-closed**: when `app.tenant_id` is unset the policy matches
+  **zero** rows (never all rows).
+- **Acceptance (leak test):** two interleaved requests for tenant A and B over the **same** pooled
+  connection never read each other's rows; and a query with no `app.tenant_id` set returns **zero**
+  rows.
+

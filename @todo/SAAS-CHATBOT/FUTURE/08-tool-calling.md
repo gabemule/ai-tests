@@ -83,4 +83,4 @@ both bounded by timeouts/limits. No new always-on infra.
 - How aggressively to let the model chain multiple tool calls (agent loop depth, cost ceiling).
 - Auth variety: API key vs. OAuth vs. signed requests — how much to support at first.
 - When (if) to allow **write** actions and what the human-confirmation gate looks like.
-- Pricing gate: tool calling likely a Business/Enterprise feature — update `../PRICING.md` when mature.
+- Pricing gate: tool calling likely a Business/Enterprise feature — update `../PRICING/plans.md` when mature.

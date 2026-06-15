@@ -38,7 +38,7 @@ tickets, SLA dashboards) is **parity we must have, not the thing that sets us ap
 ### In our favor (the actual moat)
 
 - **RAG-first, grounded answers** — answering from the customer's own content is our **core**, not a
-  shallow add-on. In the suites, AI is a bolt-on (often a separate paid saldo — see `../PRICING.md`
+  shallow add-on. In the suites, AI is a bolt-on (often a separate paid saldo — see `../PRICING/market.md`
   §2.3: Zenvia gates IA above R$600, Tallos sells it as prepaid saldo, Leadster locks it behind a
   higher tier).
 - **Deep AI configurability** — knowledge base management, prompt modes, scoring/RAG tuning, BYOK vs.
@@ -47,9 +47,9 @@ tickets, SLA dashboards) is **parity we must have, not the thing that sets us ap
   suites are thin (they treat AI as a shallow add-on).
 - **Managed/BYOK pricing** — IA at a **simple, predictable per-message price** (Managed) or owned by
   the customer (BYOK), with a **transparent consumption dashboard**. The incumbents bury or meter AI
-  opaquely (separate saldo / higher tiers — see `../PRICING.md` §2.3).
+  opaquely (separate saldo / higher tiers — see `../PRICING/market.md` §2.3).
 - **Self-serve + price** — transparent ladder **R$99–R$599 (Free R$0)** vs. their entry tickets **R$579–R$2.100**
-  and "sob consulta" enterprise gating (`../PRICING.md` §2.3).
+  and "sob consulta" enterprise gating (`../PRICING/market.md` §2.3).
 - **PIX** (1.19%, ADR #12) — a BR margin/conversion lever none of the benchmarked tools advertise.
 
 ## Parity, not moat (the minimum to compete)

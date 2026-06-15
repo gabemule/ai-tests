@@ -1,3 +1,24 @@
+# PRICING — OpenRouter per-token cost (SSOT for model prices)
+
+> Part of PRICING/. Companion to PRICING/README.md. Last updated: 2026-06-14.
+>
+> 🔁 **Single source of truth (SSOT) for model prices.** `models.md`, `embeddings.md` and the
+> simulations elsewhere in PRICING/ **derive** their numbers from here. Moved from `../ANALYSIS/`
+> (it's live price data, the raw material PRICING consumes — not a support analysis like
+> `model-benchmark.md`/`infra.md`, which stay in `../ANALYSIS/`).
+>
+> **Live tooling lives in `extract/`** (code is kept out of the doc root):
+> - `extract/fetch-openrouter-pricing.sh` — re-fetches live prices → `openrouter-pricing.json` (+ `.js`
+>   companion + a dated snapshot under `extract/snapshots/`).
+> - `extract/openrouter-pricing.html` — dashboard over the JSON (filters, sort, price buckets,
+>   NEW/PROMO badges, "Newest" tab). Open it straight from `file://`.
+> - Re-run `bash extract/fetch-openrouter-pricing.sh` to refresh, then update the tables below.
+>
+> See `sources.md` for the per-model revalidation links and `VALIDATION-PROMPTS.md` for the
+> re-validation prompt.
+
+---
+
 # Análise Financeira 2026 — Custos Operacionais de Modelos de IA
 
 Versão: Junho/2026
@@ -34,20 +55,23 @@ Exemplo:
 
 # Preços Utilizados
 
-Valores por 1 milhão de tokens.
+Valores por 1 milhão de tokens. **Re-validados ao vivo na OpenRouter em 2026-06-14** (via
+`extract/fetch-openrouter-pricing.sh`). Preços flutuam e há promos embutidas — re-audite mensalmente.
 
-| Modelo          |   Input |  Output |
-| --------------- | ------: | ------: |
-| DeepSeek V3.2   | $0.2288 | $0.3432 |
-| DeepSeek V4 Pro |  $0.435 |   $0.87 |
-| Qwen3.6 Plus    |  $0.325 |   $1.95 |
-| Kimi K2.6       |  $0.684 |   $3.42 |
-| Sonnet 4.5      |      $3 |     $15 |
-| Sonnet 4.6      |      $3 |     $15 |
-| Opus 4.6        |      $5 |     $25 |
-| Opus 4.7        |      $5 |     $25 |
-| Opus 4.8        |      $5 |     $25 |
-| GPT-5.5*        |      $5 |     $30 |
+| Modelo          |   Input |  Output | Nota |
+| --------------- | ------: | ------: | ---- |
+| DeepSeek V3.2   | $0.2288 | $0.3432 | mais barato competente |
+| DeepSeek V4 Pro |  $0.435 |   $0.87 | econômico (15% do mix) |
+| Qwen3.6 Plus    |  $0.325 |   $1.95 | principal da análise anterior |
+| **Qwen3.7 Plus** |  **$0.40** |   **$1.60** | **novo principal (80% do mix)** · promo: $0.32/$1.28 |
+| Qwen3.7 Max     |   $2.50 |   $7.50 | flagship Qwen · promo: $1.25/$3.75 |
+| Kimi K2.6       |  $0.684 |   $3.42 | forte coding/UI |
+| Sonnet 4.5      |      $3 |     $15 | âncora alternativa |
+| Sonnet 4.6      |      $3 |     $15 | **âncora de preço** |
+| Opus 4.6        |      $5 |     $25 | premium (caro) |
+| Opus 4.7        |      $5 |     $25 | premium (caro) |
+| Opus 4.8        |      $5 |     $25 | premium (caro) |
+| GPT-5.5*        |      $5 |     $30 | mais caro |
 
 *Valor aproximado devido à variação entre providers.
 
@@ -64,7 +88,9 @@ Fórmula:
 | DeepSeek V3.2   |      $0.286 |
 | DeepSeek V4 Pro |      $0.652 |
 | Qwen3.6 Plus    |      $1.137 |
+| **Qwen3.7 Plus** |      **$1.00** |
 | Kimi K2.6       |      $2.052 |
+| Qwen3.7 Max     |       $5.00 |
 | Sonnet 4.6      |          $9 |
 | Opus 4.8        |         $15 |
 | GPT-5.5         |       $17.5 |
@@ -78,6 +104,7 @@ Fórmula:
 | DeepSeek V3.2   |  $28.60 |
 | DeepSeek V4 Pro |  $65.25 |
 | Qwen3.6 Plus    | $113.75 |
+| Qwen3.7 Plus    | $100.00 |
 | Kimi K2.6       | $205.20 |
 | Sonnet 4.6      |    $900 |
 | Opus 4.8        |  $1.500 |
@@ -92,6 +119,7 @@ Fórmula:
 | DeepSeek V3.2   |   $143 |
 | DeepSeek V4 Pro |   $326 |
 | Qwen3.6 Plus    |   $569 |
+| Qwen3.7 Plus    |   $500 |
 | Kimi K2.6       | $1.026 |
 | Sonnet 4.6      | $4.500 |
 | Opus 4.8        | $7.500 |
@@ -106,6 +134,7 @@ Fórmula:
 | DeepSeek V3.2   |    $286 |
 | DeepSeek V4 Pro |    $652 |
 | Qwen3.6 Plus    |  $1.138 |
+| Qwen3.7 Plus    |  $1.000 |
 | Kimi K2.6       |  $2.052 |
 | Sonnet 4.6      |  $9.000 |
 | Opus 4.8        | $15.000 |
@@ -122,6 +151,7 @@ Escala SaaS média.
 | DeepSeek V3.2   |  $1.430 |
 | DeepSeek V4 Pro |  $3.262 |
 | Qwen3.6 Plus    |  $5.688 |
+| Qwen3.7 Plus    |  $5.000 |
 | Kimi K2.6       | $10.260 |
 | Sonnet 4.6      | $45.000 |
 | Opus 4.8        | $75.000 |
@@ -138,6 +168,7 @@ Escala SaaS relevante.
 | DeepSeek V3.2   |   $2.860 |
 | DeepSeek V4 Pro |   $6.525 |
 | Qwen3.6 Plus    |  $11.375 |
+| Qwen3.7 Plus    |  $10.000 |
 | Kimi K2.6       |  $20.520 |
 | Sonnet 4.6      |  $90.000 |
 | Opus 4.8        | $150.000 |
@@ -153,6 +184,7 @@ Escala SaaS relevante.
 | --------------- | -------: |
 | DeepSeek V3.2   |    96.8% |
 | DeepSeek V4 Pro |    92.7% |
+| Qwen3.7 Plus    |    88.9% |
 | Qwen3.6 Plus    |    87.3% |
 | Kimi K2.6       |    77.2% |
 
@@ -164,6 +196,7 @@ Escala SaaS relevante.
 | --------------- | -------: |
 | DeepSeek V3.2   |   $8.714 |
 | DeepSeek V4 Pro |   $8.348 |
+| Qwen3.7 Plus    |   $8.000 |
 | Qwen3.6 Plus    |   $7.862 |
 | Kimi K2.6       |   $6.948 |
 
@@ -177,6 +210,7 @@ Escala SaaS relevante.
 | --------------- | -------: |
 | DeepSeek V3.2   |  $14.714 |
 | DeepSeek V4 Pro |  $14.348 |
+| Qwen3.7 Plus    |  $14.000 |
 | Qwen3.6 Plus    |  $13.862 |
 | Kimi K2.6       |  $12.948 |
 
@@ -206,6 +240,11 @@ Essa métrica favorece brutalmente modelos baratos.
 
 Ela não mede qualidade absoluta.
 
+> **Nota:** Qwen3.7 Plus/Max ainda não têm score de qualidade em `../ANALYSIS/model-benchmark.md`
+> (são mais novos que o benchmark) — por isso ficam fora desta tabela de ROI. São exatamente os
+> modelos que a aba **Newest** da tooling (`extract/openrouter-pricing.html`) destaca e que precisam
+> ser benchmarkados (ver PROMPT 3 no `../VALIDATION-PROMPTS.md`).
+
 ---
 
 # Custos por Desenvolvedor
@@ -226,6 +265,7 @@ Consumo:
 | DeepSeek V3.2   |           $28 |
 | DeepSeek V4 Pro |           $65 |
 | Qwen3.6 Plus    |          $113 |
+| Qwen3.7 Plus    |          $100 |
 | Kimi K2.6       |          $205 |
 | Sonnet 4.6      |          $900 |
 | Opus 4.8        |        $1.500 |
@@ -242,6 +282,7 @@ Uso pesado.
 | DeepSeek V3.2   |         $286 |
 | DeepSeek V4 Pro |         $652 |
 | Qwen3.6 Plus    |       $1.138 |
+| Qwen3.7 Plus    |       $1.000 |
 | Kimi K2.6       |       $2.052 |
 | Sonnet 4.6      |       $9.000 |
 | Opus 4.8        |      $15.000 |
@@ -263,7 +304,7 @@ Uso pesado.
 
 80%
 
-* Qwen3.6 Plus
+* Qwen3.7 Plus *(novo principal — substitui Qwen3.6 Plus da análise anterior)*
 
 ---
 
@@ -283,13 +324,13 @@ Volume:
 
 Distribuição:
 
-800M → Qwen3.6 Plus
+800M → Qwen3.7 Plus
 150M → DeepSeek V4 Pro
 50M → Sonnet 4.6
 
 Resultado:
 
-≈ $1.770/mês
+≈ $1.348/mês *(mix Option B a $1.35/1M — ver `models.md` §1.5 / §8.2)*
 
 Comparação:
 
@@ -299,7 +340,7 @@ $9.000/mês
 
 Economia:
 
-≈ 80%
+≈ 85%
 
 ---
 
@@ -333,13 +374,13 @@ Isso maximiza margem sem perder qualidade perceptível para a maioria dos usuár
 
 Os números mostram algo importante:
 
-O salto de qualidade entre Sonnet 4.6 e Qwen3.6 Plus é relativamente pequeno.
+O salto de qualidade entre Sonnet 4.6 e Qwen3.7 Plus é relativamente pequeno.
 
 O salto de custo é gigantesco.
 
 Para produtos comerciais, agentes e SaaS:
 
-Qwen3.6 Plus e DeepSeek V4 Pro são atualmente os modelos com melhor retorno financeiro do mercado.
+Qwen3.7 Plus e DeepSeek V4 Pro são atualmente os modelos com melhor retorno financeiro do mercado.
 
 Para trabalho crítico de engenharia:
 

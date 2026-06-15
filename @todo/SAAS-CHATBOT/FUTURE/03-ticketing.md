@@ -55,5 +55,5 @@ pay for; no new service. The cost here is **build effort**, not servers.
 
 - Auto-close policy (timeout after `resolved` with no reply?).
 - Tagging taxonomy: free tags vs. tenant-defined categories.
-- Retention/export of ticket history (compliance, LGPD) — tie to storage in `../PRICING.md`/infra.
+- Retention/export of ticket history (compliance, LGPD) — tie to storage in `../PRICING/infrastructure.md`.
 - Whether tickets are exposed via API for tenants who want to sync to their own systems.

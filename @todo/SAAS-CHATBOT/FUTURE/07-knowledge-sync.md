@@ -40,7 +40,7 @@ source change (push webhook OR poll delta)
 ```
 
 It's **incremental** — we never re-index the whole base, only the changed document. Cost = the
-re-embedding tokens for what changed (cheap; embeddings are ~$0.02/1M tokens — see `../PRICING.md`
+re-embedding tokens for what changed (cheap; embeddings are ~$0.02/1M tokens — see `../PRICING/embeddings.md`
 §1.3), reusing the existing Python ingestion worker + job queue.
 
 > **Re-embed at the chunk level, not the document level** (`../PLAN.md` ADR #15). When a doc changes
@@ -48,7 +48,7 @@ re-embedding tokens for what changed (cheap; embeddings are ~$0.02/1M tokens —
 > new ones. A 2MB doc where one paragraph changed re-embeds ~a few KB, not 2MB — keeping the
 > *effective* reingestion volume (K) at ~1–2 in real use.
 >
-> **This sync is bounded by the per-plan reingestion budget** (`../PRICING.md` §6.1): `K × storage`
+> **This sync is bounded by the per-plan reingestion budget** (`../PRICING/plans.md` §6.1): `K × storage`
 > per month, launched cautiously at **K=3** (ceiling 5×). The **min sync cadence** per plan (Pro 24h
 > / Business 1h-webhook) is the front-line guard — it caps how often a source can trigger a re-embed,
 > so the budget is rarely the binding limit. On hitting the budget we **degrade** (pause re-embeds
@@ -105,4 +105,4 @@ Re-embedding runs on the existing worker; cost is tokens-only for changed docs.
 - Deletion semantics: when a source file is deleted, do we purge its chunks automatically?
 - OAuth scopes & consent friction (Drive read-only scope) and token refresh/expiry handling.
 - Sheets/tabular: when is a sheet "document-like" (embed) vs. "data" (route to `08`)?
-- Pricing gate: connectors likely a Business/Enterprise feature — update `../PRICING.md` when mature.
+- Pricing gate: connectors likely a Business/Enterprise feature — update `../PRICING/plans.md` when mature.

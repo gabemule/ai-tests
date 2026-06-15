@@ -41,4 +41,4 @@ channels behind one interface, same Hexagonal pattern as `llm-adapters` / `embed
   later a human agent, see `02-agent-console.md`) can reply.
 
 - Per-tenant WhatsApp number provisioning & onboarding friction.
-- Pricing: is channel delivery a paid add-on or bundled into higher tiers? (update `../PRICING.md`).
+- Pricing: is channel delivery a paid add-on or bundled into higher tiers? (update `../PRICING/plans.md`).

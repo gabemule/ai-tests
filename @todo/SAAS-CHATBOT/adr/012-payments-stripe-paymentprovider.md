@@ -13,11 +13,11 @@ for plans, in USD & BRL. The BR market also wants PIX/boleto, which Stripe cover
   idempotency keys.
 - **All payment logic sits behind a `PaymentProvider` interface** so we can plug
   **Mercado Pago / Pagar.me (Stone) + PIX** for BR later without touching billing logic. See
-  `PRICING.md` §9.
+  `PRICING/billing.md` §9.
 
 ## Consequences
 
 - PIX (1.19%, no fixed fee) is a real BR margin/conversion lever vs. card (3.99% + R$0.39) — adding
-  it via the abstraction pays for itself on BR volume (`PRICING.md` §1.1 / §7).
+  it via the abstraction pays for itself on BR volume (`PRICING/infrastructure.md` §1.1 / `PRICING/plans.md` §7).
 - Charge idempotency keys are mandatory to avoid double-charging an auto-recharge trigger
-  (`PRICING.md` §4.2).
+  (`PRICING/billing.md` §4.2).

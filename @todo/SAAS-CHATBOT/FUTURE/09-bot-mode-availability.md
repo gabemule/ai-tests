@@ -126,4 +126,4 @@ pick branch). Presence already comes from `02` (Supabase Realtime). The only out
 - **Email fallback UX** — inline form (capture message + send for the user) vs. just showing the
   address; tie to lead/contact capture.
 - **Pricing gate** — scheduling + hybrid priority likely a **Business/Enterprise** feature; `ai`/
-  `off` available to all. Update `../PRICING.md` when mature.
+  `off` available to all. Update `../PRICING/plans.md` when mature.

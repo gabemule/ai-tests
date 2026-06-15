@@ -109,13 +109,13 @@ erDiagram
     ORGANIZATION ||--o{ MEMBER : has
     ORGANIZATION ||--o{ API_KEY : owns
     ORGANIZATION ||--o{ BOT : owns
+    ORGANIZATION ||--o{ WALLET_ENTRY : "prepaid ledger"
     BOT ||--o{ ALLOWED_DOMAIN : allows
     BOT ||--o{ DOCUMENT : "knowledge source"
     DOCUMENT ||--o{ CHUNK : "split into"
     CHUNK ||--|| EMBEDDING : "vectorized as"
     BOT ||--o{ CONVERSATION : "chats"
     CONVERSATION ||--o{ MESSAGE : "contains"
-
 
     ORGANIZATION {
         uuid id PK
@@ -126,7 +126,7 @@ erDiagram
         uuid id PK
         uuid org_id FK
         string email
-        string role "owner|admin|editor|viewer"
+        string role "owner|admin|editor|viewer (agent reserved, FUTURE/02)"
     }
     API_KEY {
         uuid id PK
@@ -166,6 +166,10 @@ erDiagram
         uuid chunk_id FK
         vector embedding "pgvector"
         uuid tenant_id "isolation key"
+        string embedding_model "identity: parity invariant (ADR #17)"
+        int embedding_dim
+        bool embedding_normalized
+        int embedding_version "bump on model change → re-embed on mismatch (ADR #15)"
     }
     CONVERSATION {
         uuid id PK
@@ -183,7 +187,17 @@ erDiagram
         int tokens_out
         timestamp created_at
     }
+    WALLET_ENTRY {
+        uuid id PK
+        uuid org_id FK
+        string type "credit|debit|hold|release"
+        string idempotency_key "dedupe charges + ledger writes"
+        bigint amount "balance = derived sum; never mutated in place"
+        string reason
+        timestamp created_at
+    }
 ```
+
 
 > **Tenant isolation is physical** — rows are scoped per tenant via **Postgres
 > Row-Level Security (RLS)** by `tenant_id` (ADR #16; schema-per-tenant rejected), not
@@ -191,7 +205,7 @@ erDiagram
 > across tenants.
 
 > **Conversation/Message persisted from F1** (ADR #8) — gives chat history, the substrate
-> for per-message metering (`PRICING.md` §5), and the hook for future ticketing /
+> for per-message metering (`PRICING/billing.md` §5), and the hook for future ticketing /
 > quality-metrics (`FUTURE/03`–`04`) without retrofitting the data model.
 
 
@@ -266,6 +280,13 @@ sequenceDiagram
 
 The retrieved context comes **only** from that tenant/bot's documents; the LLM call
 goes out with the **customer's own key** (BYOK) — the platform never sees nor bills it.
+
+> **Managed mode — real-time hard cap on the stream (ADR #11):** before each generation
+> the API derives an **affordable `max_tokens`** from the wallet's remaining balance at the
+> anchor price and caps the provider call, so no single streamed answer can drive the
+> balance negative. It pairs with the wallet **reserve/hold** (`WALLET_ENTRY`,
+> `PRICING/billing.md` §4.1): reserve the estimated cost up front, reconcile to actual on
+> completion. A stream that hits the cap stops cleanly with a "limit reached".
 
 ---
 

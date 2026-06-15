@@ -1,6 +1,6 @@
 # SAAS-CHATBOT — Future / Market Opportunities
 
-> Companion to `../PLAN.md` (roadmap/decisions), `../PRICING.md` (benchmark §2) and
+> Companion to `../PLAN.md` (roadmap/decisions), `../PRICING/market.md` (benchmark §2) and
 > `../ARCHITECTURE.md` (components). This folder holds **market-adjacency and product-extension
 > ideas** — strategic direction, **not committed scope**. One file per opportunity.
 > Last updated: 2026-06-14
@@ -32,7 +32,7 @@
 - **Our core = a pluggable "knowledge brain" (RAG-on-docs).** We answer with grounding in the
   customer's own content, at a **simple, predictable per-message price** (Managed) or BYOK.
 - **The BR incumbents' niche = omnichannel "central de atendimento".** Zenvia, Blip, Movidesk
-  and Tallos sell a full operation: official channels + human agents + CRM (see `../PRICING.md` §2.3).
+  and Tallos sell a full operation: official channels + human agents + CRM (see `../PRICING/market.md` §2.3).
 - **Strategy:** be the **best RAG brain** and **connect to the channels / human ops** — *not* become
   a heavyweight support suite. We harvest part of their larger ticket by **reusing our RAG engine on
   both sides** (the bot *and* the human agent), without inheriting telephony/CRM/ITSM cost.
@@ -103,7 +103,7 @@ We explicitly do **not** plan to become:
 
 Short answer: **no — mostly reuse of the stack we already pay for.** The only genuinely *new*
 component is real-time transport (WebSocket), and we've **decided to use Supabase Realtime** for it.
-Anchored on `../PRICING.md` §1.2.
+Anchored on `../PRICING/infrastructure.md` §1.2.
 
 | Feature | New infra? | Where it fits | Incremental cost |
 |---|---|---|---|
@@ -119,7 +119,7 @@ Anchored on `../PRICING.md` §1.2.
 > of online agents, not millions). Revisit only if Supabase Realtime limits become a bottleneck.
 
 > **Bottom line:** these features weigh more on the **roadmap (build effort)** than on the **infra
-> bill**. The ~94–96% margin profile in `../PRICING.md` stays valid.
+> bill**. The ~94–96% margin profile in `../PRICING/plans.md` stays valid.
 
 ---
 
@@ -129,4 +129,4 @@ Anchored on `../PRICING.md` §1.2.
 - What partnership / revenue-share models are realistic per player?
 - WhatsApp path: **Meta Cloud API** (direct) vs. **BSP** (Zenvia/Blip/Twilio/360dialog) — cost,
   approval friction, dependency.
-- Pricing impact: which of these are **Business/Enterprise** gates (update `../PRICING.md` when mature).
+- Pricing impact: which of these are **Business/Enterprise** gates (update `../PRICING/plans.md` when mature).

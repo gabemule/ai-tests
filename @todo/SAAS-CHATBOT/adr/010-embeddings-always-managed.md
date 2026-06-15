@@ -5,7 +5,7 @@
 ## Context
 
 Unlike chat generation, embedding cost is tiny (default Qwen3 Embedding 8B ≈ $0.01/1M tokens — see
-`PRICING.md` §1.3) and embeddings are used on **both** sides of the polyglot split (Python ingestion
+`PRICING/embeddings.md` §1.3) and embeddings are used on **both** sides of the polyglot split (Python ingestion
 + Node query). Letting tenants BYOK their embedding provider would break the parity invariant
 (ADR 017) and add UX friction for negligible savings.
 
@@ -20,4 +20,4 @@ billed per token.
 - Reinforces the parity invariant (ADR 017): one shared embedding config for both ingestion and
   query.
 - The only embedding cost that grows per tenant is **reingestion**, bounded by a per-plan budget
-  (ADR 015; `PRICING.md` §6.1 / §7.3). Query-time embedding is folded into the plan price.
+  (ADR 015; `PRICING/plans.md` §6.1 / §7.3). Query-time embedding is folded into the plan price.

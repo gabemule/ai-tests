@@ -13,8 +13,8 @@ reimplementation.
 **LLM modes:** **Managed** is the default on every tier (we hold the key, meter usage
 locally, bill a prepaid wallet at a per-message price anchored on the premium model; margin
 = routing spread, no markup — `adr/009`/`adr/013`/`adr/014`). **BYOK** is a paid
-**Enterprise-only add-on** sold on governance/compliance (`adr/009` · `PRICING.md`).
-Economic model lives in `PRICING.md`.
+**Enterprise-only add-on** sold on governance/compliance (`adr/009` · `PRICING/`).
+Economic model lives in `PRICING/`.
 
 **Incubation:** lives in `ai-tests` (incubator) while embryonic; **graduates to its own
 repo** before publish/deploy. Keep cross-package deps clean for a mechanical extraction.
@@ -74,7 +74,7 @@ repo** before publish/deploy. Keep cross-package deps clean for a mechanical ext
   retrieval degrades **silently**. The adapter parity schema does NOT protect this — it's runtime
   config; lock it in a **single shared config source** consumed by both sides.
 - **Re-embed incrementally by chunk, not by document** — see `adr/015`. Diff per chunk hash, re-embed
-  only changed chunks → effective K stays ~1–2. Reingestion budget = `K × storage` (`PRICING.md`).
+  only changed chunks → effective K stays ~1–2. Reingestion budget = `K × storage` (`PRICING/plans.md` §6.1/§7.3).
 - **Tenant isolation must be physical** — see `adr/016`. Postgres RLS scoped by `tenant_id`
   (schema-per-tenant rejected). A single filter bug = cross-tenant data leak.
 - **Widget domain validation needs ownership proof** — see `adr/004`. DNS TXT or `/.well-known/<token>`,

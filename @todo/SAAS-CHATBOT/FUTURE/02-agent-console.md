@@ -83,6 +83,16 @@ The human agent uses our RAG as a copilot, in three modes — **always human-in-
 - ✅ Consumes the **ticket lifecycle** from `03-ticketing.md` (who took it, when, resolution).
 - ❌ Heavy ITSM (complex configurable workflows, contracts/assets), telephony/IVR, CRM/campaigns.
 
+## Data-model note (decide early, implement later)
+
+The core RBAC (`../ARCHITECTURE.md` §5 `MEMBER.role = owner|admin|editor|viewer`) has **no `agent`**
+and no notion of a human operator distinct from an org member or an end user. Same reasoning as
+persisting conversations early (ADR #8): acknowledging the identity axis now avoids a painful
+data-model migration when this console lands. So when shaping the **F2 identity model**, leave room
+for an `agent`/operator identity (even if unused at launch) rather than baking a 4-role enum that
+later needs a migration. **Decision only — not built now;** acceptance is simply that introducing an
+`agent` actor later requires **no migration**.
+
 ## Infra impact
 
 Mostly **reuse** of what we already pay for (see `README.md` §5). Agent login uses Supabase Auth;
@@ -93,5 +103,5 @@ our Supabase), so live chat piggybacks on existing infra instead of a new WebSoc
 ## Open unknowns
 
 - WhatsApp: how the agent's outbound reply respects Meta's **24h window** (see `01-channels.md`).
-- Where to gate Agent Copilot in pricing (likely Business/Enterprise) — update `../PRICING.md`.
+- Where to gate Agent Copilot in pricing (likely Business/Enterprise) — update `../PRICING/plans.md`.
 - Concurrency: how many conversations one agent handles at once; assignment fairness.

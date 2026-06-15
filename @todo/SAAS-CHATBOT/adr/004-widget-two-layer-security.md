@@ -21,3 +21,14 @@ Require **two barriers** before serving the widget chat:
 - Ownership verification is a flow in the portal (F2): issue token → customer publishes it → verify.
 - Runtime hardening to consider: issue a **short-lived widget session token** at chat start rather
   than relying on the long-lived publishable key for every request.
+
+## Implementation contract (F2)
+
+- On chat start (after the Origin + ownership checks pass) issue a **short-lived signed session
+  token** (JWT, minutes-long TTL) scoped to that bot/origin; every subsequent message carries the
+  session token, **not** the raw publishable key.
+- **Rate-limit per publishable key / per session / per IP** so a leaked key can't be abused at
+  volume (ties into F3 rate limiting).
+- **Acceptance:** a stale/forged session token is rejected, and requests beyond the rate limit on
+  one key are throttled.
+

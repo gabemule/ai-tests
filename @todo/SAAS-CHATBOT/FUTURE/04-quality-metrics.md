@@ -41,5 +41,5 @@ Light and valuable — **not** the heavy SLA-policy engine of an ITSM.
 
 - Survey delivery: in-channel (widget/WhatsApp) timing and response rates.
 - How CSAT/NPS are attributed when both bot and human touched the ticket.
-- Whether metrics are a paid/dashboard feature gate (likely Business/Enterprise) — `../PRICING.md`.
+- Whether metrics are a paid/dashboard feature gate (likely Business/Enterprise) — `../PRICING/plans.md`.
 - Benchmark/aggregate across tenants (anonymized) as a future product signal.

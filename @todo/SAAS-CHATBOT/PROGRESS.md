@@ -1,6 +1,7 @@
 # SAAS-CHATBOT — Progress
 
-**Status:** 0/26 items · Phase: F1 (MVP) — not started
+**Status:** 0/29 items · Phase: F1 (MVP) — not started
+
 
 
 ## Current Focus
@@ -33,6 +34,8 @@ Blocker: none.
 - [ ] Usage counter (messages, tokens, docs) per tenant/bot
 - [ ] Widget domain validation (allowlist + ownership proof: DNS TXT / `.well-known`)
 - [ ] `chatbot-portal` (Next.js) screens for orgs/bots/docs/keys
+- [ ] **Metering in shadow mode** — record usage + reconcile vs. provider invoice, no charging yet (gate for F4 billing; validate the meter before money depends on it)
+
 
 ### Phase 3 — Governance
 - [ ] Rate limiting (per key, per tenant)
@@ -40,12 +43,17 @@ Blocker: none.
 - [ ] Guardrails / prompt security (input/output filtering, injection resistance)
 - [ ] Document types: `.docx`, `.csv`, `.xlsx`
 
+### Pre-F4 gate
+- [ ] **Validate the routing classifier** (80/15/5 mix) in measurement mode on real traffic — confirm the blended cost lands near plan (~$1.35/1M) **before** the F4 anchor price is locked (`adr/014`, `PRICING/models.md` §8 / `PRICING/README.md` §11)
+
 ### Phase 4 — GA
 - [ ] OCR for images & scanned PDFs (`ocr-adapters`)
 - [ ] URL/sitemap crawling ingestion
 - [ ] Reranking (`reranker-adapters`)
 - [ ] Billing-lite + analytics dashboards
 - [ ] Content moderation (`moderation-adapters`)
+- [ ] **Shared outbound egress guard** (SSRF/allowlist/timeout) for the tool executor + any outbound caller (`FUTURE/08`)
+
 
 ## Decisions Made During Execution
 - 2026-06-14: Project incubates in `ai-tests`; graduates to its own repo before publish/deploy.
@@ -55,10 +63,10 @@ Blocker: none.
   orchestration as a showcase. (Supersedes the earlier "FastAPI back" idea.)
 - 2026-06-14: Standalone from `xctx` (no dependency on its Embeddings API).
 - 2026-06-14: **Pricing review** — Starter $10→$19 (R$99), Business $89→$119 (R$599) to hold a ≥45%
-  worst-case margin floor. Pro unchanged ($39). See `PRICING.md` §6.
+  worst-case margin floor. Pro unchanged ($39). See `PRICING/plans.md` §6.
 - 2026-06-14: **Reingestion budget** model = `K × storage`/mo (not per-doc). Launch **K=3**, approved
   ceiling **5×**, uniform across tiers. On budget hit: degrade (pause re-embed), never block chat.
-  New `PRICING.md` §6.1 / §6.2 / §7.3 (worst-case cost-per-tenant table + K knob).
+  New `PRICING/plans.md` §6.1 / §6.2 / §7.3 (worst-case cost-per-tenant table + K knob).
 - 2026-06-14: **ADR #15 — incremental re-embed by chunk** (diff per chunk hash; re-embed only changed
   chunks) → keeps effective K ~1–2, bounds worst-case cost.
 - 2026-06-14: **Two schema concerns separated** (corrects an earlier conflation): (a) the **adapter

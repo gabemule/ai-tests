@@ -105,7 +105,7 @@ filter bug must not leak data across tenants.
 ## Decisions (feature ADRs)
 
 > Decisions live in `adr/` (source of truth) — one file per ADR, numbering stable. This table is
-> just the index; **full rationale in `adr/`**. Economic rationale (price/margin) lives in `PRICING.md`.
+> just the index; **full rationale in `adr/`**. Economic rationale (price/margin) lives in `PRICING/`.
 
 | # | Title | One-liner |
 |---|---|---|
