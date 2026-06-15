@@ -81,6 +81,8 @@ generation. We're strong exactly where they're weak (grounded RAG) and absent wh
   `hybrid` (with `ai_first`/`human_first` priority) + a per-window **availability schedule**, with an
   **email fallback** when a human is needed but none is online. Builds on `02`/`03`.
 
+> **Build order:** `02 → 03 → 04 → 09` (each builds on the prior); `01` (channels) is independent.
+
 
 ---
 

@@ -66,7 +66,7 @@ flowchart TB
     subgraph stores["Data / Infra"]
         pg[("Postgres + pgvector")]
         obj[("Object storage<br/>raw files")]
-        q[["Job queue"]]
+        q[["Job queue<br/>(Upstash QStash)"]]
     end
 
     subgraph external["External providers"]
@@ -206,7 +206,7 @@ dedicated Python worker. The NestJS API only orchestrates (enqueues + reports st
 sequenceDiagram
     actor User as Admin (portal)
     participant API as chatbot-api (NestJS)
-    participant Q as Job queue
+    participant Q as Job queue (Upstash QStash)
     participant W as ingestion-worker (Python)
     participant Emb as embedding-adapters (Python)
     participant Obj as Object storage
@@ -281,11 +281,11 @@ goes out with the **customer's own key** (BYOK) — the platform never sees nor 
 | 6 | BYOK encrypted at rest | Customer pays their own LLM; platform never sees/bills it |
 | 7 | `/ingest` asynchronous (job + polling) | Embeddings are CPU-bound |
 | 8 | Standalone from `xctx` | Keeps `xctx` a clean, separate showcase |
-| 9 | LLM in two modes — Managed (default) + BYOK | Managed = wallet + markup margin; BYOK = zero financial risk |
+| 9 | LLM in two modes — Managed (default) + BYOK | Managed = wallet; margin = routing spread (no markup); BYOK = zero financial risk |
 | 10 | Embeddings always managed (never BYOK) | Cost is tiny (~$0.02/1M tok); managed = better UX, baked into plan |
 | 11 | Metering local in `llm-adapters` | Immediate + uniform across providers → enables real-time hard cap |
 | 12 | Stripe primary + `PaymentProvider` abstraction | Wallet auto-recharge + plug BR gateways (PIX) later without touching billing |
-| 13 | Managed-first positioning | Where margin + comparable pricing live; BYOK stays advanced opt-in |
+| 13 | Managed-first positioning | Managed default on every tier; **BYOK = Enterprise-only paid add-on** |
 | 14 | Model routing / cascading (F4+) | Cheap model under the hood → second margin stream on the anchor price |
 | 15 | Incremental re-embed by chunk | Diff per chunk hash → keeps effective K ~1–2, bounds worst-case cost |
 | 16 | Tenant isolation via Postgres RLS | Pragmatic, pgvector-friendly; schema-per-tenant multiplies migrations/connections |

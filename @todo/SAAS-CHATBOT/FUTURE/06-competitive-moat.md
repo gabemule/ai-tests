@@ -48,7 +48,7 @@ tickets, SLA dashboards) is **parity we must have, not the thing that sets us ap
 - **Managed/BYOK pricing** — IA at a **simple, predictable per-message price** (Managed) or owned by
   the customer (BYOK), with a **transparent consumption dashboard**. The incumbents bury or meter AI
   opaquely (separate saldo / higher tiers — see `../PRICING.md` §2.3).
-- **Self-serve + price** — transparent ladder **R$49–R$449** vs. their entry tickets **R$579–R$2.100**
+- **Self-serve + price** — transparent ladder **R$99–R$599 (Free R$0)** vs. their entry tickets **R$579–R$2.100**
   and "sob consulta" enterprise gating (`../PRICING.md` §2.3).
 - **PIX** (1.19%, ADR #12) — a BR margin/conversion lever none of the benchmarked tools advertise.
 

@@ -14,14 +14,14 @@
 
 | ID | What | Severity | Files | Status |
 |---|---|---|---|---|
-| A1 | Drop "~20% markup" → routing-spread margin model | 🔴 | `PLAN.md`, `ARCHITECTURE.md` | [ ] |
-| A2 | BYOK = Enterprise-only paid add-on (not "advanced", not Free/Starter-only) | 🔴 | `PLAN.md`, `ARCHITECTURE.md`, `CONTEXT.md` | [ ] |
-| A3 | Managed = default on **every** tier (incl. Free) | 🟡 | `PLAN.md` | [ ] |
-| A4 | Rewrite `CONTEXT.md` lean: Managed + wallet + metering + routing; reference `adr/` | 🔴 | `CONTEXT.md` | [ ] |
-| A5 | Fix price ladder "R$49–R$449" → real plans (Free R$0 · R$99–R$599) | 🟡 | `FUTURE/06-competitive-moat.md` | [ ] |
-| A6 | Name the queue (Upstash QStash) + align future-adapter inventory | 🟢 | `ARCHITECTURE.md`, `CONTEXT.md` | [ ] |
-| A7 | Pin FUTURE build order (02 → 03 → 04 → 09) | 🟢 | `FUTURE/README.md` | [ ] |
-| A8 | Slim `PLAN.md` "Decisions (feature ADRs)" → index table linking `adr/` | 🟢 | `PLAN.md` | [ ] |
+| A1 | Drop "~20% markup" → routing-spread margin model | 🔴 | `PLAN.md`, `ARCHITECTURE.md` | [x] |
+| A2 | BYOK = Enterprise-only paid add-on (not "advanced", not Free/Starter-only) | 🔴 | `PLAN.md`, `ARCHITECTURE.md`, `CONTEXT.md` | [x] |
+| A3 | Managed = default on **every** tier (incl. Free) | 🟡 | `PLAN.md` | [x] |
+| A4 | Rewrite `CONTEXT.md` lean: Managed + wallet + metering + routing; reference `adr/` | 🔴 | `CONTEXT.md` | [x] |
+| A5 | Fix price ladder "R$49–R$449" → real plans (Free R$0 · R$99–R$599) | 🟡 | `FUTURE/06-competitive-moat.md` | [x] |
+| A6 | Name the queue (Upstash QStash) + align future-adapter inventory | 🟢 | `ARCHITECTURE.md`, `CONTEXT.md` | [x] |
+| A7 | Pin FUTURE build order (02 → 03 → 04 → 09) | 🟢 | `FUTURE/README.md` | [x] |
+| A8 | Slim `PLAN.md` "Decisions (feature ADRs)" → index table linking `adr/` | 🟢 | `PLAN.md` | [x] |
 
 ---
 

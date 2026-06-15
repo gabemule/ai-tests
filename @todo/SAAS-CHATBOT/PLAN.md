@@ -104,79 +104,28 @@ filter bug must not leak data across tenants.
 
 ## Decisions (feature ADRs)
 
-1. **NestJS API + Python ingestion worker + Next.js front (polyglot split)** — the API is
-   **NestJS** (Node/TS): it powers chat (`llm-adapters` Node) and query-time embedding
-   (`embedding-adapters` Node), and unifies the TS stack with the Next.js portal and the
-   widget. Heavy **document ingestion** runs in a separate **Python worker**, where the
-   parsing ecosystem (pypdf/pdfminer/unstructured/python-docx/pandas/Tesseract) is far
-   stronger, using `embedding-adapters` Python. The adapters are dual-lang (Node + Python),
-   so each side uses its native build. This also showcases cross-language orchestration.
-2. **Postgres + pgvector** as the single store — relational + vectors together;
-   simplest correct multi-tenant vector setup. Tenant isolation via RLS (ADR #16).
+> Decisions live in `adr/` (source of truth) — one file per ADR, numbering stable. This table is
+> just the index; **full rationale in `adr/`**. Economic rationale (price/margin) lives in `PRICING.md`.
 
-3. **API keys on 2 axes** — environment (`sandbox` = no billing, ephemeral; `production`)
-   × scope (`secret` = server-side full access; `publishable` = widget, read-only chat,
-   domain-locked). The "dev" idea = sandbox + secret.
-4. **Widget security = 2 layers** — publishable key + `Origin`/`Referer` allowlist check,
-   **plus** domain ownership proof (DNS TXT record or `/.well-known/<token>` file) before a
-   domain is trusted. Without ownership proof, the allowlist is decorative.
-5. **BYOK** — tenant's LLM provider keys stored **encrypted at rest**; chat calls go out
-   with the tenant's own key via `llm-adapters`. In BYOK the platform never bills LLM usage.
-6. **Guardrails — phased** — start with system-prompt scoping + input/output filtering +
-   prompt-injection patterns; integrate `moderation-adapters` (FUTURE) later.
-7. **`/ingest` is async** — embedding generation is CPU-heavy/long-running. Upload returns
-   `202 Accepted` + job id; progress via polling (`GET /jobs/{id}`) or SSE.
-8. **Standalone from `xctx`** — does not depend on the xctx Embeddings API; keeps xctx as a
-   separate clean showcase. (A future integration is possible but not required.)
-9. **LLM in two modes — Managed (default) + BYOK (advanced)** — Managed uses our key, meters
-   usage locally, and bills via a **prepaid credit wallet + auto-recharge + monthly spend cap**
-   (~20% markup), Stripe as gateway. BYOK lets a tenant bring their own key (zero financial risk
-   for us). BYOK ships first (F1–F2); Managed lands at GA (F4), on Pro/Business/Enterprise first.
-   See `PRICING.md` for the full model.
-10. **Embeddings are always managed** (never BYOK) — embedding cost is tiny (~$0.02/1M tokens) and a
-    managed pipeline is far better UX; the cost is baked into plan capacity, not billed per token.
-11. **Metering is local in `llm-adapters`** (token count per request = source of truth: immediate,
-    uniform across providers, enables real-time hard cap). Per-tenant provider sub-keys (where
-    supported) are a **secondary** layer for blast-radius isolation + monthly reconciliation only.
-12. **Payments — Stripe primary + `PaymentProvider` abstraction** — Stripe is the primary gateway
-    (off-session charges + card vault for wallet auto-recharge, subscriptions for plans, USD & BRL,
-    idempotency keys). All payment logic sits behind a `PaymentProvider` interface so we can plug
-    **Mercado Pago / Pagar.me (Stone) + PIX** for the BR market later without touching billing logic.
-    See `PRICING.md` §9.
-13. **Managed-first positioning** — Managed is the **default/recommended** path: it's where we earn
-    the ~20% markup margin and where pricing is directly comparable to bundled competitors via TCO.
-    **BYOK** stays a first-class but **advanced** opt-in for teams that already run a provider account.
-    Default onboarding steers to Managed; Free/Starter stay BYOK-only. See `PRICING.md` §4/§6.
-14. **Model routing (F4+ optimization)** — in Managed mode, classify each query by intent/complexity
-    and route simple ones to a cheap model (gpt-4o-mini / haiku / flash), complex ones to an expensive
-    model (cascading). Lowers **average** managed cost and raises **our** margin without hurting quality.
-    **Future exploration:** a self-hosted **Ollama** server running an open-source model — **no per-token
-    cost** (trades variable token cost for fixed infra/GPU cost; only worth it at volume, with a
-    quality/ops tradeoff). May graduate into a `router-adapters` library (see `@todo/FUTURE.md`). The 3
-    Managed billing variants (metered+markup / fixed-per-message / prepaid-credit) are **decided in F4**.
-    See `PRICING.md` §8.
-15. **Incremental re-embed by chunk** — when a document changes (manual re-upload or knowledge-sync,
-    `FUTURE/07`), re-embed **only the chunks that changed**, not the whole file. Diff at the chunk
-    level (content hash per chunk), delete the changed chunks' old vectors, embed only the new ones,
-    upsert. This keeps the *effective* reingestion volume (K) at ~1–2 in real use (edits touch a few
-    chunks), so the per-plan **reingestion budget** can be nominally generous while real cost stays far
-    below the worst case. It also bounds our worst-case cost exposure per tenant (see `PRICING.md`
-    §6.1 / §7.3). **Reingestion budget = K × storage**, launched **cautiously at K=3** with **5× as the
-    approved ceiling** to loosen once real usage data justifies it.
-16. **Tenant isolation via Postgres RLS** (not schema-per-tenant) — physical isolation scoped by
-    `tenant_id` through Row-Level Security policies. Schema-per-tenant was rejected: it multiplies
-    migrations and connection pools per tenant and becomes an operational burden at scale, whereas
-    RLS is the pragmatic, pgvector-friendly default that scales smoothly. Shapes the data model from
-    F1 (every tenant-owned table carries `tenant_id` and an RLS policy).
-17. **Embedding parity is a runtime invariant** — ingestion embeds in Python (worker), query embeds
-    in Node (API); both MUST use the **same provider + model + dimension + normalization** or the
-    vectors won't share a space and retrieval degrades **silently**. The embedding model is locked in
-    a **single shared config source** consumed by both sides (never two parallel configs), ideally
-    guarded by a parity test. This is config, not the adapter schema — the schema doesn't protect it.
-18. **Conversation/Message persistence from F1** — chat history is stored as `CONVERSATION` +
-    `MESSAGE` entities (not just passed transiently). Gives history for the chat flow, the substrate
-    for per-message metering (`PRICING.md` §5), and the hook for future ticketing/quality-metrics
-    (`FUTURE/03`–`04`) without retrofitting the data model later.
+| # | Title | One-liner |
+|---|---|---|
+| [001](./adr/001-polyglot-split-nestjs-python.md) | Polyglot split (NestJS API + Python worker + Next.js) | Node API for chat/query; Python worker for heavy ingestion |
+| [002](./adr/002-postgres-pgvector-single-store.md) | Postgres + pgvector as single store | Relational + vectors together; correct multi-tenant setup |
+| [003](./adr/003-api-keys-two-axes.md) | API keys on two axes (environment × scope) | `sandbox/production` × `secret/publishable` |
+| [004](./adr/004-widget-two-layer-security.md) | Widget security = two layers | Publishable key + Origin **plus** domain ownership proof |
+| [005](./adr/005-byok-encrypted-at-rest.md) | BYOK keys encrypted at rest | Tenant keys never logged, never leave but the outbound call |
+| [006](./adr/006-guardrails-phased.md) | Guardrails — phased | Prompt scoping + I/O filtering first; `moderation-adapters` later |
+| [007](./adr/007-ingest-async.md) | `/ingest` is asynchronous | `202 Accepted` + job id; embeddings are CPU-bound |
+| [008](./adr/008-conversation-message-persistence.md) | Conversation/Message persisted from F1 | History + metering substrate + ticketing/quality hook |
+| [009](./adr/009-llm-managed-default-byok.md) | LLM modes — Managed (default) + BYOK (Enterprise add-on) | Managed all tiers; BYOK = paid Enterprise add-on |
+| [010](./adr/010-embeddings-always-managed.md) | Embeddings always managed (never BYOK) | Tiny cost; better UX; baked into plan capacity |
+| [011](./adr/011-metering-local-llm-adapters.md) | Metering is local in `llm-adapters` | Immediate + uniform → real-time hard cap |
+| [012](./adr/012-payments-stripe-paymentprovider.md) | Payments — Stripe + `PaymentProvider` abstraction | Stripe primary; pluggable BR gateways (PIX) later |
+| [013](./adr/013-managed-first-positioning.md) | Managed-first positioning | Managed default on every tier incl. Free; BYOK Enterprise-only |
+| [014](./adr/014-model-routing-margin-lever.md) | Model routing as a margin lever (F4+) | Anchor on premium model; route a cheaper mix; spread is margin |
+| [015](./adr/015-incremental-re-embed-by-chunk.md) | Incremental re-embed by chunk | Diff per chunk hash → effective K ~1–2, bounds worst-case cost |
+| [016](./adr/016-tenant-isolation-rls.md) | Tenant isolation via Postgres RLS | Physical isolation by `tenant_id`; schema-per-tenant rejected |
+| [017](./adr/017-embedding-parity-runtime-invariant.md) | Embedding parity is a runtime invariant | Same model/dim/normalization both sides or silent degradation |
 
 
 
