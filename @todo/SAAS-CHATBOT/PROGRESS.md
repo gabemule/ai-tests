@@ -1,6 +1,6 @@
 # SAAS-CHATBOT — Progress
 
-**Status:** 0/29 items · Phase: F1 (MVP) — not started
+**Status:** 0/32 items · Phase: F1 (MVP) — not started
 
 
 
@@ -32,6 +32,7 @@ Blocker: none.
 > Acceptance clause; F1 is not "done" until they pass.
 - [ ] **RLS leak test** (ADR #16): two interleaved A/B requests over the **same** pooled connection never read each other's rows; a query with no `app.tenant_id` set returns **zero** rows (fail-closed)
 - [ ] **Embedding parity test** (ADR #17): build fails if Python ingestion and Node query resolve to different model/dim/normalization; + migration test that old `embedding_version` rows are detected and re-embedded, not queried across spaces
+- [ ] **Ingestion job contract dual-side validation** (ADR #18): a job payload that violates the versioned schema is rejected on **both** the Node (enqueue) and Python (consume) sides; a version mismatch fails closed rather than processing a malformed job
 - [ ] **Ingest idempotency + DLQ + signature** (ADR #7): a redelivered job produces **no** duplicate chunks; a permanently failing job lands in the DLQ + document `failed`; an unsigned QStash payload is rejected
 - [ ] **Conversation windowing/summary** (ADR #8): a very long conversation still produces a prompt under the model's context budget via a bounded window + running summary
 - [ ] **BYOK at-rest check** (ADR #5): stored `byok_llm_key` is ciphertext (no plaintext at rest); logs never contain the key
@@ -46,6 +47,9 @@ Blocker: none.
 - [ ] Widget domain validation (allowlist + ownership proof: DNS TXT / `.well-known`)
 - [ ] `chatbot-portal` (Next.js) screens for orgs/bots/docs/keys
 - [ ] **Metering in shadow mode** — record usage + reconcile vs. provider invoice, no charging yet (gate for F4 billing; validate the meter before money depends on it)
+
+#### Phase 2 — Acceptance gate
+- [ ] **Widget session token + abuse rate-limit** (ADR #4): a stale/forged session token is rejected, and requests beyond the per-key/session/IP limit on one leaked publishable key are throttled (distinct from the F3 per-plan/per-tenant governance limits)
 
 
 ### Phase 3 — Governance
@@ -64,6 +68,9 @@ Blocker: none.
 - [ ] Billing-lite + analytics dashboards
 - [ ] Content moderation (`moderation-adapters`)
 - [ ] **Shared outbound egress guard** (SSRF/allowlist/timeout) for the tool executor + any outbound caller (`FUTURE/08`)
+
+#### Phase 4 — Acceptance gate
+- [ ] **Managed wallet hard cap** (ADR #11): before each Managed generation the API derives an affordable `max_tokens` from the wallet's remaining balance and caps the provider call; a stream that hits the cap stops cleanly ("limit reached") and **no single answer can drive the balance negative** (pairs with the `WALLET_ENTRY` reserve/hold)
 
 
 ## Decisions Made During Execution

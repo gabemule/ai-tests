@@ -149,6 +149,9 @@ filter bug must not leak data across tenants.
 - API keys: sandbox/production × secret/publishable; rotation + revocation
 - Usage counter (messages, tokens, docs) per tenant/bot
 - Widget domain validation (allowlist + ownership proof: DNS TXT / `.well-known`)
+- Widget session token + per-key/session/IP abuse rate-limit (ADR 004 runtime hardening; the
+  broader per-plan/per-tenant governance rate limiting lands in F3)
+- Incremental re-embed by chunk (ADR 015): diff per chunk hash → re-embed only changed chunks
 - Portal screens for all of the above
 - **Effort:** Large
 
@@ -193,7 +196,7 @@ filter bug must not leak data across tenants.
 
 | Gap | Why deferred | When to address |
 |---|---|---|
-| **LGPD / data protection** — tenant docs likely contain PII; need retention, deletion (right to erasure), and a DPA. BR + PIX focus makes this real. | No real external tenants until Beta; F1 is single internal user. | **F3** (governance), before opening to real tenants. |
+| **LGPD / data protection** — tenant docs likely contain PII; need retention, deletion (right to erasure), and a DPA. BR + PIX focus makes this real. | No real external tenants until Beta; F1 is single internal user. | **Before the first real external tenant** — i.e. at the F2→F3 Beta boundary (Beta = real tenants). Land it with the F3 governance work, but it gates Beta open, not GA. |
 | **BYOK key rotation + managed-KMS upgrade** — at-rest **envelope encryption ships in F1** (ADR 005); only key *rotation* and a move to a managed KMS remain open. | Only one BYOK key (mine) in F1; rotation surface is trivial until multiple Enterprise keys exist. | When the key-management surface grows (**F2**). |
 | **RAG retrieval quality eval** — no metric for retrieval quality yet. Strong portfolio differentiator for an "AI product engineering" showcase. | Not needed to prove the loop. | **F4** nice-to-have (or earlier if time allows). |
 

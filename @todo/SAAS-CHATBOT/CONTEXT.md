@@ -10,11 +10,12 @@ guardrails, LLM mode, allowed domains), and embed a chat widget on their own sit
 `<script>` snippet. Built **on top of** the monorepo's adapter libraries — not a RAG
 reimplementation.
 
-**LLM modes:** **Managed** is the default on every tier (we hold the key, meter usage
-locally, bill a prepaid wallet at a per-message price anchored on the premium model; margin
-= routing spread, no markup — `adr/009`/`adr/013`/`adr/014`). **BYOK** is a paid
-**Enterprise-only add-on** sold on governance/compliance (`adr/009` · `PRICING/`).
-Economic model lives in `PRICING/`.
+**LLM modes:** **Managed** is the **GA-target default** on every tier — we hold the key, meter
+usage locally, bill a prepaid wallet at a per-message price anchored on the premium model; margin
+= routing spread, no markup (`adr/009`/`adr/013`/`adr/014`). **Phasing matters:** **BYOK ships
+first as the F1–F2 technical bootstrap** (no wallet yet, zero financial risk); **Managed lands at
+F4 (GA)** and becomes the default, after which **BYOK is the paid Enterprise-only add-on** sold on
+governance/compliance (`adr/009` · `PRICING/`). Economic model lives in `PRICING/`.
 
 **Incubation:** lives in `ai-tests` (incubator) while embryonic; **graduates to its own
 repo** before publish/deploy. Keep cross-package deps clean for a mechanical extraction.

@@ -81,7 +81,9 @@ generation. We're strong exactly where they're weak (grounded RAG) and absent wh
   `hybrid` (with `ai_first`/`human_first` priority) + a per-window **availability schedule**, with an
   **email fallback** when a human is needed but none is online. Builds on `02`/`03`.
 
-> **Build order:** `02 → 03 → 04 → 09` (each builds on the prior); `01` (channels) is independent.
+> **Build order:** `02 → 03 → (04, 09)` — `04` (quality metrics) and `09` (bot mode &
+> availability) both build on `02`/`03` but **not** on each other, so they can land in either
+> order once `03` is in place. `01` (channels) is independent.
 >
 > **Note on 02 ↔ 03 (mutual coupling):** `02-agent-console` and `03-ticketing` reference each other —
 > the console *consumes* the ticket lifecycle, and the lifecycle is *born from* the handoff flow. They

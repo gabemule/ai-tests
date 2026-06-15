@@ -18,7 +18,10 @@ Persist chat as **`CONVERSATION` + `MESSAGE`** entities **from F1** (not just pa
 
 - Gives history for the chat flow, the substrate for per-message metering (ADR 011; `PRICING/billing.md` §5),
   and the hook for future ticketing/quality-metrics without retrofitting.
-- `CONVERSATION.status` (`open|closed`) is reserved now for future ticketing (`FUTURE/03`).
+- `CONVERSATION.status` ships in F1 as a minimal `open|closed` enum and is **reserved to widen**
+  for ticketing: `FUTURE/02` introduces the minimal handoff states (`queued`/`with_agent`), and
+  `FUTURE/03` fleshes out the full lifecycle (`open → bot → queued → with_agent → resolved →
+  closed`, + `reopened`). Treat the F1 enum as a forward-compatible seed, not the final set.
 - Conversation history must be windowed before sending to the LLM (cost + context-limit control).
 
 ## Implementation contract (F1)

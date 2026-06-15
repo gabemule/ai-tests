@@ -15,6 +15,14 @@ Every tenant-owned table carries `tenant_id` and an RLS policy, from F1. Schema-
 **rejected**: it multiplies migrations and connection pools per tenant and becomes an operational
 burden at scale, whereas RLS is the pragmatic, pgvector-friendly default.
 
+**One uniform key — `tenant_id` everywhere.** The tenant boundary is the `ORGANIZATION`, so on
+org-owned tables (`MEMBER`, `API_KEY`, `BOT`, `WALLET_ENTRY`) `tenant_id` **is** the FK to
+`ORGANIZATION`; bot-scoped tables (`ALLOWED_DOMAIN`, `DOCUMENT`, `CHUNK`) and the hot-path tables
+(`EMBEDDING`, `CONVERSATION`, `MESSAGE`) **denormalize** `tenant_id`. No table uses a differently
+named isolation column (no `org_id` vs `tenant_id` split), so a single RLS policy
+(`USING (tenant_id = current_setting('app.tenant_id')::uuid)`) applies identically everywhere.
+
+
 ## Consequences
 
 - Shapes the data model from F1 (every tenant table has `tenant_id` + policy).
@@ -31,7 +39,13 @@ burden at scale, whereas RLS is the pragmatic, pgvector-friendly default.
   duration of a transaction, never across requests.
 - RLS policy is **default-deny / fail-closed**: when `app.tenant_id` is unset the policy matches
   **zero** rows (never all rows).
+- **Worker (off-request) writes:** the Python ingestion worker writes `CHUNK`/`EMBEDDING`/
+  `DOCUMENT.status` **outside** any HTTP request, so it has no per-request session variable. It must
+  set `app.tenant_id` **transaction-locally at the start of each job transaction**, taking the value
+  from the `tenant_id` in the validated job contract (ADR 018), exactly as the API does per request.
+  The same fail-closed RLS applies to the worker's connection — a job that fails to set `tenant_id`
+  writes **zero** rows rather than unscoped rows.
 - **Acceptance (leak test):** two interleaved requests for tenant A and B over the **same** pooled
-  connection never read each other's rows; and a query with no `app.tenant_id` set returns **zero**
-  rows.
-
+  connection never read each other's rows; a query with no `app.tenant_id` set returns **zero**
+  rows; and a worker job that does not set `app.tenant_id` is blocked by RLS (writes zero rows)
+  rather than inserting unscoped data.

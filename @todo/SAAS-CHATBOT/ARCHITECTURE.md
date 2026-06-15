@@ -9,8 +9,10 @@
 ## 1. Concept in one sentence
 
 A **whitelabel RAG chatbot platform**: a customer uploads documents, configures a bot
-(prompt, guardrails, their own LLM key), and drops a `<script>` on their website — the
-chat answers using **their documents** as grounding context.
+(prompt, guardrails), and drops a `<script>` on their website — the chat answers using
+**their documents** as grounding context. The LLM runs in **Managed** mode by default
+(platform key, metered/wallet-billed), with **BYOK** available as an Enterprise add-on
+(ADR #9/#13).
 
 ## 2. Problem it solves
 
@@ -124,20 +126,20 @@ erDiagram
     }
     MEMBER {
         uuid id PK
-        uuid org_id FK
+        uuid tenant_id FK "FK → ORGANIZATION (isolation key)"
         string email
         string role "owner|admin|editor|viewer (agent reserved, FUTURE/02)"
     }
     API_KEY {
         uuid id PK
-        uuid org_id FK
+        uuid tenant_id FK "FK → ORGANIZATION (isolation key)"
         string environment "sandbox|production"
         string scope "secret|publishable"
         string hash
     }
     BOT {
         uuid id PK
-        uuid org_id FK
+        uuid tenant_id FK "FK → ORGANIZATION (isolation key)"
         text system_prompt
         json guardrails
         bytes byok_llm_key "encrypted at rest"
@@ -145,6 +147,7 @@ erDiagram
     ALLOWED_DOMAIN {
         uuid id PK
         uuid bot_id FK
+        uuid tenant_id "isolation key (denormalized)"
         string domain
         bool verified
         string ownership_token
@@ -152,12 +155,14 @@ erDiagram
     DOCUMENT {
         uuid id PK
         uuid bot_id FK
+        uuid tenant_id "isolation key (denormalized)"
         string filename
         string status "pending|processing|ready|failed"
     }
     CHUNK {
         uuid id PK
         uuid document_id FK
+        uuid tenant_id "isolation key (denormalized)"
         int index
         text content
     }
@@ -175,12 +180,13 @@ erDiagram
         uuid id PK
         uuid bot_id FK
         uuid tenant_id "isolation key"
-        string status "open|closed (future: ticketing)"
+        string status "F1: open|closed — widens for ticketing (FUTURE/03)"
         timestamp created_at
     }
     MESSAGE {
         uuid id PK
         uuid conversation_id FK
+        uuid tenant_id "isolation key (ADR #8/#16)"
         string role "user|assistant"
         text content
         int tokens_in
@@ -189,7 +195,7 @@ erDiagram
     }
     WALLET_ENTRY {
         uuid id PK
-        uuid org_id FK
+        uuid tenant_id FK "FK → ORGANIZATION (isolation key)"
         string type "credit|debit|hold|release"
         string idempotency_key "dedupe charges + ledger writes"
         bigint amount "balance = derived sum; never mutated in place"
@@ -203,6 +209,23 @@ erDiagram
 > Row-Level Security (RLS)** by `tenant_id` (ADR #16; schema-per-tenant rejected), not
 > just a shared `WHERE tenant_id = ?` filter. A single filter bug must not leak data
 > across tenants.
+>
+> **One isolation key everywhere: `tenant_id`.** The tenant boundary is the `ORGANIZATION`,
+> so on org-owned tables (`MEMBER`, `API_KEY`, `BOT`, `WALLET_ENTRY`) the `tenant_id` column
+> **is** the FK to `ORGANIZATION`. Bot-scoped tables (`ALLOWED_DOMAIN`, `DOCUMENT`, `CHUNK`)
+> additionally **denormalize `tenant_id`** so the RLS policy is identical on every table
+> (`USING (tenant_id = current_setting('app.tenant_id')::uuid)`) — no per-table special case,
+> no `bot_id → org_id` join on the hot path. Per ADR #16, **every** tenant-owned table carries
+> `tenant_id` **and** an RLS policy from F1.
+
+
+> **Worker writes are tenant-scoped too (ADR #16).** The Python ingestion worker writes
+> `CHUNK`/`EMBEDDING`/`DOCUMENT.status` **off the request path**, so it cannot rely on the
+> per-request session variable. It must set `app.tenant_id` **transaction-locally at the start
+> of each job transaction** (from the `tenant_id` carried in the validated job contract, ADR
+> #18) exactly as the API does per request — RLS is enforced on the worker's PG connection,
+> not just the API's.
+
 
 > **Conversation/Message persisted from F1** (ADR #8) — gives chat history, the substrate
 > for per-message metering (`PRICING/billing.md` §5), and the hook for future ticketing /
@@ -278,8 +301,10 @@ sequenceDiagram
     W-->>Visitor: renders answer (live)
 ```
 
-The retrieved context comes **only** from that tenant/bot's documents; the LLM call
-goes out with the **customer's own key** (BYOK) — the platform never sees nor bills it.
+The retrieved context comes **only** from that tenant/bot's documents. The diagram shows the
+**BYOK** path (the F1–F2 bootstrap), where the LLM call goes out with the **customer's own key**
+and the platform never sees nor bills it. In **Managed** mode (the GA-target default, ADR #9/#13),
+the call uses the **platform's** key and is metered + wallet-billed (see the hard-cap note below).
 
 > **Managed mode — real-time hard cap on the stream (ADR #11):** before each generation
 > the API derives an **affordable `max_tokens`** from the wallet's remaining balance at the
