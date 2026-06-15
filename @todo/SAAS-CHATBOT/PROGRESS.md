@@ -21,7 +21,7 @@ Blocker: none.
 - [ ] Ingestion pipeline (worker): loader → chunk → embed (`embedding-adapters` Python) → pgvector
 - [ ] Async `/ingest` (202 + job id, `GET /jobs/{id}`)
 - [ ] One bot: system prompt + BYOK LLM key (encrypted at rest)
-- [ ] Conversation/Message persistence (ADR #18: history + metering substrate)
+- [ ] Conversation/Message persistence (ADR #8: history + metering substrate)
 - [ ] Chat endpoint (SSE) via `llm-adapters` (Node) with retrieved context
 - [ ] `chatbot-widget` v0: script + basic chat UI (single hardcoded domain)
 
@@ -72,7 +72,7 @@ Blocker: none.
 - 2026-06-14: **ADR #17 — embedding parity is a runtime invariant** (same provider+model+dim+
   normalization on Python ingestion and Node query, from a single shared config; else silent
   retrieval degradation). Recorded in `CONTEXT.md` gotchas.
-- 2026-06-14: **ADR #18 — Conversation/Message persisted from F1** (history + per-message metering
+- 2026-06-14: **ADR #8 — Conversation/Message persisted from F1** (history + per-message metering
   substrate + ticketing/quality-metrics hook). Added to F1 checklist and the ER.
 - 2026-06-14: **Known Gaps / Deferred** registered in `PLAN.md` — LGPD/data-protection (F3), BYOK key
   crypto mechanics (F2), RAG retrieval-quality eval (F4 nice-to-have). None block F1.

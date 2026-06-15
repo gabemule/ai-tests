@@ -190,7 +190,7 @@ erDiagram
 > just a shared `WHERE tenant_id = ?` filter. A single filter bug must not leak data
 > across tenants.
 
-> **Conversation/Message persisted from F1** (ADR #18) — gives chat history, the substrate
+> **Conversation/Message persisted from F1** (ADR #8) — gives chat history, the substrate
 > for per-message metering (`PRICING.md` §5), and the hook for future ticketing /
 > quality-metrics (`FUTURE/03`–`04`) without retrofitting the data model.
 
