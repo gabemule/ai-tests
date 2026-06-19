@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Model Benchmark — price × score</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Model Benchmark <span class="meta">price × score</span></h1>
+      <span class="meta" id="meta">loading…</span>
+      <span class="meta" id="ourStatus"></span>
+      <button id="scan">↻ Scan</button>
+    </header>
+
+    <!-- Top-level sections: Models · Embeddings -->
+    <div class="sections" id="sections"></div>
+
+    <!-- Column-group toggles (Models only): which column GROUPS show + which rows are eligible -->
+    <div class="controls" id="groupControls">
+      <span class="meta">Columns:</span>
+      <button id="grpPrices" class="active">Prices</button>
+      <button id="grpScores" class="active">Scores</button>
+      <button id="grpBenchmark" class="active">Benchmark</button>
+    </div>
+
+    <!-- Filters -->
+    <div class="controls" id="filterControls">
+      <input type="search" id="q" placeholder="Search id / name…" />
+      <select id="provider"><option value="">All providers</option></select>
+      <select id="quality">
+        <option value="">All quality tiers</option>
+        <option value="flagship">Flagship</option>
+        <option value="strong">Strong</option>
+        <option value="mid">Mid</option>
+        <option value="basic">Basic</option>
+      </select>
+      <button id="onlyWatch">★ Ours</button>
+      <button id="hideNoScore">Has score</button>
+      <button id="hideNoPrice">Has price</button>
+      <button id="onlyNew">● NEW</button>
+      <button id="onlyPromo">● PROMO</button>
+      <span class="meta" id="count"></span>
+    </div>
+
+    <!-- Legend / glossary (collapsed by default) -->
+    <details class="legend" id="legend">
+      <summary>ℹ️ Legend</summary>
+      <div class="legend-grid">
+        <section>
+          <h3>Quality bands</h3>
+          <p class="meta">AA Intelligence Index, split into 4 equal bands (max ÷ 4). Dynamic — they track the catalog's top score.</p>
+          <ul>
+            <li><span class="quality ql-flagship">Flagship</span> ≥ 75% of max index</li>
+            <li><span class="quality ql-strong">Strong</span> ≥ 50%</li>
+            <li><span class="quality ql-mid">Mid</span> ≥ 25%</li>
+            <li><span class="quality ql-basic">Basic</span> &lt; 25%</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Project tiers</h3>
+          <p class="meta">Two product tiers (primary / economy) on three axes: models we deploy, the price ceiling, and the score target.</p>
+          <ul>
+            <li><code>primary</code> — primary production model (default)</li>
+            <li><code>primary-alt</code> — primary backup</li>
+            <li><code>economy</code> — cost-cutting for simple queries (default)</li>
+            <li><code>economy-alt</code> — economy backup</li>
+            <li><code>bench-price-primary</code> — price ceiling for primary</li>
+            <li><code>bench-price-economy</code> — price ceiling for economy</li>
+            <li><code>bench-score-primary</code> — score target for primary</li>
+            <li><code>bench-score-economy</code> — score target for economy</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Columns &amp; badges</h3>
+          <ul>
+            <li><strong>AA Index / Coding / Math</strong> — Artificial Analysis scores (<span class="delta-up">▲</span>/<span class="delta-down">▼</span> = delta since last scan)</li>
+            <li><strong>Value AA (idx/$)</strong> — AA index per blended $/1M (higher = better value); only when price + score exist</li>
+            <li><strong>Avg / Blended /1M</strong> — average in/out price per 1M tokens</li>
+            <li><strong>Ctx</strong> — context window · <strong>Released</strong> — model creation date</li>
+            <li><strong>★ / ☆</strong> — is / isn't one of our models (priced only)</li>
+            <li><span class="badge b-new">NEW</span> just appeared · <span class="badge b-promo">PROMO</span> promotional price</li>
+          </ul>
+        </section>
+      </div>
+    </details>
+
+    <div class="wrap"><div id="view"></div></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

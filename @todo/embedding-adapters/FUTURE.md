@@ -15,6 +15,12 @@ Post-MVP features and improvements.
 > Reference implementation already proven in `context-ai`
 > (`src/core/embeddings/model_manager.py`). Items below remain genuinely
 > optional/future (cost tracking, ensemble, ecosystem integrations, etc.).
+>
+> **One more item is now core (see `CONTEXT.md` ADR-006):**
+> - **Shared contracts via Zod-first JSON Schema** (was Phase 5 "Runtime validation with
+>   Zod/Pydantic") — Zod schemas are the single source of truth, generate committed JSON
+>   Schema, Python validates at runtime with `jsonschema`; a CI `diff` guard blocks TS↔Python drift.
+
 
 ## Phase 2: Additional Providers
 
@@ -306,6 +312,7 @@ These are explicitly **not** planned:
 0c. **Optional normalization** (L2, affects cosine similarity)
 0d. **Lazy loading + warm-up**
 0e. **Retry with backoff** (API providers)
+0f. **Shared contracts** (Zod-first JSON Schema + Python `jsonschema` validation; ADR-006)
 
 **Then:**
 1. **Cohere adapter** (excellent multilingual support)

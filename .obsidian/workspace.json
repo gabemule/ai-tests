@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "@todo/SAAS-CHATBOT/CONTEXT.md",
-                "mode": "source",
+                "file": "@todo/MVP-SAAS/FEATURES/README.md",
+                "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "CONTEXT"
+              "title": "README"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "@todo/SAAS-CHATBOT/CONTEXT.md",
+                "file": "@todo/MVP-SAAS/FEATURES/README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Links inversos para CONTEXT"
+              "title": "Links inversos para README"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "@todo/SAAS-CHATBOT/CONTEXT.md",
+                "file": "@todo/MVP-SAAS/FEATURES/README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Links de saída para CONTEXT"
+              "title": "Links de saída para README"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "@todo/SAAS-CHATBOT/CONTEXT.md",
+                "file": "@todo/MVP-SAAS/FEATURES/README.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Sumário de CONTEXT"
+              "title": "Sumário de README"
             }
           }
         ]
@@ -185,36 +185,50 @@
   },
   "active": "864f9609962ef38c",
   "lastOpenFiles": [
-    "@todo/SAAS-CHATBOT/adr/018-ingestion-job-contract.md",
-    "@todo/SAAS-CHATBOT/PLAN.md",
-    "@todo/SAAS-CHATBOT/PROGRESS.md",
-    "@todo/SAAS-CHATBOT/REVIEW-FIXES-1.md",
-    "@todo/FUTURE.md",
-    "@todo/SAAS-CHATBOT/ARCHITECTURE.md",
-    "@todo/SAAS-CHATBOT/PRICING/VALIDATION-PROMPTS.md",
-    "@todo/SAAS-CHATBOT/PRICING/sources.md",
-    "@todo/SAAS-CHATBOT/PRICING/openrouter-pricing.md",
-    "@todo/SAAS-CHATBOT/PRICING/extract/snapshots/2026-06-14.json",
-    "@todo/SAAS-CHATBOT/PRICING/extract/snapshots",
-    "@todo/SAAS-CHATBOT/PRICING/extract/openrouter-pricing.json",
-    "@todo/SAAS-CHATBOT/PRICING/extract/openrouter-pricing.js",
-    "@todo/SAAS-CHATBOT/PRICING/extract/openrouter-pricing.html",
-    "@todo/SAAS-CHATBOT/PRICING/extract/fetch-openrouter-pricing.sh",
-    "@todo/SAAS-CHATBOT/PRICING/extract",
-    "@todo/SAAS-CHATBOT/PRICING/market.md",
-    "@todo/SAAS-CHATBOT/PRICING/billing.md",
-    "@todo/SAAS-CHATBOT/PRICING/plans.md",
-    "@todo/SAAS-CHATBOT/PRICING/embeddings.md",
-    "@todo/SAAS-CHATBOT/PRICING/models.md",
-    "@todo/SAAS-CHATBOT/PRICING/openrouter-pricing.js",
-    "@todo/SAAS-CHATBOT/PRICING/infrastructure.md",
-    "@todo/SAAS-CHATBOT/PRICING/README.md",
-    "@todo/SAAS-CHATBOT/PRICING/snapshots/2026-06-14.json",
-    "@todo/SAAS-CHATBOT/PRICING/snapshots",
-    "@todo/SAAS-CHATBOT/FUTURE/01-channels.md",
-    "@todo/SAAS-CHATBOT/VALIDATION-PROMPTS.md",
-    "@todo/SAAS-CHATBOT/REVIEW-FIXES-3.md",
-    "@todo/SAAS-CHATBOT/REVIEW-FIXES-2.md",
-    "@todo/SAAS-CHATBOT/CONTEXT.md"
+    "@todo/my-linter/CONTEXT.md",
+    "@todo/my-linter",
+    "@todo/SAAS-CHATBOT/PRICING/infra.md",
+    "@todo/router-adapters/ANALYSIS/model-benchmark.md",
+    "@todo/router-adapters/ANALYSIS",
+    "@todo/router-adapters/README.md",
+    "@todo/router-adapters/CRON.md",
+    "@todo/router-adapters/PLAN.md",
+    "@todo/router-adapters/CONTEXT.md",
+    "@todo/router-adapters/benchmark-app/node_modules/rxjs/dist/esm5/internal/observable/dom/webSocket.js.map",
+    "@todo/router-adapters/benchmark-app/node_modules/rxjs/dist/types/internal/observable/dom/webSocket.d.ts.map",
+    "@todo/router-adapters/benchmark-app/node_modules/rxjs/dist/types/internal/observable/dom/webSocket.d.ts",
+    "@todo/router-adapters/benchmark-app/node_modules/rxjs/dist/types/internal/observable/dom/fetch.d.ts.map",
+    "@todo/router-adapters/benchmark-app/node_modules/rxjs/dist/types/internal/observable/dom/fetch.d.ts",
+    "@todo/router-adapters/benchmark-app/node_modules/rxjs/dist/types/internal/observable/dom/animationFrames.d.ts.map",
+    "@todo/router-adapters/benchmark-app/node_modules/rxjs/dist/types/internal/observable/dom/animationFrames.d.ts",
+    "@todo/router-adapters/benchmark-app/node_modules/rxjs/dist/types/internal/observable/dom/WebSocketSubject.d.ts.map",
+    "@todo/router-adapters/benchmark-app/node_modules/dotenv/skills/dotenvx/SKILL.md",
+    "@todo/router-adapters/benchmark-app/node_modules/dotenv/skills/dotenv/SKILL.md",
+    "@todo/router-adapters/benchmark-app/node_modules/concurrently/docs/cli/terminating.md",
+    "@todo/router-adapters/benchmark-app/node_modules/concurrently/docs/cli/success.md",
+    "@todo/router-adapters/benchmark-app/node_modules/concurrently/docs/cli/shortcuts.md",
+    "@todo/router-adapters/benchmark-app/node_modules/concurrently/docs/cli/output-control.md",
+    "@todo/router-adapters/benchmark-app/node_modules/concurrently/docs/cli/restarting.md",
+    "@todo/router-adapters/benchmark-app/node_modules/concurrently/docs/cli/prefixing.md",
+    "@todo/router-adapters/benchmark-app/node_modules/concurrently/docs/cli/passthrough-arguments.md",
+    "@todo/router-adapters/benchmark-app/node_modules/concurrently/docs/cli/configuration.md",
+    "@todo/router-adapters/benchmark-app/node_modules/concurrently/docs/cli/input-handling.md",
+    "@todo/router-adapters/benchmark-app/node_modules/concurrently/docs/shell-resolution.md",
+    "@todo/router-adapters/benchmark-app/node_modules/concurrently/docs/demo.gif",
+    "@todo/router-adapters/benchmark-app/node_modules/concurrently/docs/README.md",
+    "@todo/router-adapters/benchmark-app/node_modules/@rolldown/binding-darwin-arm64/README.md",
+    "@todo/router-adapters/benchmark-app/node_modules/@oxc-project/types/README.md",
+    "@todo/router-adapters/benchmark-app/node_modules/@rolldown/pluginutils/README.md",
+    "@todo/router-adapters/benchmark-app/node_modules/string-width/readme.md",
+    "@todo/router-adapters/benchmark-app/node_modules/tree-kill/README.md",
+    "@todo/router-adapters/benchmark-app/node_modules/supports-color/readme.md",
+    "@todo/router-adapters/benchmark-app/public/icons.svg",
+    "@todo/router-adapters/benchmark-app/public/favicon.svg",
+    "@todo/MVP-SAAS/PRICING/benchmark-app/node_modules/concurrently/docs/demo.gif",
+    "@todo/MVP-SAAS/PRICING/benchmark-app/src/assets/vite.svg",
+    "@todo/MVP-SAAS/PRICING/benchmark-app/src/assets/javascript.svg",
+    "@todo/MVP-SAAS/PRICING/benchmark-app/src/assets/hero.png",
+    "@todo/MVP-SAAS/PRICING/benchmark-app/public/icons.svg",
+    "@todo/MVP-SAAS/PRICING/benchmark-app/public/favicon.svg"
   ]
 }

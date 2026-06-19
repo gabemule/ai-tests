@@ -1,7 +1,7 @@
 # SAAS-CHATBOT — Context
 
 > Feature-specific knowledge base. Maintained for context recovery between sessions.
-> Last updated: 2026-06-14
+> Last updated: 2026-06-18
 
 ## What this is
 
@@ -16,6 +16,11 @@ usage locally, bill a prepaid wallet at a per-message price anchored on the prem
 first as the F1–F2 technical bootstrap** (no wallet yet, zero financial risk); **Managed lands at
 F4 (GA)** and becomes the default, after which **BYOK is the paid Enterprise-only add-on** sold on
 governance/compliance (`adr/009` · `PRICING/`). Economic model lives in `PRICING/`.
+
+> **Pricing vs. catalog frontier:** `PRICING/` owns the **business logic** — plans, caps, wallet,
+> billing, TCO, margin/mix and **infra cost** (`PRICING/infra.md`). The **list of models, per-token
+> prices and quality scores** lives in **`router-adapters`** (the `benchmark-app` catalog +
+> `ANALYSIS/model-benchmark.md`); PRICING consumes those numbers, it doesn't maintain them.
 
 **Incubation:** lives in `ai-tests` (incubator) while embryonic; **graduates to its own
 repo** before publish/deploy. Keep cross-package deps clean for a mechanical extraction.

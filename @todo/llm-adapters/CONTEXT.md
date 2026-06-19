@@ -20,7 +20,7 @@ Reusable TypeScript and Python library for unified LLM provider access. Eliminat
 |---|---|
 | Retry with exponential backoff (non-retryable 401/403) | Prompt building / templates |
 | Normalized errors (`LLMAuthError`, `LLMRateLimitError`, `LLMError`) | Budget / context-window allocation |
-| Token counting (`count_tokens()`) before requests | Output formatting / UI (streaming display callbacks) |
+| Token counting (`count_tokens()` pre-request guard-rail; usage = billing) | Output formatting / UI (streaming display callbacks) |
 | Streaming with unified callback + fallback (streaming → standard) | Persistence / vector store |
 | Provider capabilities & model limits (context window, max output) | Orchestration / RAG pipelines |
 
@@ -36,8 +36,9 @@ real reason to depend on the lib instead of calling the SDK directly:
 - **Retry + exponential backoff** — transient errors retried, auth errors (401/403) not.
 - **Normalized error taxonomy** — every provider's auth/rate-limit/API errors mapped
   to a single set of exceptions, so callers handle errors once.
-- **Token counting** — `count_tokens()` per provider (e.g. tiktoken), to budget/trim
-  before sending. Counting lives in the lib; *budget allocation* stays in the app.
+- **Token counting** — two layers (ADR-006): the provider's `usage` is authoritative for
+  billing; a **per-provider local estimator** counts pre-request as a wallet guard-rail
+  (`max_tokens` budget). Better-than-tiktoken fidelity per provider; *budget allocation* stays in the app.
 - **Streaming with fallback** — unified streaming interface with a text callback, and
   automatic fallback to a standard request if streaming fails.
 - **Capabilities & model registry** — context window, max output tokens, feature flags
@@ -126,16 +127,28 @@ is the agreed order, with TS following once the Python contract is stable.)
 typescript/src/
   port.ts              # LLMPort interface
   provider.ts          # LLMProvider factory
-  types.ts             # Shared types
+  types.ts             # Shared types (z.infer from schemas)
+  schemas/             # Zod schemas = source of truth (ADR-005)
+    message.ts
+    chat.ts
+    config.ts
   adapters/
     openai.ts          # OpenAI implementation
     anthropic.ts       # Anthropic implementation
     ...
 
+contracts/             # generated JSON Schema (committed; the neutral contract, ADR-005)
+  message.json
+  chat-params.json
+  chat-response.json
+  usage.json
+  provider-config.json
+
 python/llm_adapters/
   port.py              # LLMPort Protocol
   provider.py          # LLMProvider factory
-  types.py             # Shared types
+  types.py             # Shared types (hand-written; JSON Schema is the runtime guard)
+  contracts.py         # loads ../contracts/*.json + jsonschema validation helpers
   adapters/
     openai_adapter.py  # OpenAI implementation
     anthropic_adapter.py
@@ -192,6 +205,49 @@ python/llm_adapters/
 - Can migrate to npm/PyPI later if needed
 - Sufficient for personal/team use
 
+### ADR-005: Shared contracts via Zod-first JSON Schema
+**Decision:** Define the data contracts (`Message`, `ChatParams`, `ChatResponse`, `Usage`,
+`ProviderConfig`) **once in Zod** (TypeScript), generate a **committed JSON Schema** per contract,
+and have **Python validate payloads at runtime** against those `.json` files with `jsonschema`.
+**Rationale:**
+- **Single source of truth** kills TS↔Python drift (the long-standing parity pitfall below).
+- TS uses Zod natively (types via `z.infer` + validation). Python loads the committed JSON Schema and
+  validates at runtime — **no codegen, no Pydantic** (keeps the Python side build-step-free).
+- The JSON Schema is the **neutral, language-agnostic contract** and doubles as documentation.
+- **CI guard:** regenerate the JSON Schema from Zod and `diff` against the committed files — if they
+  diverge, fail. This makes drift impossible to merge.
+**Flow:**
+```
+src/schemas/*.ts (Zod = source of truth)
+  └─ build: zod-to-json-schema → contracts/*.json (committed)
+       ├─ TS  → Zod native (z.infer + parse)
+       └─ Py  → jsonschema validates payloads against contracts/*.json
+                (types.py stays hand-written; JSON Schema is the runtime guard)
+```
+**Trade-off:** Python keeps hand-written types (`types.py`) for ergonomics, but the JSON Schema is the
+runtime authority — types are a convenience, the contract is the guard.
+
+### ADR-006: Token counting — provider usage is authoritative; local count is a pre-request guard-rail
+**Decision:** Two distinct layers with distinct jobs:
+- **Billing source of truth = the provider's `usage`** returned on each response (input/output tokens).
+  It is exactly what the provider charges, so it is the most faithful count by definition. The product's
+  usage logger persists this (see SAAS-CHATBOT ADR 011).
+- **Local pre-request counting = guard-rail only.** Used to compute an affordable `max_tokens` budget
+  before generation so a single (streaming) answer can't push the wallet negative. It is an **estimate**,
+  never the billing basis.
+**Rationale:**
+- Reimplementing counting locally to *bill* would be **less** faithful than the provider's own `usage`.
+- The estimate must be **per-provider and conservative** (slightly over-count is safe for a wallet
+  guard) — plain tiktoken-of-the-text under-counts the real request.
+**Per-provider estimator:**
+- **OpenAI** — tiktoken with the correct encoding per model (`o200k_base` for newer) **+ ChatML
+  overhead** (tokens per message/role/name), not just the raw text.
+- **Anthropic / Gemini** — official `count_tokens` endpoint when online; calibrated heuristic fallback offline.
+- **OpenRouter** — the underlying model's tokenizer.
+- **Unknown models** — calibrated chars/token heuristic.
+- Account for cost-distorting cases: **vision tokens** (resolution formula), **tool/function tokens**,
+  **cache read vs write** tokens.
+
 ## Known Pitfalls
 
 ### Provider API Differences
@@ -212,4 +268,9 @@ python/llm_adapters/
 
 ### TypeScript/Python Parity
 - **Risk of divergence** - TS and Python implementations might drift apart
-- **Mitigation:** Keep interfaces identical, test both with same scenarios
+- **Mitigation:** Data contracts share a single source of truth — Zod-first JSON Schema (ADR-005); a
+  CI `diff` guard blocks any drift. Keep behavior identical and test both with the same scenarios.
+
+### Token estimate ≠ billing
+- **Risk:** treating the local pre-request token estimate as the billing number (it under/over-counts).
+- **Mitigation:** Bill only on the provider's `usage` (ADR-006); the local count is a wallet guard-rail.

@@ -2,36 +2,31 @@
 
 > Part of PRICING/. Companion to PRICING/README.md. Last updated: 2026-06-14.
 >
-> 🔁 **Re-audit monthly.** Generation model prices come from the SSOT `openrouter-pricing.md`
-> (live OpenRouter data via `fetch-openrouter-pricing.sh`); quality scores come from
-> `../ANALYSIS/model-benchmark.md`. Re-fetch and recompute the blended cost + spread before trusting
-> the tables below. See `VALIDATION-PROMPTS.md` (this folder) for the per-file re-validation prompt.
+> 🔁 **Re-audit monthly.** This file owns the **business logic** of the margin engine (routing mix,
+> spread, anchor choice) — **not** the model catalog. The live **list of models, per-token prices and
+> quality scores lives in `router-adapters`** (the `benchmark-app` catalog + `ANALYSIS/model-benchmark.md`).
+> The numbers below are **illustrative anchors** to reason about margin; recompute the blended cost +
+> spread from the router-adapters catalog before trusting them.
 
 ---
 
 ## §1.5 — Model layer & routing intelligence (the margin engine)
 
 This is where the margin comes from. We **anchor the per-message price on the cost of the premium
-model** and let the **router** run a cheaper blended mix under the hood. **All prices re-validated
-live on OpenRouter 2026-06-14** (avg = (input+output)/2 per 1M tokens; prices sourced from the SSOT
-`openrouter-pricing.md`, links in `sources.md`).
+model** and let the **router** run a cheaper blended mix under the hood.
 
-| Role | Model | Score* | In $/1M | Out $/1M | **Avg $/1M** | Note |
-|---|---|---|---|---|---|---|
-| **Anchor (price)** ⭐ | **Sonnet 4.6** | 97 | $3 | $15 | **$9.00** | the price the customer pays; the sweet spot |
-| Premium alt | Opus 4.8 | 100 | $5 | $25 | $15.00 | top quality; pricier anchor option |
-| Premium alt | GPT-5.5 | 99 | $5 | $30 | $17.50 | most expensive |
-| **Principal (80%)** ⭐ | **Qwen3.7 Plus** | n/d | $0.40 | $1.60 | **$1.00** | new main workhorse (promo: $0.32/$1.28 = $0.80) |
-| Principal alt | Qwen3.6 Plus | 96 | $0.50 | $1.75 | $1.1375 | prior analysis main (promo: $0.325/$1.95) |
-| Principal alt | Qwen3.7 Max | n/d | $2.50 | $7.50 | $5.00 | flagship Qwen (promo: $1.25/$3.75 = $2.50) |
-| **Econômico (15%)** ⭐ | **DeepSeek V4 Pro** | 89 | $0.435 | $0.87 | **$0.6525** | best-ROI cheap tier |
-| Econômico alt | Kimi K2.6 | 90 | $0.68 | $3.41 | $2.045 | strong coding/UI |
-| Econômico alt | DeepSeek V3.2 | 84 | $0.2288 | $0.3432 | $0.286 | cheapest competent |
+> **Where the catalog lives:** the curated list of candidate models per tier (primary / economy),
+> their per-token prices and quality scores are **maintained in `router-adapters`** (the `benchmark-app`
+> catalog + `ANALYSIS/model-benchmark.md`), **not here**. The named models below are the *current*
+> selection used to illustrate the margin math — when models change, update the router-adapters
+> catalog; this file only tracks the **business logic** (anchor choice + routing mix + spread).
 
-> *Quality score from `../ANALYSIS/model-benchmark.md` (100 = best). Qwen3.7 Max/Plus are newer than
-> the benchmark, so no score yet — placed by price/positioning. **These "n/d" models are exactly what
-> the tooling's "Newest" tab surfaces** — re-validation must benchmark them (see PROMPT 3 in the root
-> `../VALIDATION-PROMPTS.md`).
+**Current selection (illustrative — from the router-adapters catalog):**
+
+- **Anchor (the price the customer pays):** **Sonnet 4.6** (~$9/1M avg) — premium-grade sweet spot.
+- **Principal (80% of traffic):** **Qwen3.7 Plus** (~$1/1M avg) — main workhorse.
+- **Econômico (15%):** **DeepSeek V4 Pro** (~$0.65/1M avg) — best-ROI cheap tier.
+- **Hard queries (5%):** routed up to the anchor (Sonnet 4.6).
 
 **Chosen routing mix (Option B — "optimized"):**
 
@@ -74,7 +69,7 @@ improving it.
   competitive lever — but that's a deliberate move, never the default.
 - **Self-hosted Ollama (future exploration)** — run an open-source model on our own server with
   **no per-token cost**. Trades variable token cost for **fixed infra/GPU cost** — a 4th
-  zero-token-cost routing tier that the `../ANALYSIS/infra.md` analysis shows arrives **sooner than
+  zero-token-cost routing tier that the `infra.md` analysis (this folder) shows arrives **sooner than
   expected**: an **RTX 5090 (~R$18k)** running a Qwen3.6/DeepSeek-class model pays back in **~3.6
   months** at just **100M Sonnet-equivalent tokens/mo** (and in **~15 days** at 1B tokens/mo). At our
   volumes this becomes a real lever — evaluate it as a zero-token-cost tier inside routing.
@@ -96,8 +91,8 @@ improving it.
 
 What a single Managed tenant earns us across realistic monthly token bands. **Revenue** = the
 anchor price (Sonnet 4.6, $9/1M) the customer pays; **cost** = our blended routing mix (Option B,
-$1.35/1M, full price — §1.5). The spread is the margin. (Per-token figures from the SSOT
-`openrouter-pricing.md`, re-validated 2026-06-14.)
+$1.35/1M, full price — §1.5). The spread is the margin. (Per-token figures from the
+**router-adapters catalog**, re-validated 2026-06-14.)
 
 | Tokens/mo | Revenue *(anchor $9/1M)* | Our cost *(mix $1.35/1M)* | **Spread (ours)** | Margin |
 |---|---|---|---|---|
@@ -107,7 +102,7 @@ $1.35/1M, full price — §1.5). The spread is the margin. (Per-token figures fr
 | 1.5B | $13,500 | $2,022 | **$11,478** | ~85% |
 | 2B | $18,000 | $2,696 | **$15,304** | ~85% |
 
-> **Reference points (single-model, no routing — from `openrouter-pricing.md`):** at 1B
+> **Reference points (single-model, no routing — from the router-adapters catalog):** at 1B
 > tokens/mo, pure Sonnet 4.6 = **$9,000**, pure Qwen3.6 Plus = **$1,138**, pure DeepSeek V4 Pro =
 > **$652**. Our Option B blend (**$1,348**) sits just above the cheapest tiers while we charge the
 > full Sonnet anchor — that gap is the whole business model.

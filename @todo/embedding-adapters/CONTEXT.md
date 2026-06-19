@@ -121,16 +121,25 @@ TypeScript. (SentenceTransformers is Python-only initially; TS local models need
 typescript/src/
   port.ts              # EmbeddingPort interface
   provider.ts          # EmbeddingProvider factory
-  types.ts             # Shared types
+  types.ts             # Shared types (z.infer from schemas)
+  schemas/             # Zod schemas = source of truth (ADR-006)
+    config.ts
+    response.ts
   adapters/
     openai.ts          # OpenAI implementation
     sentence-transformer.ts  # SentenceTransformers implementation
     ...
 
+contracts/             # generated JSON Schema (committed; the neutral contract, ADR-006)
+  embedding-config.json
+  embedding-response.json
+  usage.json
+
 python/embedding_adapters/
   port.py              # EmbeddingPort Protocol
   provider.py          # EmbeddingProvider factory
-  types.py             # Shared types
+  types.py             # Shared types (hand-written; JSON Schema is the runtime guard)
+  contracts.py         # loads ../contracts/*.json + jsonschema validation helpers
   adapters/
     openai_adapter.py  # OpenAI implementation
     sentence_transformer_adapter.py
@@ -196,6 +205,33 @@ python/embedding_adapters/
 - Can migrate to npm/PyPI later if needed
 - Sufficient for personal/team use
 
+### ADR-006: Shared contracts via Zod-first JSON Schema
+**Decision:** Define the data contracts (`EmbeddingConfig`, `EmbeddingResponse`, `Usage`)
+**once in Zod** (TypeScript), generate a **committed JSON Schema** per contract, and have
+**Python validate payloads at runtime** against those `.json` files with `jsonschema`.
+**Rationale:**
+- **Single source of truth** kills TS↔Python drift (the long-standing parity pitfall below).
+- TS uses Zod natively (types via `z.infer` + validation). Python loads the committed JSON Schema and
+  validates at runtime — **no codegen, no Pydantic** (keeps the Python side build-step-free).
+- The JSON Schema is the **neutral, language-agnostic contract** and doubles as documentation.
+- **CI guard:** regenerate the JSON Schema from Zod and `diff` against the committed files — if they
+  diverge, fail. This makes drift impossible to merge.
+**Flow:**
+```
+src/schemas/*.ts (Zod = source of truth)
+  └─ build: zod-to-json-schema → contracts/*.json (committed)
+       ├─ TS  → Zod native (z.infer + parse)
+       └─ Py  → jsonschema validates payloads against contracts/*.json
+                (types.py stays hand-written; JSON Schema is the runtime guard)
+```
+**Trade-off:** Python keeps hand-written types (`types.py`) for ergonomics, but the JSON Schema is the
+runtime authority — types are a convenience, the contract is the guard.
+
+**Note on billing:** when embeddings are billed by input tokens, the **provider's `usage` is
+authoritative** for billing (the embedding lib has no local token estimator — that pre-request
+guard-rail is LLM-specific; see `llm-adapters` ADR-006). The `Usage` contract carries the
+provider-reported token count for the product to persist.
+
 ## Known Pitfalls
 
 ### Embedding Dimension Differences
@@ -220,7 +256,8 @@ python/embedding_adapters/
 
 ### TypeScript/Python Parity
 - **Risk of divergence** - TS and Python implementations might drift apart
-- **Mitigation:** Keep interfaces identical, test both with same scenarios
+- **Mitigation:** Data contracts share a single source of truth — Zod-first JSON Schema (ADR-006); a
+  CI `diff` guard blocks any drift. Keep behavior identical and test both with the same scenarios.
 
 ## Integration with similarity-score
 

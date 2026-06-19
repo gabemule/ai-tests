@@ -17,7 +17,10 @@ Split the meter into a **library** half and a **product** half:
 - **`llm-adapters` computes the count (source of truth for the number).** Every request derives
   input/output tokens from the provider response — **immediate** (enables a real-time hard cap) and
   **uniform** (same code across all providers, Managed or BYOK). The library returns the counts; it
-  is **pure/agnostic** and knows nothing about tenant/bot/wallet.
+  is **pure/agnostic** and knows nothing about tenant/bot/wallet. The provider's `usage` stays the
+  billing source of truth; the **per-provider local estimator also lives in `llm-adapters`** but only
+  as a *pre-request* guard-rail to size the affordable `max_tokens` budget (F4), never as the billing
+  number (see `llm-adapters` CONTEXT.md ADR-006).
 - **The product persists `usage`.** Our backend (the "usage logger") writes the per-tenant/bot/message
   `usage` rows to **Supabase/Postgres** from the counts the adapter returns. Domain mapping
   (tenant/bot) and persistence live in the **product**, never in the library.

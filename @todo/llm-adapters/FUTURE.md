@@ -15,6 +15,13 @@ Post-MVP features and improvements.
 > Reference implementation already proven in `context-ai`
 > (`src/core/ai/claude_client.py`, `token_manager.py`). Items below remain genuinely
 > optional/future (cost tracking, A/B testing, ecosystem integrations, etc.).
+>
+> **Two more items are now core (see `CONTEXT.md` ADR-005 / ADR-006):**
+> - **Shared contracts via Zod-first JSON Schema** (was Phase 5 "Runtime validation with Zod/
+>   Pydantic" → now core): one Zod source → committed JSON Schema → Python validates with `jsonschema`.
+> - **Token counting = pricing-grade** (was Phase 4 → now core): provider `usage` is authoritative
+>   for billing; a per-provider local estimator is the pre-request wallet guard-rail (better than
+>   plain tiktoken). See per-provider design in `CONTEXT.md` ADR-006.
 
 ## Phase 2: Additional Providers
 
@@ -243,9 +250,10 @@ These are explicitly **not** planned:
 
 **Core (immediate post-MVP, before anything below):**
 0a. **Retry + exponential backoff** + **normalized errors** (reliability foundation)
-0b. **Token counting** (`count_tokens()` per provider)
+0b. **Token counting — pricing-grade** (provider `usage` = billing; per-provider local estimator = guard-rail; ADR-006)
 0c. **Streaming with fallback** (streaming → standard)
 0d. **Capabilities & model limits**
+0e. **Shared contracts** (Zod-first JSON Schema + Python `jsonschema` validation; ADR-005)
 
 **Then:**
 1. **Anthropic adapter** (xctx's primary provider — needed by the first real consumer)

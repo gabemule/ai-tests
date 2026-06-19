@@ -2,10 +2,10 @@
 
 > Part of PRICING/. Companion to PRICING/README.md. Last updated: 2026-06-14.
 >
-> 🔁 **Re-audit monthly.** Embedding prices come from the SSOT `openrouter-pricing.md` (live
-> OpenRouter data via `fetch-openrouter-pricing.sh` — see the "Embeddings" tab in
-> `openrouter-pricing.html`). Re-fetch before trusting the list below. See `VALIDATION-PROMPTS.md`
-> (this folder) for the per-file re-validation prompt.
+> 🔁 **Re-audit monthly.** Embedding prices/models come from the **router-adapters catalog** (the
+> `benchmark-app` tracks live OpenRouter embedding prices). Re-check there before trusting the list
+> below. This file owns the **business decision** (which embedding is the default + why) — not the
+> catalog. See `../VALIDATION-PROMPTS.md` for the per-file re-validation prompt.
 
 ---
 
@@ -18,24 +18,18 @@ is the most-popular embedding on OpenRouter, multilingual + long-text, at **half
 OpenAI `text-embedding-3-small`. OpenAI stays as a **fallback** for availability/compliance, not the
 default.
 
-**Top embedding options — verified live on OpenRouter 2026-06-14** (sorted by popularity; see
-`sources.md` for revalidation links):
+**Default + fallback (the only choice that's business logic — full embedding catalog lives in the
+router-adapters `benchmark-app`):**
 
-| # | Model | Price /1M | Context | Provider | Role / Note |
-|---|---|---|---|---|---|
-| 1 | **Qwen3 Embedding 8B** ⭐ | **$0.01** | 32K | qwen | **new default** — multilingual, top popularity (209B tok) |
-| 2 | OpenAI `text-embedding-3-small` | $0.02 | 8K | openai | **fallback** (former default) |
-| 3 | Google Gemini Embedding 001 | $0.15 | 20K | google | MTEB multilingual leader |
-| 4 | OpenAI `text-embedding-3-large` | $0.13 | 8K | openai | higher quality |
-| 5 | Qwen3 Embedding 4B | $0.02 | 33K | qwen | smaller sibling |
-| 6 | Perplexity Embed V1 0.6B | **$0.004** | 32K | perplexity | cheapest paid; low-latency |
-| 7 | BAAI bge-m3 | $0.01 | 8K | baai | open, multilingual |
-| 8 | Google Gemini Embedding 2 | $0.20 | 8K | google | multimodal |
-| 9 | Mistral Embed 2312 | $0.10 | 8K | mistralai | RAG-focused |
-| 10 | NVIDIA Llama Nemotron Embed VL 1B V2 | **$0 (free)** | 131K | nvidia | free, multimodal |
+| Model | Price /1M | Context | Provider | Role |
+|---|---|---|---|---|
+| **Qwen3 Embedding 8B** ⭐ | **$0.01** | 32K | qwen | **default** — multilingual, top popularity |
+| OpenAI `text-embedding-3-small` | $0.02 | 8K | openai | **fallback** (former default) |
 
-> SentenceTransformers (self-host) remains an option (compute-only, "free" if we run it) for a
-> future zero-API-cost tier.
+> The wider list of candidate embeddings (Gemini, bge-m3, Mistral Embed, free tiers, etc.) and their
+> live prices are tracked in the **router-adapters catalog**, not here — this file only records which
+> one we picked as the default and why. SentenceTransformers (self-host) remains an option
+> (compute-only, "free" if we run it) for a future zero-API-cost tier.
 
 Embedding is a **one-time cost per document** (re-embed only on change) + a tiny per-query cost.
 Example: ingesting a 200-page PDF (~100k tokens) with Qwen3 8B (`$0.01/1M`) ≈ **$0.001**. Negligible.

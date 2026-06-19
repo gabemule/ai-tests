@@ -24,7 +24,11 @@ model would waste the margin opportunity. The margin is not a markup — it's th
 
 - The better the router, the bigger the margin → direct incentive to keep improving it.
 - **Future exploration:** a self-hosted **Ollama** open-source model = a 4th zero-token-cost routing
-  tier (fixed GPU cost vs. variable tokens; `PRICING/models.md` §8). May graduate into a `router-adapters`
-  library — tracked in `FUTURE/`.
+  tier (fixed GPU cost vs. variable tokens; `PRICING/models.md` §8).
+- **Future evolution (dynamic routing):** the *static* percentages above are the F4 starting point.
+  They evolve into **curated lists** (`primary` / `economy`) where the router picks the
+  **cheapest available model that clears a quality floor** — models leave the code and become curated
+  data. This concept graduated into the `@todo/router-adapters/` library (catalog/curation tool built,
+  router lib in planning).
 - Pricing posture: charge the anchor price from day one; lowering the anchor is a deliberate
   competitive lever, never a default (`PRICING/README.md` §1.4).

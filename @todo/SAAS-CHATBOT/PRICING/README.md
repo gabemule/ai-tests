@@ -2,18 +2,22 @@
 
 > Infra cost model + plan/pricing design for the whitelabel RAG chatbot platform.
 > Content is split by *"what drifts together"* so the volatile numbers are easy to re-audit
-> monthly (see `VALIDATION-PROMPTS.md`).
+> monthly (see `../VALIDATION-PROMPTS.md`).
 > Companion to `../PLAN.md` (roadmap/decisions) and `../ARCHITECTURE.md` (components).
 > Last updated: 2026-06-14
 >
 > **Estimates, not quotes.** Provider prices drift; treat all numbers as order-of-magnitude
 > anchors to reason about plans and margins, not as a billing source of truth.
 >
-> **Basis:** the model/pricing strategy here is grounded on the companion analyses in `../ANALYSIS/`
-> — `model-benchmark.md` (quality scores) and `infra.md` (local/self-host breakeven) — plus the
-> **single source of truth for model prices**, `openrouter-pricing.md` (live OpenRouter data,
-> re-fetched via `fetch-openrouter-pricing.sh`). **All model prices re-validated live on OpenRouter
-> on 2026-06-14.**
+> **Division of labor (frontier):** PRICING/ owns the **business logic** — plans, caps, wallet,
+> billing, TCO, margin/mix and **infra cost** (`infrastructure.md` + `infra.md`). The **list of
+> models, per-token prices and quality scores** lives in **`router-adapters`** (the `benchmark-app`
+> catalog + `ANALYSIS/model-benchmark.md`) — that's the source of truth for prices; the numbers here
+> are **illustrative anchors** consumed from it.
+>
+> **Basis:** the model/pricing strategy here is grounded on the **router-adapters catalog** (model
+> prices + `ANALYSIS/model-benchmark.md` quality scores) plus the local infra breakeven analysis in
+> `infra.md` (this folder). Model prices last re-validated at the source on 2026-06-14.
 
 ---
 
@@ -23,25 +27,18 @@
 |---|---|---|---|
 | `README.md` *(this)* | §1, §3, §10, §11 | 🔒 | Hub: thesis + TCO + roadmap + open questions + migration index |
 | `infrastructure.md` | §1.1, §1.2 | 🔁 | Provider tiers + infra by scale stage |
-| `models.md` | §1.5, §8 | 🔁 | Generation mix + routing spread (prices reference the SSOT) |
-| `embeddings.md` | §1.3 | 🔁 | Embedding model layer (prices reference the SSOT) |
+| `infra.md` | *(moved from `../ANALYSIS/`)* | 🔁 | Self-host (RTX 5090) breakeven analysis — infra cost is part of SAAS-CHATBOT |
+| `models.md` | §1.5, §8 | 🔁 | Generation mix + routing spread (prices consumed from the router-adapters catalog) |
+| `embeddings.md` | §1.3 | 🔁 | Embedding default/fallback (full catalog in router-adapters) |
 | `plans.md` | §6, §7 | 🔒/🔁 | Plan ladder + caps + reingestion + margin analysis |
 | `billing.md` | §4, §5, §9 | 🔒 | LLM modes, wallet, metering, payments gateway |
 | `market.md` | §2 | 🔁 | Competitor plans & billing models (global + BR) |
-| `sources.md` | §12 | 🔁 | Revalidation procedure + links |
-| `openrouter-pricing.md` | *(moved from `../ANALYSIS/`)* | 🔁 | **SSOT for model prices** — live per-token cost + simulations |
-| `VALIDATION-PROMPTS.md` | *(new)* | 🔒 | Per-file LLM prompts to re-validate each volatile file |
-| `extract/` | — | — | **Tooling (code, not docs)** — keeps the doc root clean (see below) |
+| `sources.md` | §12 | 🔁 | Where prices are sourced (router-adapters) + revalidation procedure + links |
 
-### `extract/` — live-data tooling
-
-| File | Purpose |
-|---|---|
-| `extract/fetch-openrouter-pricing.sh` | Live price fetcher → `openrouter-pricing.json` (+ `.js` companion + dated snapshots) |
-| `extract/openrouter-pricing.json` | Structured live data (catalog, top-20, embeddings, newest, our models) |
-| `extract/openrouter-pricing.js` | `window.OPENROUTER_DATA` companion so the HTML works from `file://` |
-| `extract/openrouter-pricing.html` | Dashboard over the JSON (filters, sort, price buckets, NEW/PROMO badges, Newest tab) |
-| `extract/snapshots/` | Dated JSON snapshots (history + NEW/PROMO diff baseline) |
+> **Model prices, quality scores and the live-fetch tooling moved to `router-adapters`** (the
+> `benchmark-app` catalog + `ANALYSIS/model-benchmark.md`). The old SSOT file `openrouter-pricing.md`
+> and the `extract/` fetcher no longer live here — PRICING/ consumes those numbers, it doesn't
+> maintain them. The root `../VALIDATION-PROMPTS.md` holds the per-file re-validation prompts.
 
 ### Migration index — old `§X` → new file
 

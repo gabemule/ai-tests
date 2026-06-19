@@ -26,7 +26,8 @@ Every new project requires reimplementing LLM provider integrations (OpenAI, Ant
 - **Basic chat completions** (`chat()` method)
 - **Port/Protocol interface** (LLMPort)
 - **Factory pattern** (LLMProvider.create())
-- **Shared types** (Message, Response, Config)
+- **Shared contracts** (Zod schemas → committed JSON Schema; Python validates with
+  `jsonschema` — see `CONTEXT.md` ADR-005)
 - **Basic error handling** (API errors, network errors)
 - **README with usage examples**
 - **Basic tests** (unit tests for adapter)
@@ -39,7 +40,8 @@ Philosophy. Some of these are **immediate post-MVP core**, not distant future.
 **Deferred but CORE (build right after MVP — repeatable infra, see `FUTURE.md` note):**
 - Streaming support (`chatStream()`) with streaming→standard fallback
 - Rate limiting / retry logic (exponential backoff, non-retryable 401/403)
-- Token counting (`count_tokens()` per provider)
+- Token counting — per-provider local estimator as a pre-request guard-rail
+  (`max_tokens` budget); provider `usage` stays authoritative for billing (CONTEXT.md ADR-006)
 - Normalized error taxonomy (`LLMAuthError`, `LLMRateLimitError`, `LLMError`)
 - Provider capabilities & model limits
 
@@ -176,13 +178,17 @@ class OpenAIAdapter implements LLMPort {
 
 ## Phases
 
-### Phase 1: TypeScript Structure (2h)
+### Phase 1: TypeScript Structure + Shared Contracts (2.5h)
 - [ ] Create `typescript/` directory structure
+- [ ] Define Zod schemas in `src/schemas/` (message.ts, chat.ts, config.ts) — source of truth (ADR-005)
+- [ ] Add build step: `zod-to-json-schema` → committed `contracts/*.json`
+      (message, chat-params, chat-response, usage, provider-config)
 - [ ] Define `LLMPort` interface in `port.ts`
-- [ ] Define shared types in `types.ts`
+- [ ] Derive shared types in `types.ts` (`z.infer` from schemas)
 - [ ] Create `LLMProvider` factory in `provider.ts`
-- [ ] Setup `package.json` with dependencies
+- [ ] Setup `package.json` with dependencies (incl. `zod`, `zod-to-json-schema`)
 - [ ] Setup `tsconfig.json`
+- [ ] Add CI guard: regenerate JSON Schema from Zod and `diff` against committed `contracts/` (fail on drift)
 
 ### Phase 2: TypeScript OpenAI Adapter (2h)
 - [ ] Implement `OpenAIAdapter` in `adapters/openai.ts`
@@ -200,9 +206,10 @@ class OpenAIAdapter implements LLMPort {
 ### Phase 4: Python Structure (2h)
 - [ ] Create `python/llm_adapters/` directory structure
 - [ ] Define `LLMPort` Protocol in `port.py`
-- [ ] Define shared types in `types.py`
+- [ ] Define shared types in `types.py` (hand-written; JSON Schema is the runtime guard, ADR-005)
+- [ ] Add `contracts.py` — load `../contracts/*.json` + `jsonschema` validation helpers
 - [ ] Create `LLMProvider` factory in `provider.py`
-- [ ] Setup `pyproject.toml` with dependencies
+- [ ] Setup `pyproject.toml` with dependencies (incl. `jsonschema`)
 
 ### Phase 5: Python OpenAI Adapter (2h)
 - [ ] Implement `OpenAIAdapter` in `adapters/openai_adapter.py`

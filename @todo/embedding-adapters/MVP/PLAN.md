@@ -26,7 +26,8 @@ Every project that needs semantic similarity, RAG, or vector search requires imp
 - **SentenceTransformers adapter** (Python only initially) - all-MiniLM-L6-v2
 - **Port/Protocol interface** (EmbeddingPort)
 - **Factory pattern** (EmbeddingProvider.create())
-- **Shared types** (Config, Vector)
+- **Shared contracts** (Zod schemas → committed JSON Schema; Python validates with
+  `jsonschema` — see `CONTEXT.md` ADR-006)
 - **Basic error handling** (API errors, model loading errors)
 - **README with usage examples**
 - **Basic tests** (unit tests for adapters)
@@ -190,13 +191,17 @@ class SentenceTransformerAdapter:
 
 ## Phases
 
-### Phase 1: TypeScript Structure (1.5h)
+### Phase 1: TypeScript Structure + Shared Contracts (2h)
 - [ ] Create `typescript/` directory structure
+- [ ] Define Zod schemas in `src/schemas/` (config.ts, response.ts) — source of truth (ADR-006)
+- [ ] Add build step: `zod-to-json-schema` → committed `contracts/*.json`
+      (embedding-config, embedding-response, usage)
 - [ ] Define `EmbeddingPort` interface in `port.ts`
-- [ ] Define shared types in `types.ts`
+- [ ] Derive shared types in `types.ts` (`z.infer` from schemas)
 - [ ] Create `EmbeddingProvider` factory in `provider.ts`
-- [ ] Setup `package.json` with dependencies
+- [ ] Setup `package.json` with dependencies (incl. `zod`, `zod-to-json-schema`)
 - [ ] Setup `tsconfig.json`
+- [ ] Add CI guard: regenerate JSON Schema from Zod and `diff` against committed `contracts/` (fail on drift)
 
 ### Phase 2: TypeScript OpenAI Adapter (1.5h)
 - [ ] Implement `OpenAIAdapter` in `adapters/openai.ts`
@@ -216,9 +221,10 @@ class SentenceTransformerAdapter:
 ### Phase 4: Python Structure (1.5h)
 - [ ] Create `python/embedding_adapters/` directory structure
 - [ ] Define `EmbeddingPort` Protocol in `port.py`
-- [ ] Define shared types in `types.py`
+- [ ] Define shared types in `types.py` (hand-written; JSON Schema is the runtime guard, ADR-006)
+- [ ] Add `contracts.py` — load `../contracts/*.json` + `jsonschema` validation helpers
 - [ ] Create `EmbeddingProvider` factory in `provider.py`
-- [ ] Setup `pyproject.toml` with dependencies
+- [ ] Setup `pyproject.toml` with dependencies (incl. `jsonschema`)
 
 ### Phase 5: Python OpenAI Adapter (1.5h)
 - [ ] Implement `OpenAIAdapter` in `adapters/openai_adapter.py`

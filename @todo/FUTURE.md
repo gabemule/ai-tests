@@ -46,41 +46,11 @@ const results = await reranker.rerank({
 
 ---
 
-### 🔀 router-adapters (model routing / cascading)
+### 🔀 router-adapters — ✅ Promoted to `@todo/router-adapters/`
 
-**Purpose:** Route each request to the cheapest model that can handle it — classify
-intent/complexity, then cascade simple queries to a cheap model and complex ones to an
-expensive model.
-
-**Why it matters:**
-- Directly lowers **average** LLM cost per answer → raises margin in passthrough/Managed billing
-- Natural governance/cost layer on top of `llm-adapters`
-- Born from the SAAS-CHATBOT Managed mode economics (see `@todo/SAAS-CHATBOT/PRICING.md` §8)
-
-**Use case:**
-```typescript
-const router = RouterProvider.create({ provider: 'heuristic' })
-
-const choice = await router.route({
-  query: 'What are your business hours?',
-  candidates: ['gpt-4o-mini', 'gpt-4o'],
-  context: { complexityHint: 'low' }
-})
-// → { model: 'gpt-4o-mini', reason: 'low-complexity factual lookup' }
-```
-
-**Providers / strategies:**
-- **Heuristic** - length/keyword/regex rules (cheap, local, deterministic)
-- **Classifier** - small LLM or embedding-based intent/complexity classifier (local)
-- **OpenRouter Auto / NotDiamond / Martian** - external routing services (API-based)
-- **Ollama (self-hosted)** - open-source model as a **zero-token-cost** tier in the cascade;
-  trades variable token cost for fixed infra/GPU cost — only worth it at volume, with a
-  quality/ops tradeoff (evaluate before committing)
-
-**Priority:** ⭐⭐⭐⭐ (4/5)
-- Tied directly to SAAS-CHATBOT Managed-mode margin
-- Clear cost-optimization payoff
-- Self-hosted Ollama tier is a strong long-term lever at volume
+No longer a candidate — this concept graduated into its own library. The catalog/curation tool
+(`benchmark-app/`) is built and live; the router library itself is in planning. See
+`@todo/router-adapters/` (`README.md`, `CONTEXT.md`, `PLAN.md`, `CRON.md`).
 
 ---
 
@@ -445,7 +415,7 @@ const music = await audioGen.generate({
 | Rank | Library | Priority | Rationale |
 |------|---------|----------|-----------|
 | 1 | **reranker-adapters** | ⭐⭐⭐⭐⭐ | Complements embeddings, critical for RAG |
-| 2 | **router-adapters** | ⭐⭐⭐⭐ | Lowers avg LLM cost, raises Managed-mode margin |
+| 2 | **router-adapters** | ✅ promoted | Graduated to `@todo/router-adapters/` — lowers avg LLM cost, raises Managed-mode margin |
 | 3 | **channel-adapters** | ⭐⭐⭐⭐ | Delivers RAG bot on WhatsApp & co — key SAAS-CHATBOT reach lever (BR) |
 | 4 | **connector-adapters** | ⭐⭐⭐⭐ | Always-current bot — auto re-embed synced sources (Drive/Notion/URL) |
 | 5 | **tool-adapters** | ⭐⭐⭐⭐ | RAG + actions — live data via the customer's APIs (function calling) |
@@ -463,7 +433,7 @@ const music = await audioGen.generate({
 
 1. **Phase 1 (Current):** `llm-adapters` + `embedding-adapters` (MVP)
 2. **Phase 2:** `reranker-adapters` (natural next step, complements embeddings)
-3. **Phase 3:** `router-adapters` (cost optimization for SAAS-CHATBOT Managed mode)
+3. **Phase 3:** `router-adapters` ✅ promoted to `@todo/router-adapters/` (cost optimization for SAAS-CHATBOT Managed mode — catalog tool built, router lib in planning)
 4. **Phase 4:** `channel-adapters` (WhatsApp-first reach for SAAS-CHATBOT — see `@todo/SAAS-CHATBOT/FUTURE/01-channels.md`)
 5. **Phase 5:** `speech-adapters` + `tts-adapters` (voice ecosystem)
 6. **Phase 6:** Evaluate demand for others based on actual usage
