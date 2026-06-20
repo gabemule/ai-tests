@@ -1,13 +1,18 @@
 # Feature: managed-mode
 
 **Layer:** 🟠 Revenue · **Status:** todo
-**depends_on:** wallet *(hard)*, model-routing *(hard)* · **ADRs:** 009, 011, 013
+**depends_on:** managed-exec *(hard)*, wallet *(hard)*, model-routing *(hard)*, billing *(hard)* · **ADRs:** 009, 011, 013
 
 ## Objective
 
-The Managed default: we hold the key, meter locally, route the blend, and bill a prepaid wallet at a
-managed price anchored on the premium model — with a real-time hard cap so no single response can
-push the wallet negative.
+The Managed default for paying tenants: wrap the `managed-exec` runtime (platform key + routing +
+shadow meter) with **billing** — debit a prepaid wallet at a managed price anchored on the principal
+tier, with a real-time hard cap so no single response can push the wallet negative.
+
+> **Co-dependency with `billing` (hard).** A real-time hard cap is only safe if a depleted wallet can
+> be **refilled** — that's `billing`'s auto-recharge. Managed-for-paying-tenants therefore hard-depends
+> on `billing` (Stripe + auto-recharge), not just on `wallet`. "Charging a real customer" is the pair
+> `managed-mode` + `billing`, never either alone.
 
 > **Billing unit stays the open two-candidate decision** (`fixed-per-message` vs
 > `metered-per-token`, ADR 014 / `PRICING/models.md`). This feature implements the **mechanism**
@@ -19,8 +24,8 @@ push the wallet negative.
 ## Scope
 
 **In:**
-- Managed generation path: platform key + routing (`model-routing`) + wallet debit (`wallet`).
-- Managed price anchored on the premium model (billing unit `fixed-per-message` **or**
+- Managed generation path: reuse `managed-exec` (platform key + routing) + wallet debit (`wallet`).
+- Managed price anchored on the principal tier (billing unit `fixed-per-message` **or**
   `metered-per-token` — open decision, ADR 014); routing spread is the margin.
 
 - **Real-time hard cap:** before each generation compute an affordable `max_tokens` from the

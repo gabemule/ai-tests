@@ -1,7 +1,8 @@
 # ADR 006 — Guardrails, phased
 
 **Status:** Accepted · 2026-06-14 (carried into MVP-SAAS 2026-06-17)
-**Features:** `guardrails`
+**Features:** `guardrails-min` (injection + I/O, before public widget), `guardrails-full` (per-bot
+scoping + hardening, before broad rollout)
 
 ## Context
 

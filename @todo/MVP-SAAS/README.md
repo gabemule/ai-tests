@@ -13,8 +13,13 @@ A **whitelabel RAG chatbot platform**: a tenant uploads documents, configures a 
 site via a `<script>` snippet — answering grounded in **their** documents.
 
 Built **on top of** the monorepo's adapter libraries (`llm-adapters`,
-`embedding-adapters`) — a **product shell** around an existing engine, not a RAG
-reimplementation.
+`embedding-adapters`) — a **product shell** around the engine, not a RAG reimplementation.
+
+> ⚠️ **The engine is co-built, not pre-existing.** `llm-adapters` and `embedding-adapters` are
+> **planned siblings, not yet implemented** (both at `0/48` / `0/47`, zero code). "Reuse, not
+> reinvention" means *reuse a sibling we are co-building behind a clean interface* — it is **not** a
+> finished asset. Every Core feature that calls a model hard-depends on the relevant adapter build
+> existing first (see `FEATURES/README.md` → "Engine prerequisite").
 
 ## System map
 

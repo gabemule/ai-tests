@@ -14,10 +14,18 @@
 
 We generate embeddings (decision: embeddings are always managed, never BYOK). Cost is small.
 
-**Decision (2026-06-14): default = Qwen3 Embedding 8B; OpenAI = fallback only.** Qwen3 Embedding 8B
-is the most-popular embedding on OpenRouter, multilingual + long-text, at **half** the price of
-OpenAI `text-embedding-3-small`. OpenAI stays as a **fallback** for availability/compliance, not the
-default.
+> ⚠️ **Models below are illustrative — `research-app`/`admin-app` is the SSOT.** The specific embedding
+> models, their prices, and which one is the default are **selected and configured in the research-app
+> (and later the admin-app Research module)**, not locked here. The examples below are from the first
+> analysis to reason about cost shape. **The one durable constraint (ADR 017):** whatever model is
+> selected must be implemented in **both** the Python (worker) and Node (API) builds of
+> `embedding-adapters`, or retrieval degrades silently.
+
+**Example from first analysis (2026-06-14): default ≈ Qwen3 Embedding 8B; OpenAI ≈ fallback.** Qwen3
+Embedding 8B was the most-popular embedding on OpenRouter at scan time, multilingual + long-text, at
+**half** the price of OpenAI `text-embedding-3-small`. OpenAI is a natural **fallback** for
+availability/compliance. **Both are illustrative** — the live selection is whatever the research-app
+catalog says, subject to the both-builds constraint above.
 
 **Default + fallback (the only choice that's business logic — full embedding catalog lives in
 `../research-app/` → `db.json` `embeddings_all`):**

@@ -24,7 +24,10 @@
 - **Polyglot split by ecosystem fit:** *Python where the ecosystem matters* (document
   parsing, OCR, offline eval), *Node where it's the common path* (API, chat, governance,
   query-embed). The TS stack unifies API + portal + widget. (ADR 001)
-- **Reuse, not reinvention:** the product is a shell around the existing adapter engine.
+- **Reuse, not reinvention:** the product is a shell around the adapter engine (`llm-adapters`,
+  `embedding-adapters`) — **co-built siblings, not yet implemented** (both `0/48`/`0/47`, zero code).
+  Core features that call a model hard-depend on the relevant adapter build (`FEATURES/README.md` →
+  "Engine prerequisite"). Means *don't re-implement RAG primitives*, **not** *the engine is done*.
 - **Feature-graph model:** the project is a graph of independent features with explicit
   `depends_on` (hard/soft). Build order = incremental milestones M1–M4 (a derived view). (`FEATURES/README.md`)
 - **Revenue-oriented, incremental ordering:** ship a working embeddable bot first, make it a
@@ -51,9 +54,14 @@
 ## LLM modes (the economic core)
 
 - **Managed = GA-target default** on every tier: we hold the key, meter usage locally,
-  bill a prepaid wallet; margin = routing spread (~85%), no markup. **Billing unit is an
-  open decision** — two candidates kept side-by-side (`fixed-per-message` vs
-  `metered-per-token`), choice deferred until real metering data. (ADR 009/013/014)
+  bill a prepaid wallet; margin = routing spread (~85%, **net of routing overhead**), no markup. The
+  managed price is anchored on the **principal mainstream tier** — avg of Anthropic Sonnet + an OpenAI
+  principal model (a *price* reference, **not** a quality ceiling). **Billing unit is an open
+  decision** — two candidates kept side-by-side (`fixed-per-message` vs `metered-per-token`), choice
+  deferred until real metering data. (ADR 009/013/014)
+- **The spread is validated on a dedicated un-billed path, `managed-exec`** (platform key + routing +
+  shadow meter, no wallet/charging) — it breaks the `model-routing`↔`managed-mode` circular dependency
+  and is the only place provider-invoice reconciliation works (we receive that bill, not the tenant).
 - **Phasing:** BYOK ships first (M1, in `chat-sse`) as the technical bootstrap (no wallet, zero
   financial risk); Managed lands with the monetization milestone (M4) and becomes default; BYOK then
   is the **paid Enterprise-only add-on** sold on governance/compliance.
@@ -68,6 +76,9 @@
   silently (ADR 017).
 - **`llm-adapters`** (Node) — chat endpoint; computes token counts locally (ADR 011).
 - **Job queue (QStash)** — API enqueues, worker consumes; the "sacred seam" (ADR 018).
+- **`managed-exec`** — un-billed Managed path (platform key + routing seam + shadow meter); the
+  routed-traffic source `model-routing` validates the spread on, and where provider-invoice
+  reconciliation happens. Breaks the `model-routing`↔`managed-mode` cycle.
 - **Future adapters:** `reranker-adapters`, `router-adapters`, `ocr-adapters`,
   `moderation-adapters`.
 

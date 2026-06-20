@@ -67,10 +67,20 @@ storage: `monthly reingest volume ≤ K × storage`.
 
 ## Margin analysis (illustrative, snapshot)
 
+> ⚠️ **What these tables do and don't include.** The **subscription** margin tables below are
+> **platform-only**: they deliberately exclude generation tokens because, under Managed, **the wallet
+> covers generation** as a separate prepaid line — the customer funds tokens, and our token *margin* is
+> the routing **spread**, accounted separately (`models.md`). These two must not be conflated:
+> - **Subscription margin** = plan price − Stripe fee − allocated fixed infra (below).
+> - **Token/spread margin** = anchor price − blended cost, **only positive if the spread holds**
+>   (`models.md`, unvalidated until `managed-exec`/`model-routing` measure it).
+> See "**If the spread is wrong**" and "**Free-tier token cost**" below — the subscription margin does
+> **not** rescue a negative spread.
+
 Every paid tier is **Managed**, so per tenant the token cost is **covered by the wallet** and the
-routing spread (~85%, `models.md`) is pure upside on top — only a few cents of embeddings/storage are
-ours. So plan price is almost pure margin against fixed infra. After **Stripe fees**
-(US ~2.9% + $0.30; BR card ~3.99% + R$0.39; PIX ~1.19%):
+routing spread (~85%, `models.md`) is upside on top of the subscription — only a few cents of
+embeddings/storage are ours. So the **subscription** price is almost pure margin against fixed infra.
+After **Stripe fees** (US ~2.9% + $0.30; BR card ~3.99% + R$0.39; PIX ~1.19%):
 
 **USD**
 
@@ -88,9 +98,45 @@ ours. So plan price is almost pure margin against fixed infra. After **Stripe fe
 | Pro | R$199 | ~R$190.67 | ~R$196.63 | ~96–99% |
 | Business | R$599 | ~R$574.71 | ~R$591.87 | ~96–99% |
 
-> **Break-even ≈ 3 Pro subscribers** covers the entire ~$5–50/mo fixed infra. Everything past that is
-> margin. Managed adds the **~85% routing spread on top** of wallet spend — incremental margin, not a
-> cost center.
+> **Break-even by infra stage** (subscription revenue must cover fixed infra at *that* stage —
+> `infrastructure.md`):
+>
+> | Stage | Fixed infra/mo | Break-even (Pro $39 net ~$37.6) |
+> |---|---|---|
+> | MVP | ~$5 | ~1 Pro sub |
+> | **Early** *(first paying tenants)* | **~$71** | **~2 Pro subs** |
+> | Growth | ~$105 | ~3 Pro subs |
+> | Scale | ~$220 | ~6 Pro subs |
+>
+> The often-quoted "~3 Pro subs covers infra" is the **MVP/Growth** figure; the **Early** stage (where
+> the first paying tenants force always-on Railway+Supabase Pro) needs ~2 and the relative cost jump is
+> steepest there. Everything past break-even is subscription margin; the Managed spread is **incremental
+> on top of wallet spend** — *if* the spread holds (see below).
+
+### If the spread is wrong (the scenario the rosy tables hide)
+
+The subscription tables assume the routing spread is positive. It is **modeled, not measured**
+(`models.md`, validated by `managed-exec`/`model-routing`). Stress it:
+
+| Real blended cost vs anchor | Spread | What happens |
+|---|---|---|
+| ~$1.3/1M vs ~$9 *(modeled)* | ~85% | thesis holds — token margin is large upside |
+| ~$4.5/1M vs ~$9 *(router weak / hard-query mix higher)* | ~50% | still positive, but the "95% margin" story is half — re-calibrate anchor before scaling |
+| ~$9/1M vs ~$9 *(no routing benefit)* | ~0% | Managed earns **nothing** on tokens; only the subscription carries the business |
+| ~$11/1M vs ~$9 *(anchor set too low / premium-heavy traffic)* | **negative** | **we lose money per token** — Managed must pause/re-price **before** charging; this is exactly why `managed-mode` is gated behind measured `metering`/`model-routing` |
+
+> **Rule:** if measured spread comes in materially below model, the anchor (or plan ladder) is
+> re-calibrated **before** Managed charges anyone (`REVALIDATION.md`). The subscription margin does
+> **not** subsidize a negative token spread — they're separate lines.
+
+### Free-tier token cost (we eat it)
+
+Free runs Managed on a small included starter balance (`plans.md` plans table, ADR 013). Unlike paid
+tiers, **there's no wallet top-up funding those tokens** — the platform absorbs them. At ~100 msgs/mo
+on the economy tier this is **cents/tenant/mo**, capped hard by the included balance + wallet cap (zero
+overrun risk). It is **not** zero, though: at scale, Free-tier token cost is a real (small) line —
+budget it as a CAC/marketing cost, and keep the hard cap so a Free tenant can never burn beyond the
+included balance.
 
 ### Worst-case cost per tenant (the exposure ceiling)
 

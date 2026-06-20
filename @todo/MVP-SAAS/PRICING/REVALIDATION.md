@@ -48,29 +48,31 @@
 ## The de-risking sequence (why the order matters)
 
 ```
-metering (shadow)  →  measure real usage, reconcile vs. invoice, charge nobody
-   → model-routing →  measure the real blend + quality → validate/correct the ~85%
-      → wallet      →  ledger primitive (idempotent credit/debit/hold/release)
-         → managed-mode → charge at a calibrated anchor price, real-time hard cap
-            → billing  →  Stripe + plans + auto-recharge
+metering (shadow)  →  measure real usage; reconcile vs. invoice ON OUR PLATFORM KEY; charge nobody
+   → managed-exec →  un-billed Managed path (platform key + shadow meter) — the routed-traffic source
+      → model-routing →  measure the real blend + quality on managed-exec → validate/correct the ~85%
+         → wallet      →  ledger primitive (idempotent credit/debit/hold/release)
+            → billing   →  Stripe + plans + auto-recharge
+               → managed-mode → charge at a calibrated anchor price, real-time hard cap (needs wallet + billing)
 ```
 
 Each step only starts once the previous one has produced numbers. By the time **revenue** depends on
-the ~85% spread (`managed-mode`/`billing`), it has already been **measured** by `metering` +
+the ~85% spread (`managed-mode`), it has already been **measured** by `metering` + `managed-exec` +
 `model-routing` — never assumed. If the measured spread comes in materially below 85%, the anchor
 price (or the plan ladder) is re-calibrated **before** charging, not after.
 
 > ⚠️ **Where the routed traffic comes from (the measurement chicken-and-egg).** `metering` ships on
 > `chat-sse`, which is **BYOK-only** (a single tenant key, **no routing**) — so BYOK traffic alone
 > can validate per-message token *usage*, but **cannot** measure the routed blend or the spread (the
-> router only runs in Managed). To break the loop, the spread is measured on a **Managed shadow
-> corpus** *before* `managed-mode` charges anyone:
-> - **Internal dogfood Managed bots** (our own platform key) run the real `model-routing` blend over
->   a representative query set, metered in shadow mode — producing the routed cost/quality numbers
->   with **zero external billing**.
-> - `model-routing` therefore depends on this dogfood Managed path, **not** on BYOK traffic, for its
->   blended-cost done-criterion. Only after the spread is confirmed on real routed traffic does
->   `managed-mode` open Managed to paying tenants.
+> router only runs in Managed). Worse, in BYOK the **provider invoice goes to the tenant**, so we
+> can't even invoice-reconcile there. The loop is broken by a dedicated feature, **`managed-exec`**:
+> - **`managed-exec` is the un-billed Managed path** (our platform key, shadow-metered, **no wallet,
+>   no charging**). It runs internal dogfood bots over a representative query set, and it is where the
+>   provider-invoice reconciliation actually happens (we receive that bill).
+> - `model-routing` plugs its blend into `managed-exec` and uses it — **not** BYOK traffic — for its
+>   blended-cost done-criterion. This is why `model-routing` hard-depends on `managed-exec`.
+> - Only after the spread is confirmed on real routed traffic does `managed-mode` (which also needs
+>   `wallet` **and** `billing`) open Managed to paying tenants.
 
 > See `../FEATURES/README.md` (revenue layer) for the dependency graph, and `models.md` /
 > `billing.md` / `plans.md` for the assumptions each feature is validating.

@@ -11,13 +11,16 @@
 A **whitelabel RAG chatbot platform**: a customer uploads documents, configures a bot,
 and drops a `<script>` on their site — the chat answers grounded in **their** documents.
 LLM runs **Managed** by default at GA (platform key, wallet-billed); **BYOK** is the
-F1–F2 bootstrap and later an Enterprise add-on (ADR 009/013).
+M1–M2 bootstrap and later an Enterprise add-on (ADR 009/013).
 
 ## 2. Central principle — reuse, not reinvention
 
-The AI engine already exists in the monorepo (`llm-adapters`, `embedding-adapters`).
-This product is the **shell** (tenancy, ingestion, retrieval quality, governance,
-distribution, monetization) wrapped around that engine.
+The AI engine is a pair of **co-built sibling libraries** in the monorepo (`llm-adapters`,
+`embedding-adapters`) — **planned, not yet implemented** (both `0/48` / `0/47`, zero code; see
+`FEATURES/README.md` → "Engine prerequisite"). This product is the **shell** (tenancy, ingestion,
+retrieval quality, governance, distribution, monetization) wrapped around that engine, behind a clean
+public interface so the extraction stays mechanical. "Reuse, not reinvention" = *don't re-implement RAG
+primitives in the product*, **not** *the engine is already done*.
 
 ```
         ┌─────────────────────────────────────────────┐
@@ -27,7 +30,7 @@ distribution, monetization) wrapped around that engine.
         └───────────────┬─────────────────────────────┘
                         │ uses
         ┌───────────────▼─────────────────────────────┐
-        │      Engine (already in ai-tests)           │
+        │   Engine (co-built siblings — not yet built)│
         │     llm-adapters   ·   embedding-adapters   │
         └─────────────────────────────────────────────┘
 ```
@@ -218,7 +221,7 @@ erDiagram
 > `USING (tenant_id = current_setting('app.tenant_id')::uuid)` applies identically. Fail-closed:
 > unset `tenant_id` → zero rows. The Python worker sets `app.tenant_id` transaction-locally too.
 >
-> **Conversation/Message persisted from F1 (ADR 008)** — history + metering substrate + future
+> **Conversation/Message persisted from M1 (ADR 008)** — history + metering substrate + future
 > ticketing/quality-metrics hook, no retrofit.
 >
 > **Embedding identity on the vector row (ADR 017)** — `embedding_model/dim/normalized/version`

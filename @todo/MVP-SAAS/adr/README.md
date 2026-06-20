@@ -28,15 +28,16 @@ to this rebuild**.
 | [003](./003-api-keys-two-axes.md) | API keys on two axes (environment × scope) | Accepted | api-keys | `sandbox/production` × `secret/publishable` |
 | [004](./004-widget-two-layer-security.md) | Widget security = two layers | Accepted | widget-security | Publishable key + Origin **plus** domain ownership proof |
 | [005](./005-byok-encrypted-at-rest.md) | BYOK keys encrypted at rest | Accepted | chat-sse | Tenant keys never logged, never leave but the outbound call |
-| [006](./006-guardrails-phased.md) | Guardrails — phased | Accepted | guardrails | Prompt scoping + I/O filtering first; `moderation-adapters` later |
+| [006](./006-guardrails-phased.md) | Guardrails — phased | Accepted | guardrails-min, guardrails-full | Injection + I/O filtering first (min); prompt scoping + hardening later (full); `moderation-adapters` later |
 | [007](./007-ingest-async.md) | `/ingest` is asynchronous | Accepted | ingestion, job-contract | `202 Accepted` + job id; embeddings are CPU-bound |
 | [008](./008-conversation-message-persistence.md) | Conversation/Message persisted from the start | Accepted | chat-sse | History + metering substrate + ticketing/quality hook |
 | [009](./009-llm-managed-default-byok.md) | LLM modes — Managed (default) + BYOK (Enterprise add-on) | Accepted | chat-sse, managed-mode | Managed all tiers; BYOK = paid Enterprise add-on |
+| — | *(no ADR)* `managed-exec` | — | managed-exec | Un-billed dogfood Managed path (cited by ADR 009/011/014) — breaks routing↔managed cycle |
 | [010](./010-embeddings-always-managed.md) | Embeddings always managed (never BYOK) | Accepted | ingestion, retrieval | Tiny cost; better UX; baked into plan capacity |
 | [011](./011-metering-local-llm-adapters.md) | Token counting local in `llm-adapters`; product persists usage | Accepted | metering | Lib computes tokens; product persists usage |
 | [012](./012-payments-stripe-paymentprovider.md) | Payments — Stripe + `PaymentProvider` abstraction | Accepted | billing, wallet | Stripe primary; pluggable BR gateways (PIX) later |
 | [013](./013-managed-first-positioning.md) | Managed-first positioning | Accepted | managed-mode | Managed default on every tier incl. Free; BYOK Enterprise-only |
-| [014](./014-model-routing-margin-lever.md) | Model routing as a margin lever | Accepted | model-routing | Anchor on premium model; route a cheaper mix; spread is margin |
+| [014](./014-model-routing-margin-lever.md) | Model routing as a margin lever | Accepted | model-routing | Anchor on principal mainstream tier (Sonnet + OpenAI avg); route a cheaper mix; spread is margin |
 | [015](./015-incremental-re-embed-by-chunk.md) | Incremental re-embed by chunk | Accepted | incremental-reembed | Diff per chunk hash → bounds worst-case re-embed cost |
 | [016](./016-tenant-isolation-rls.md) | Tenant isolation via Postgres RLS | Accepted | core-db | Physical isolation by `tenant_id`; schema-per-tenant rejected |
 | [017](./017-embedding-parity-runtime-invariant.md) | Embedding parity is a runtime invariant | Accepted | ingestion, retrieval | Same model/dim/normalization both sides or silent degradation |
@@ -50,6 +51,10 @@ to this rebuild**.
   where it's the common path") and references features instead of phases.
 - **Phase tags (F1–F4)** in the old ADRs were replaced by **feature references** (the slugs in
   `FEATURES/README.md`) — phases are now only a derived view.
+- **006** now owns the **split** `guardrails-min` (injection + I/O, before the public widget) and
+  `guardrails-full` (per-bot scoping + hardening, before broad rollout).
+- **`managed-exec` is a new feature with no ADR of its own** — it's the un-billed dogfood Managed path
+  that breaks the `model-routing`↔`managed-mode` circular dependency; cited by ADR 009/011/014.
 - **019 is new** — the confidence gate did not exist in the old plan.
 - **020 is new** — the admin/operator surface (cross-tenant console, the inverse privilege domain of
   ADR 016) did not exist in the old plan; it owns `admin-app` + the Research module + cost×revenue.

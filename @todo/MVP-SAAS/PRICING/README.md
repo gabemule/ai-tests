@@ -38,12 +38,14 @@ embeddings) stays lean. We monetize generation through **two modes**:
 
 | Mode | How it works | Our financial risk |
 |---|---|---|
-| **Managed** *(default, all tiers)* | We hold the key, **meter locally**, bill a **prepaid wallet** at our **managed price anchored on the premium model** — billed **per-message OR metered-per-token** (two candidates, decision deferred; see `models.md`), **no explicit markup**. | Controlled (prepaid + real-time cap) |
+| **Managed** *(default, all tiers)* | We hold the key, **meter locally**, bill a **prepaid wallet** at our **managed price anchored on the principal mainstream tier** (avg of Anthropic Sonnet + an OpenAI principal model — a *price* reference, not a quality ceiling) — billed **per-message OR metered-per-token** (two candidates, decision deferred; see `models.md`), **no explicit markup**. | Controlled (prepaid + real-time cap) |
 | **BYOK** *(Enterprise-only paid add-on)* | Customer brings their own key; their token cost, never on our bill. | None — but forgoes our spread, so it's a **paid** governance add-on |
 
-**Margin = routing spread, not markup.** The managed price is anchored on the premium model's
-cost; a cheaper blended mix runs under the hood; the spread (`anchor − real blended cost`, modeled
-~85%) is ours. The better the router, the bigger the margin. (ADR 014, detail in `models.md`)
+**Margin = routing spread, not markup.** The managed price is anchored on the **principal mainstream
+tier**'s cost (avg of two vendors' principal models — a *price* reference, not a quality ceiling); a
+cheaper blended mix runs under the hood; the spread (`anchor − real blended cost`, modeled ~85%, **net
+of routing overhead**) is ours. The better the router, the bigger the margin. (ADR 014, detail in
+`models.md`)
 
 **Internal vs. public.** The spread is an **internal** mechanism. Publicly we present **one
 managed price + a consumption dashboard** — never "provider cost + spread". Copy sells

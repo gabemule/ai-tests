@@ -22,7 +22,7 @@ with BYOK as the bootstrap key mode and persisted conversation history from day 
 **Out:**
 - Managed mode / wallet / routing (→ revenue features).
 - Confidence gate, reranking (→ RAG quality features).
-- Guardrails (→ `guardrails`).
+- Guardrails (→ `guardrails-min` / `guardrails-full`).
 
 ## Done criterion
 

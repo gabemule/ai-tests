@@ -37,10 +37,14 @@ only: blast-radius isolation + monthly reconciliation against the provider invoi
 
 ## Implementation contract (feature `managed-mode`)
 
-> **Unit-agnostic.** This hard-cap mechanism holds for **both** open billing-unit candidates
-> (`fixed-per-message` and `metered-per-token`, ADR 014): in either case the affordable budget is
-> derived from the wallet balance at the anchor price. The billing *unit* remains an open decision;
-> only the *protection mechanism* is specified here.
+> **Cap is denominated in tokens; the billing *unit* is still open.** The protection mechanism below
+> derives an affordable **`max_tokens`** from the wallet balance at the anchor price — it is naturally
+> **token-denominated** because `max_tokens` is the only hard ceiling a provider enforces mid-stream.
+> This works directly for **`metered-per-token`** billing. For **`fixed-per-message`** billing the cap
+> is a **safety bound, not the billing unit**: we convert "remaining affordable messages" → an
+> equivalent token budget (messages × the anchored per-message token allowance) and pass that as
+> `max_tokens`. So the *mechanism* presumes a token ceiling, while the *billing unit* stays the open
+> ADR 014 decision; don't read the `max_tokens` cap as a decision in favor of per-token billing.
 
 The "next-request" hard cap protects the *next* message, but a single **streaming** answer is
 generated *after* the request is admitted and can run long — a heavy/adversarial prompt could push

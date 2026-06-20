@@ -21,7 +21,8 @@ Blocker: none.
 - [x] `ARCHITECTURE.md` — concept + diagrams
 - [x] `adr/` — surviving ADRs 001–018 (clean) + ADR 019 (confidence-gate) + ADR 020 (admin/operator
   surface) + `adr/README.md` index
-- [x] `FEATURES/<slug>/PLAN.md` — all 24 active features + 8 ⚪ Future backlog (32 total)
+- [x] `FEATURES/<slug>/PLAN.md` — all 26 active features + 8 ⚪ Future backlog (34 total) + 2 co-built
+  engine libs (counted separately)
 - [x] `PRICING/` — **self-contained** (README · billing · models · plans · REVALIDATION · embeddings ·
   infrastructure) + live tooling in `research-app/` (Vite + lowdb OpenRouter/AA scanner)
 
@@ -55,11 +56,13 @@ Status per feature. `todo` = planned, not started. See `FEATURES/<slug>/PLAN.md`
 
 ### 🟠 Revenue
 - [ ] `metering` — todo
+- [ ] `managed-exec` — todo *(new: un-billed Managed dogfood path; breaks routing↔managed cycle)*
 - [ ] `model-routing` — todo
 - [ ] `wallet` — todo
-- [ ] `managed-mode` — todo
 - [ ] `billing` — todo
-- [ ] `guardrails` — todo
+- [ ] `managed-mode` — todo
+- [ ] `guardrails-min` — todo *(split: injection + I/O, before public widget)*
+- [ ] `guardrails-full` — todo *(split: per-bot scoping + hardening, before broad rollout)*
 - [ ] `cost-attribution` — todo
 - [ ] `revenue-analytics` — todo
 
@@ -124,3 +127,25 @@ Status per feature. `todo` = planned, not started. See `FEATURES/<slug>/PLAN.md`
   into M2** (so the first real customer's bot doesn't hallucinate). No feature, dependency, or ADR
   changed — only narrative + ordering. Earlier 2026-06-17 "showcase/F1.5" log entries are kept as
   historical record.
+- 2026-06-20: **Adversarial review sweep — coherence + economic honesty fixes.**
+  Resolved a set of contradictions/gaps found in a critical pass:
+  - **Engine reframed as co-dependency, not asset.** `llm-adapters`/`embedding-adapters` are `0/48`/`0/47`
+    (zero code); Core features now hard-depend on the adapter builds (`FEATURES/README.md` "Engine
+    prerequisite"); README/ARCHITECTURE/CONTEXT corrected ("co-built, not pre-existing").
+  - **New feature `managed-exec`** (un-billed Managed path: platform key + routing seam + shadow meter)
+    breaks the `model-routing`↔`managed-mode` **circular dependency** and is the only place
+    provider-invoice reconciliation works (we get that bill, not the BYOK tenant).
+  - **`model-routing` deps `soft`→`hard`** (metering + retrieval-eval) to match its done-criterion.
+  - **`metering`** no longer claims BYOK invoice reconciliation (tenant owns that invoice).
+  - **`managed-mode`** now hard-depends on `billing` too (a hard cap needs auto-recharge to refill).
+  - **Anchor reframed:** "premium model" → **principal mainstream tier = avg(Anthropic Sonnet + OpenAI
+    principal placeholder)**, a *price* reference not a quality ceiling; 80% tier renamed
+    `principal`→`workhorse`; **routing/classification overhead** added to the blend; model SKUs marked
+    **illustrative** (research-app/admin-app is SSOT for model selection + prices). ADR 009/014, PRICING.
+  - **Margin honesty:** `plans.md` now separates subscription vs token margin, adds a **negative-spread**
+    scenario, **Free-tier token cost**, and **break-even by infra stage**.
+  - **`guardrails` split** into `guardrails-min` (M2, before public widget) + `guardrails-full` (M4).
+  - **ADR 011** clarified the `max_tokens` cap is token-denominated (billing *unit* still open).
+  - **ADR 017** added: a **dim change** is a schema migration (not just a version bump) + ANN/RLS note.
+  - **confidence-gate** floor ships in **M2 as an uncalibrated safe default**, calibrated in M3.
+  - Counts: **24 → 26 active** (34 total) + 2 co-built engine libs counted separately.

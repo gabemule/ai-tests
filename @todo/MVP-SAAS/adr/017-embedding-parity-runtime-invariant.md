@@ -44,6 +44,19 @@ itself across a Python/Node split — it needs a concrete home and a runtime che
   **same** identity (or refuses + flags a mismatch) — never silently compares across spaces.
 - Migration on a model change: bump `embedding_version`, **re-embed on mismatch** (reuses the
   chunk-level re-embed pipeline, ADR 015), backfilling rows lazily or in a batch job.
+- **A dimension change is NOT just a version bump.** pgvector's `vector(N)` fixes the dimension at
+  the **column** level, so a model with a different `dim` cannot share the column. A dim change
+  requires a **schema migration** — a new typed column (or table) for the new dimension and a
+  cutover — not only an `embedding_version` increment. Same-dim/different-model changes are handled by
+  re-embed alone; different-dim changes carry a migration plan. The `embedding_version` detects the
+  mismatch; the migration path resolves it.
+- **ANN index under RLS.** The similarity index (`ivfflat`/`hnsw`) is built on the vector column and
+  is **dimension- and model-space-specific**; mixing two embedding spaces in one index degrades recall
+  silently. Keep one active space per index, and note that RLS filtering (`tenant_id`) composes with —
+  but does not replace — the ANN scan: validate recall under the tenant filter (RLS + ANN can interact
+  on small per-tenant row counts).
 - **Acceptance:** a **parity test** that fails if ingestion and query resolve to different
-  model/dim/normalization; and a migration test proving rows with an old `embedding_version` are
-  detected and re-embedded rather than queried against the new space.
+  model/dim/normalization; a migration test proving rows with an old `embedding_version` are
+  detected and re-embedded rather than queried against the new space; and a **dim-change test**
+  proving a different-`dim` model triggers the schema-migration path (new typed column/table), not a
+  silent reuse of the old `vector(N)` column.

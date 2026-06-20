@@ -1,7 +1,7 @@
 # Feature: tool-calling
 
 **Layer:** ⚪ Future · **Status:** backlog
-**depends_on:** chat-sse *(hard)* · guardrails *(soft)* · **ADRs:** 006
+**depends_on:** chat-sse *(hard)* · guardrails-full *(soft)* · **ADRs:** 006
 
 ## Objective
 
@@ -14,7 +14,7 @@ Register the customer's APIs as **tools** so the bot fetches **live, exact data*
 - Per-tenant tool registry: declare an API (schema, auth, endpoint) the LLM can call.
 - Tool-call loop inside chat: model requests a tool → we execute → feed result back → answer.
 - **Outbound egress guard** (SSRF/allowlist) — calling tenant-declared external endpoints needs
-  a hardened boundary; ties into `guardrails`.
+  a hardened boundary; ties into `guardrails-full`.
 
 **Out:**
 - Auto re-embed of static sources (→ `knowledge-sync`) — different concern (live vs. stored data).
