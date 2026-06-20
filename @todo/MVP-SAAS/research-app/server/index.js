@@ -116,5 +116,5 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`benchmark-app server on http://localhost:${PORT}`);
+  console.log(`research-app server on http://localhost:${PORT}`);
 });

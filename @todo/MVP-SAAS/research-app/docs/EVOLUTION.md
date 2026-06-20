@@ -18,7 +18,7 @@ What it is **missing** to be an oracle:
 2. **Three tiers** (`economy`/`principal`/`premium`) instead of two.
 3. A **pricing study** output (blended cost, margin by mix, plan simulation).
 4. **Telemetry ingestion** — real routing traces to validate the mix and the real blended cost.
-5. A hook for **our own `rag_score`** (from `../../BENCHMARK/`) to replace the coding-focused AA floor.
+5. A hook for **our own `rag_score`** (from `../../BENCHMARK/` — *planned, not yet in the workspace*) to replace the coding-focused AA floor.
 
 ## Goals
 
@@ -50,15 +50,17 @@ blended_per_1M = w_in · in_per_1M · (1 − cache_fraction · cache_discount) +
 - `value_aa` gains a sibling `value_blended = score / blended_per_1m`.
 
 > Rationale: in RAG the input (system prompt + chunks) dominates and is largely cacheable; the
-> symmetric average misprices it. See `../research/analise-modelos-rag-pricing.pdf` §4.
+> symmetric average misprices it. See `../analise-modelos-rag-pricing.pdf` §4.
 
 ## 3. Pricing study (the oracle output)
 
 New report (endpoint `GET /api/pricing-study` + a tab) that crosses **curated tiers × prices × mix**:
 
-- Input: `pricing.mix` (e.g. `{ economy: 0.85, principal: 0.12, premium: 0.03 }`) from `db.json`.
-- Output: **blended cost / 1M** (weighted by mix), the **price / 1M** we charge (metered-per-token,
-  `../../PRICING/`), and **margin = (price − blended_cost) / price**.
+- Input: `pricing.mix` (e.g. `{ principal: 0.80, economy: 0.15, premium: 0.05 }`, matching
+  `../../PRICING/models.md` / ADR 014) from `db.json`.
+- Output: **blended cost / 1M** (weighted by mix), the **price / 1M** we charge (billing unit is an
+  open decision — `fixed-per-message` vs `metered-per-token`, `../../PRICING/`), and
+  **margin = (price − blended_cost) / price**.
 - Simulation: vary the mix and see margin move — evidence for `PRICING/` decisions.
 
 > The **mix and the charged price are business data** owned by `../../PRICING/`. The app reads them
@@ -76,13 +78,14 @@ outcome { reqId, tokens_in, tokens_out, cached, latency_ms, cost_real,
 ```
 
 - New `db.json` block `traces[]` (later a Supabase `routing_traces` table).
-- Derived metrics: **real mix** (vs. the assumed 85/12/3), **real blended cost/1M** (vs. modeled),
+- Derived metrics: **real mix** (vs. the assumed 80/15/5), **real blended cost/1M** (vs. modeled),
   and an **online `rag_score`** per model (% cited context, mean confidence, 👍/👎).
 
 ## 5. Hook for our own `rag_score`
 
-`../../BENCHMARK/` produces a `rag_score` per model (offline eval + online traces). The floor logic
-uses `rag_score` when present, falling back to the external AA index otherwise:
+`../../BENCHMARK/` (*planned, not yet in the workspace*) produces a `rag_score` per model (offline
+eval + online traces). The floor logic uses `rag_score` when present, falling back to the external AA
+index otherwise:
 
 - New `db.json` block `rag_scores` (model id → score, source: offline|online, updated_at).
 - `quality.js` / floor logic prefers `rag_score` over `aa_index` for `bench-score-*` gating.
@@ -96,8 +99,8 @@ uses `rag_score` when present, falling back to the external AA index otherwise:
   "scores":  { /* unchanged: external AA-style */ },
   "pricing": {
     "weights": { "w_in": 0.85, "w_out": 0.15, "cache_fraction": 0.7, "cache_discount": 0.9 },
-    "mix":     { "economy": 0.85, "principal": 0.12, "premium": 0.03 },
-    "price_per_1m": 0.0 /* metered-per-token charge, from PRICING */
+    "mix":     { "principal": 0.80, "economy": 0.15, "premium": 0.05 },
+    "price_per_1m": 0.0 /* charge from PRICING; billing unit open: fixed-per-message vs metered-per-token */
   },
   "rag_scores": { /* model id → { score, source, updated_at } (from BENCHMARK) */ },
   "traces": [ /* routing traces+outcomes (from router-adapters telemetry) */ ],

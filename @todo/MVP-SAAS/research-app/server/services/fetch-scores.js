@@ -49,7 +49,7 @@ export async function fetchScores(prev = {}) {
   return {
     fetched_at: new Date().toISOString(),
     source: "artificialanalysis.ai",
-    note: "Full AA catalog (native Intelligence Index ~0-100). merge crosses this by normalized slug against the price catalog.",
+    note: "Full AA catalog (native Intelligence Index ~0-60 observed, theoretical 0-100). merge crosses this by normalized slug against the price catalog.",
     has_baseline: hasPrev,
     counts: {
       aa_total: aalist.length,

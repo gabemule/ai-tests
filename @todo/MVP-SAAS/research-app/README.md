@@ -43,18 +43,19 @@ The key is read **server-side only** (never shipped to the client).
   moves the current data to `*_prev` (for the NEW/PROMO/Δ-score diff), and writes `db.json`.
 - **Benchmark** is computed on every read (`GET /api/data`) by crossing prices × scores by normalized
   slug — so it always reflects the current tiers without a re-scan.
-- **★ select** a model (Prices tab) → adds it to our set with the default tier (`primary`).
+- **★ select** a model (Prices tab) → adds it to our set with the default tier (`principal`).
 - **Tier `<select>`** (Benchmark tab) → set/clear each model's project tier; blank = remove from ours.
   Every edit `PUT`s to the server and persists to `db.json` instantly.
 
 ### Project tiers (curated lists the router consumes)
 
-Two product tiers (`primary` / `economy`) across three axes, used by `router-adapters` to resolve the
-cheapest-available-above-floor model:
+Three product tiers (`economy` / `principal` / `premium`) across three axes, used by `router-adapters`
+to resolve the cheapest-available-above-floor model. The `premium` tier doubles as the pricing anchor
+(the customer pays the premium price; the router runs principal/economy under the hood):
 
-- **`primary` / `primary-alt`**, **`economy` / `economy-alt`** — the curated candidates (titular + fallback).
-- **`bench-score-primary` / `bench-score-economy`** — the quality floor (AA-index a model must clear).
-- **`bench-price-primary` / `bench-price-economy`** — the price ceiling (blended $/1M a model must stay under).
+- **`economy` / `economy-alt`**, **`principal` / `principal-alt`**, **`premium` / `premium-alt`** — the curated candidates (titular + fallback).
+- **`bench-score-economy` / `bench-score-principal` / `bench-score-premium`** — the quality floor (AA-index a model must clear).
+- **`bench-price-economy` / `bench-price-principal` / `bench-price-premium`** — the price ceiling (blended $/1M a model must stay under).
 
 ### Quality tier (dynamic)
 
@@ -63,13 +64,13 @@ Models are categorized by a **quality tier** derived from the AA Intelligence In
 `mid` (≥25%), `basic` (<25%). The cuts re-compute on each read and scale with the frontier, so they
 adapt as a stronger model raises the ceiling. Price is shown as a plain column (no fixed price cuts).
 
-This is distinct from our **project tier** (`primary`/`economy`/`bench-*`), which is our manual tag.
+This is distinct from our **project tier** (`economy`/`principal`/`premium`/`bench-*`), which is our manual tag.
 
 ## Data model (`db.json`)
 
 ```jsonc
 {
-  "ourModels": { "tiers": { "anthropic/claude-...": "bench-score-primary", ... } },
+  "ourModels": { "tiers": { "anthropic/claude-...": "bench-score-premium", ... } },
   "prices": { /* last scan: project_models, all_models, newest, embeddings_all */ },
   "scores": { /* last scan: aa_catalog */ },
   "prices_prev": { /* previous scan, for NEW/PROMO diff */ },

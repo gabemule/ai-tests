@@ -13,7 +13,7 @@ the RLS tenant boundary, with room reserved for a future `agent` role.
 **In:**
 - Roles: `owner`, `admin`, `editor`, `viewer`; membership on `MEMBER` (tenant-scoped).
 - Authorization checks on API actions (who can manage bots/docs/keys/members).
-- Forward-compatible enum (room for future `agent` role, FUTURE/02 agent-console).
+- Forward-compatible enum (room for future `agent` role, `agent-console`).
 
 **Out:**
 - The agent console / human-handoff features themselves (backlog).

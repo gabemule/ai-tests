@@ -38,7 +38,7 @@ Blocker: none.
 - [x] src/main.js
 
 ### Data + docs
-- [x] db.json seeded with current tiers (migrated to new nomenclature: primary/economy/bench-*)
+- [x] db.json seeded with current tiers (migrated to new nomenclature: economy/principal/premium/bench-*)
 - [x] README.md
 
 ### Validate + cleanup
