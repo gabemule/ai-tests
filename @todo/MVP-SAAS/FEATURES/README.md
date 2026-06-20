@@ -1,7 +1,7 @@
 # FEATURES — Catalog & Dependency Graph
 
 > The **primary structure** of the project. Each feature is an independent unit with
-> explicit dependencies. Phases (F1–F4) are a *derived view* at the bottom.
+> explicit dependencies. The build order (incremental milestones M1–M4) is a *derived view* at the bottom.
 > Last updated: 2026-06-20
 
 ---
@@ -20,7 +20,7 @@
 | Layer | Meaning |
 |---|---|
 | 🔵 Core | The inevitable co-dependent chain that proves the RAG loop |
-| 🟢 RAG Quality | The showcase protagonist — retrieval quality |
+| 🟢 RAG Quality | What makes the bot trustworthy — retrieval quality (anti-hallucination, relevance) |
 | 🟡 Platform | Real multi-tenant product surface |
 | 🟠 Revenue | Monetization (modeled, validated last) |
 | ⚪ Future | Market-adjacency backlog (promotable; adjacent to the RAG core) |
@@ -41,7 +41,7 @@
 | `chat-sse` | retrieval *(hard)* | 008, 009, 005, 011 | RAG chat (SSE) via `llm-adapters`, BYOK bootstrap |
 | `widget-v0` | chat-sse *(hard)* | 003 | Embeddable script + chat UI, single hardcoded domain |
 
-### 🟢 RAG Quality (the showcase protagonist)
+### 🟢 RAG Quality (what makes the bot trustworthy)
 
 | Feature | depends_on | ADRs | One-liner |
 |---|---|---|---|
@@ -162,47 +162,50 @@ flowchart TB
 
 ---
 
-## Recommended queue (showcase-first)
+## Recommended queue (incremental — validate product, then monetize)
 
-The dominant goal is **showcase first, revenue close behind**. So after the inevitable
-core chain, RAG quality jumps ahead of revenue.
+Order each step to **ship something testable** and to **never build a money feature before the thing
+it bills for exists**. The dependency graph above is the source of truth; this is the order to walk it.
 
 1. **Core chain** — `core-db → core-api → job-contract → ingestion → retrieval → chat-sse → widget-v0`
    *(inevitable; proves the loop)*
-2. **`retrieval-eval`** — rises early: it's pure showcase *and* it calibrates everything in RAG quality + routing.
-3. **`confidence-gate`** (floor first) — cheap, anti-hallucination, impressive.
-4. **`reranking`** — completes the RAG-quality trio.
-5. **`guardrails` (minimal: injection + I/O filtering)** — lands **before** the widget goes public,
+2. **`guardrails` (minimal: injection + I/O filtering)** — lands **before** the widget goes public,
    because an embeddable LLM surface is a live injection/abuse target the moment it's exposed.
-6. **`widget-security` + `rbac` + `api-keys` + `portal` + `admin-app` (shell)** — the "real product" surface.
-   The admin shell (tenant management + Research module) can land here; its cost×revenue analytics wait for revenue.
-7. **`incremental-reembed`** — bounds re-embed cost; unblocks knowledge-sync later.
-8. **`metering` (shadow)** — start measuring without charging.
-9. **`model-routing` → `wallet` → `managed-mode` → `billing`** — revenue, validated last, on a measured base.
-10. **`cost-attribution` → `revenue-analytics`** — per-tenant cost × revenue → margin; turns the modeled spread into a measured number (needs `metering` + `billing`).
-11. **`guardrails` (full)** — system-prompt scoping config + hardening, before broad external rollout.
+3. **`confidence-gate` (floor)** — cheap anti-hallucination: the bot says "I don't know" instead of
+   making things up. Wanted **before the first real customer**, not after.
+4. **`rbac` + `api-keys` + `widget-security` + `portal` + `admin-app` (shell)** — the self-service
+   product surface: a customer signs up, uploads a doc, gets a key, embeds the widget safely.
+5. **`retrieval-eval` → `reranking`** — measure retrieval quality and improve relevance; calibrates
+   the confidence-gate thresholds and (later) the routing blend.
+6. **`incremental-reembed`** — bounds re-embed cost; unblocks knowledge-sync later.
+7. **`metering` (shadow)** — start measuring real usage without charging anyone.
+8. **`model-routing` → `wallet` → `managed-mode` → `billing`** — monetization, on a measured base.
+9. **`cost-attribution` → `revenue-analytics`** — per-tenant cost × revenue → margin; turns the
+   modeled spread into a measured number (needs `metering` + `billing`).
+10. **`guardrails` (full)** — per-bot system-prompt scoping + hardening, before broad external rollout.
 
-> **Why this order:** showcase value (RAG quality) is front-loaded; the unvalidated
-> economic thesis (routing spread) is de-risked by `metering` shadow mode + `retrieval-eval`
-> *before* money depends on it. **Guardrails are split:** a minimal injection/output filter ships
-> *before* the public widget (step 5); the full per-bot scoping/hardening lands later (step 11).
+> **Why this order:** a working, embeddable bot comes first (step 1); the public surface is made
+> safe (anti-injection, anti-hallucination floor) *before* real users touch it (steps 2–3); the
+> self-service product lands (step 4); quality and cost-bounding harden it (steps 5–6); only then does
+> money get layered on a base that already works and is **measured** (`metering` shadow + `retrieval-eval`)
+> *before* the spread is trusted (steps 7–9). **Guardrails are split:** minimal filter before the public
+> widget (step 2); full per-bot scoping later (step 10).
 
 ---
 
-## Derived view: the old F1–F4 phases
+## Derived view: incremental milestones (M1–M4)
 
-Kept so the previous roadmap work isn't lost. This is a *projection* of the feature graph
-onto the old phase labels — not the primary structure.
+A *projection* of the feature graph onto build milestones — **not** the primary structure. Each
+milestone ends in something you can put in front of a user.
 
-| Phase | Theme | Features |
+| Milestone | What you can do at the end | Features |
 |---|---|---|
-| **F1 — MVP** | Prove the loop | core-db, core-api, job-contract, ingestion, retrieval, chat-sse, widget-v0 |
-| **F1.5 — Quality** *(new emphasis)* | RAG showcase | retrieval-eval, confidence-gate, reranking |
-| **F2 — Multi-tenant** | Platform | rbac, api-keys, widget-security, incremental-reembed, portal, metering (shadow) · *guardrails (minimal: injection + I/O) lands here, before the public widget* |
-| **F3 — Governance** | Production-ready | guardrails (full: per-bot scoping + hardening), rate limiting, plan limits, +docx/csv/xlsx |
-| **F4 — GA** | Scale + revenue | model-routing, wallet, managed-mode, billing, OCR, URL crawl, moderation |
+| **M1 — Closed loop** *(I test it)* | A bot answers from one tenant's docs, embedded on a page | core-db, core-api, job-contract, ingestion, retrieval, chat-sse, widget-v0 |
+| **M2 — Self-service product** *(a customer tests it alone)* | Sign up → upload doc → get key → embed safely; bot won't inject-leak or hallucinate | guardrails (minimal: injection + I/O), confidence-gate (floor), rbac, api-keys, widget-security, portal, admin-app (shell) |
+| **M3 — Trustworthy & bounded** *(it retains)* | Measured retrieval quality, better relevance, bounded re-embed cost | retrieval-eval, reranking, incremental-reembed |
+| **M4 — Monetized** *(it charges)* | Real usage metered, margin validated, wallet/Stripe billing, cost×revenue per tenant | metering (shadow), model-routing, wallet, managed-mode, billing, cost-attribution, revenue-analytics, guardrails (full) |
 
-> **What moved vs. the old plan:** RAG quality (`retrieval-eval`, `confidence-gate`,
-> `reranking`) was pulled forward from F4-nice-to-have into a first-class **F1.5** because
-> the dominant goal is showcase. `confidence-gate` is **new** (ADR 019). Everything else maps
-> back to a surviving ADR.
+> **Why milestones, not the old F1–F4:** the previous phase labels were tied to a "showcase-first"
+> framing that's gone. These milestones are ordered by **incremental product validation toward
+> revenue**: each one is shippable and de-risks the next. The `confidence-gate` floor sits in **M2**
+> (so the first customer's bot doesn't hallucinate), with the rest of RAG quality in M3.

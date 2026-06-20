@@ -16,7 +16,7 @@ Blocker: none.
 
 - [x] `README.md` — entry point
 - [x] `CONTEXT.md` — compiled knowledge
-- [x] `FEATURES/README.md` — catalog + dependency graph + queue + derived F1–F4 view
+- [x] `FEATURES/README.md` — catalog + dependency graph + queue + derived M1–M4 milestones view
 - [x] `PROGRESS.md` *(this)*
 - [x] `ARCHITECTURE.md` — concept + diagrams
 - [x] `adr/` — surviving ADRs 001–018 (clean) + ADR 019 (confidence-gate) + ADR 020 (admin/operator
@@ -114,5 +114,13 @@ Status per feature. `todo` = planned, not started. See `FEATURES/<slug>/PLAN.md`
   `revenue-analytics` (cost × revenue → margin/tenant). `admin-app` is an **active** feature (not
   backlog) because monetization needs it. Counts: **21 → 24 active** (32 total). The cost×revenue core
   depends on the revenue layer (`metering`/`billing`), so it sequences after it.
-
-
+- 2026-06-20: **"Showcase-first" narrative dropped; goal restated as revenue.** The README/CONTEXT
+  framing of "demonstrate end-to-end AI engineering" was incoherent with the whole `PRICING/` thesis
+  (margin/wallet/routing). Reframed: **build a sellable product incrementally**; polyglot is an
+  engineering decision (Python worker for parsing/OCR/eval, TS everywhere else), not a demo. The dead
+  **F1–F4 "derived view"** (tied to a plan that no longer exists) was **replaced** by **incremental
+  validation milestones M1–M4** (M1 closed loop → M2 self-service product → M3 trustworthy/bounded →
+  M4 monetized). The recommended queue was reordered accordingly; the **`confidence-gate` floor moved
+  into M2** (so the first real customer's bot doesn't hallucinate). No feature, dependency, or ADR
+  changed — only narrative + ordering. Earlier 2026-06-17 "showcase/F1.5" log entries are kept as
+  historical record.

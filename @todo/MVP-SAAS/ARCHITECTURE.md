@@ -109,19 +109,103 @@ erDiagram
     CONVERSATION ||--o{ MESSAGE : "contains"
     OPERATOR ||--o{ ADMIN_AUDIT : "logs"
 
-    ORGANIZATION { uuid id PK; string name; string plan }
-    MEMBER { uuid id PK; uuid tenant_id FK; string email; string role }
-    API_KEY { uuid id PK; uuid tenant_id FK; string environment; string scope; string hash }
-    BOT { uuid id PK; uuid tenant_id FK; text system_prompt; json guardrails; bytes byok_llm_key }
-    ALLOWED_DOMAIN { uuid id PK; uuid bot_id FK; uuid tenant_id; string domain; bool verified; string ownership_token }
-    DOCUMENT { uuid id PK; uuid bot_id FK; uuid tenant_id; string filename; string status }
-    CHUNK { uuid id PK; uuid document_id FK; uuid tenant_id; int index; text content; string content_hash }
-    EMBEDDING { uuid id PK; uuid chunk_id FK; uuid tenant_id; vector embedding; string embedding_model; int embedding_dim; bool embedding_normalized; int embedding_version }
-    CONVERSATION { uuid id PK; uuid bot_id FK; uuid tenant_id; string status; timestamp created_at }
-    MESSAGE { uuid id PK; uuid conversation_id FK; uuid tenant_id; string role; text content; int tokens_in; int tokens_out; timestamp created_at }
-    WALLET_ENTRY { uuid id PK; uuid tenant_id FK; string type; string idempotency_key; bigint amount; string reason; timestamp created_at }
-    OPERATOR { uuid id PK; string email; string role }
-    ADMIN_AUDIT { uuid id PK; uuid operator_id FK; string action; uuid target_tenant_id; json detail; timestamp created_at }
+    ORGANIZATION {
+        uuid id PK
+        string name
+        string plan
+    }
+    MEMBER {
+        uuid id PK
+        uuid tenant_id FK
+        string email
+        string role
+    }
+    API_KEY {
+        uuid id PK
+        uuid tenant_id FK
+        string environment
+        string scope
+        string hash
+    }
+    BOT {
+        uuid id PK
+        uuid tenant_id FK
+        text system_prompt
+        json guardrails
+        bytes byok_llm_key
+    }
+    ALLOWED_DOMAIN {
+        uuid id PK
+        uuid bot_id FK
+        uuid tenant_id
+        string domain
+        bool verified
+        string ownership_token
+    }
+    DOCUMENT {
+        uuid id PK
+        uuid bot_id FK
+        uuid tenant_id
+        string filename
+        string status
+    }
+    CHUNK {
+        uuid id PK
+        uuid document_id FK
+        uuid tenant_id
+        int index
+        text content
+        string content_hash
+    }
+    EMBEDDING {
+        uuid id PK
+        uuid chunk_id FK
+        uuid tenant_id
+        vector embedding
+        string embedding_model
+        int embedding_dim
+        bool embedding_normalized
+        int embedding_version
+    }
+    CONVERSATION {
+        uuid id PK
+        uuid bot_id FK
+        uuid tenant_id
+        string status
+        timestamp created_at
+    }
+    MESSAGE {
+        uuid id PK
+        uuid conversation_id FK
+        uuid tenant_id
+        string role
+        text content
+        int tokens_in
+        int tokens_out
+        timestamp created_at
+    }
+    WALLET_ENTRY {
+        uuid id PK
+        uuid tenant_id FK
+        string type
+        string idempotency_key
+        bigint amount
+        string reason
+        timestamp created_at
+    }
+    OPERATOR {
+        uuid id PK
+        string email
+        string role
+    }
+    ADMIN_AUDIT {
+        uuid id PK
+        uuid operator_id FK
+        string action
+        uuid target_tenant_id
+        json detail
+        timestamp created_at
+    }
 ```
 
 > **`OPERATOR` / `ADMIN_AUDIT` are NOT tenant-scoped (ADR 020).** They live outside the `tenant_id`
@@ -154,20 +238,20 @@ sequenceDiagram
 
     User->>API: POST /documents (upload)
     API->>Obj: store raw file
-    API->>PG: create Document (status=pending)
-    API->>Q: enqueue job { schema_version, document_id, tenant_id, bot_id, file_ref, content_hash }
-    API-->>User: 202 Accepted { job_id }
+    API->>PG: create Document, status pending
+    API->>Q: enqueue job (schema_version, document_id, tenant_id, bot_id, file_ref, content_hash)
+    API-->>User: 202 Accepted with job_id
     Note over Q,W: async, off the request path (validated job contract, ADR 018)
     Q->>W: deliver job (signature-verified, ADR 007)
     W->>W: validate contract + set app.tenant_id (txn-local)
     W->>Obj: fetch raw file
     W->>W: parse + chunk (hash per chunk)
-    W->>Emb: embed(chunks)  [active shared config, ADR 017]
+    W->>Emb: embed chunks (active shared config, ADR 017)
     Emb-->>W: vectors
     W->>PG: upsert chunks + embeddings (idempotent by content_hash)
-    W->>PG: Document.status = ready
-    User->>API: GET /jobs/{job_id}
-    API-->>User: { status: ready }
+    W->>PG: set Document.status ready
+    User->>API: GET /jobs/job_id
+    API-->>User: status ready
 ```
 
 ## 6. Flow 2 — Chat (RAG + streaming + the new gate)
@@ -185,15 +269,15 @@ sequenceDiagram
     Visitor->>W: types question
     W->>API: POST /chat (publishable key, Origin)
     API->>API: validate key + Origin (+ domain proof, ADR 004)
-    API->>Emb: embed(question)
+    API->>Emb: embed question
     Emb-->>API: query vector
     API->>PG: similarity search (tenant + bot scoped)
     PG-->>API: top-k chunks + scores
     Note over API: confidence-gate (ADR 019)
-    API->>API: all scores below floor? → "don't know" / fallback (no LLM)
-    API->>API: (optional) near-exact match? → answer from chunk (no LLM)
+    API->>API: scores below floor, return dont-know fallback (no LLM)
+    API->>API: optional near-exact match, answer from chunk (no LLM)
     API->>API: else build prompt (system + context + windowed history)
-    API->>LLM: chat(prompt, key)  [Managed: routed model; BYOK: tenant key]
+    API->>LLM: chat (Managed routed model or BYOK tenant key)
     LLM->>Prov: request
     Prov-->>LLM: streamed tokens
     LLM-->>API: stream (+ local token count, ADR 011)

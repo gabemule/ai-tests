@@ -7,7 +7,7 @@
 
 An offline evaluation harness for retrieval quality: a labeled dataset + recall/precision metrics
 that turns "the bot feels good" into a measurable number. Calibrates the confidence gate, reranking,
-and (later) the routing blend. The protagonist of the showcase.
+and (later) the routing blend — the substrate that makes RAG quality measurable instead of vibes.
 
 ## Scope
 

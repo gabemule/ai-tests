@@ -45,5 +45,6 @@ Both thresholds are **empirically calibrated by `retrieval-eval`**, never hardco
 - Distinct from `reranking` (reorders chunks) and `model-routing` (picks the model): the gate decides
   **whether to generate at all**. They compose — gate first, then rerank, then route.
 - Per-bot configurable: refusal threshold, fallback behavior, and whether the ceiling is enabled.
-- **Showcase value:** "the bot knows when it doesn't know" is a strong, demonstrable AI-product
-  signal — a key reason RAG quality is pulled forward in the queue (`FEATURES/README.md`).
+- **Product value:** "the bot knows when it doesn't know" is what keeps a grounded support bot from
+  embarrassing the customer — the reason the confidence-gate floor lands early (milestone M2, before
+  the first real customer; `FEATURES/README.md`).

@@ -6,7 +6,8 @@
 ## Objective
 
 An embeddable `<script>` + chat UI that talks to the SSE chat endpoint using a publishable key —
-the first end-to-end showcase of the loop on a real page. Single hardcoded domain for now.
+the first end-to-end proof of the loop working on a real page (closes milestone M1). Single hardcoded
+domain for now.
 
 ## Scope
 

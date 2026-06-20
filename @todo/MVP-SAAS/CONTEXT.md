@@ -26,9 +26,11 @@
   query-embed). The TS stack unifies API + portal + widget. (ADR 001)
 - **Reuse, not reinvention:** the product is a shell around the existing adapter engine.
 - **Feature-graph model:** the project is a graph of independent features with explicit
-  `depends_on` (hard/soft). F1–F4 phases are a derived view. (`FEATURES/README.md`)
-- **Showcase-first ordering:** RAG quality (eval, confidence-gate, reranking) is a
-  protagonist, not a deferred nice-to-have.
+  `depends_on` (hard/soft). Build order = incremental milestones M1–M4 (a derived view). (`FEATURES/README.md`)
+- **Revenue-oriented, incremental ordering:** ship a working embeddable bot first, make it a
+  self-service multi-tenant product, then layer monetization on a base that already works.
+- **RAG quality comes early (not as a demo):** eval + confidence-gate (anti-hallucination floor) +
+  reranking land before broad rollout because a bot that makes things up doesn't retain paying customers.
 - **Two-axis API keys:** environment (`sandbox`|`production`) × scope (`secret`|`publishable`). (ADR 003)
 - **Async ingestion:** `POST /documents` → `202 Accepted` + job id; status via polling/SSE. (ADR 007)
 - **SSE chat streaming** (matches the adapters' streaming surface).
@@ -52,9 +54,9 @@
   bill a prepaid wallet; margin = routing spread (~85%), no markup. **Billing unit is an
   open decision** — two candidates kept side-by-side (`fixed-per-message` vs
   `metered-per-token`), choice deferred until real metering data. (ADR 009/013/014)
-- **Phasing:** BYOK ships first (F1–F2) as the technical bootstrap (no wallet, zero
-  financial risk); Managed lands at GA and becomes default; BYOK then is the **paid
-  Enterprise-only add-on** sold on governance/compliance.
+- **Phasing:** BYOK ships first (M1, in `chat-sse`) as the technical bootstrap (no wallet, zero
+  financial risk); Managed lands with the monetization milestone (M4) and becomes default; BYOK then
+  is the **paid Enterprise-only add-on** sold on governance/compliance.
 - **Embeddings always managed** (never BYOK) — tiny cost, baked into plan capacity. (ADR 010)
 - Economic detail in `PRICING/`. **The ~85% spread is a modeled estimate** (depends on a
   router that doesn't exist yet) — validate before treating as fact.
