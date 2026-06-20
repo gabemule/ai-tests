@@ -2,12 +2,12 @@
 
 > The economic thesis for the platform, **self-contained in this workspace**. The durable logic
 > (margin engine, billing modes, plan structure) lives here as ours; the **volatile provider prices**
-> live in `get-model-prices/` (our live OpenRouter tooling — code, not a doc to keep in sync).
+> live in `../research-app/` (our live catalog tooling — code, not a doc to keep in sync).
 > Companion to `../adr/` (decisions) and `../FEATURES/` (revenue layer).
-> Last updated: 2026-06-17
+> Last updated: 2026-06-19
 >
 > **Estimates, not quotes.** Every number here is an order-of-magnitude anchor to reason about plans
-> and margins, **not** a billing source of truth. Provider prices drift; re-fetch via `get-model-prices/` and
+> and margins, **not** a billing source of truth. Provider prices drift; re-fetch via `../research-app/` and
 > recompute before trusting any table. The **~85% routing spread is a modeled estimate** that depends
 > on a router that does not exist yet — it is validated by the revenue features, not assumed.
 
@@ -19,13 +19,15 @@
 |---|---|---|
 | `README.md` *(this)* | 🔒 | Hub: thesis + TCO + billing roadmap + open questions |
 | `billing.md` | 🔒 | LLM modes (Managed/BYOK), wallet ledger, metering, payments |
-| `models.md` | 🔁 | Generation mix + routing spread (the margin engine); reads `get-model-prices/` |
+| `models.md` | 🔁 | Generation mix + routing spread (the margin engine); reads `../research-app/` |
 | `plans.md` | 🔒/🔁 | Plan ladder + caps + reingestion budget + margin analysis |
 | `REVALIDATION.md` | 🔒 | What to re-measure when each revenue feature ships (ties numbers → features) |
-| `get-model-prices/` | — | **Live-data tooling (code)** — OpenRouter price fetcher + dashboard + snapshots |
+| `embeddings.md` | 🔁 | Embedding-model prices (default/fallback) — load-bearing for `plans.md` worst-case |
+| `infrastructure.md` | 🔁 | Fixed infra tier costs — load-bearing for `plans.md` margin floor |
+| `../research-app/` | — | **Live-data tooling (code)** — Vite + lowdb catalog: OpenRouter prices × AA scores |
 
 > **Why the split:** logic (this folder's `.md`) is atemporal and ours. Provider digits change
-> monthly, so they're never hand-copied — `get-model-prices/` fetches them live and the docs reference it.
+> monthly, so they're never hand-copied — `../research-app/` fetches them live and the docs reference it.
 
 ---
 
@@ -36,15 +38,15 @@ embeddings) stays lean. We monetize generation through **two modes**:
 
 | Mode | How it works | Our financial risk |
 |---|---|---|
-| **Managed** *(default, all tiers)* | We hold the key, **meter locally**, bill a **prepaid wallet** at **one per-message price anchored on the premium model**, **no explicit markup**. | Controlled (prepaid + real-time cap) |
+| **Managed** *(default, all tiers)* | We hold the key, **meter locally**, bill a **prepaid wallet** at our **managed price anchored on the premium model** — billed **per-message OR metered-per-token** (two candidates, decision deferred; see `models.md`), **no explicit markup**. | Controlled (prepaid + real-time cap) |
 | **BYOK** *(Enterprise-only paid add-on)* | Customer brings their own key; their token cost, never on our bill. | None — but forgoes our spread, so it's a **paid** governance add-on |
 
-**Margin = routing spread, not markup.** The per-message price is anchored on the premium model's
+**Margin = routing spread, not markup.** The managed price is anchored on the premium model's
 cost; a cheaper blended mix runs under the hood; the spread (`anchor − real blended cost`, modeled
 ~85%) is ours. The better the router, the bigger the margin. (ADR 014, detail in `models.md`)
 
 **Internal vs. public.** The spread is an **internal** mechanism. Publicly we present **one
-per-message price + a consumption dashboard** — never "provider cost + spread". Copy sells
+managed price + a consumption dashboard** — never "provider cost + spread". Copy sells
 **convenience + predictable price**, never "no markup" (that framing invites spread-deduction and
 trains the customer to read our price as a markup).
 
@@ -100,14 +102,14 @@ Provider prices are **not** hand-copied into these docs. They are fetched live b
 
 | Need | Where |
 |---|---|
-| Model prices (live OpenRouter, SSOT) | `get-model-prices/` — run `bash fetch-openrouter-pricing.sh`, browse `openrouter-pricing.html` |
-| Generation mix + routing spread math | `models.md` (reads `get-model-prices/`) |
+| Model prices + quality scores (live, SSOT) | `../research-app/` — `npm install && npm run dev`, hit **Scan** in the UI |
+| Generation mix + routing spread math | `models.md` (reads `../research-app/`) |
 | Plan ladder + caps + margin tables | `plans.md` |
 | LLM modes, wallet, metering, payments | `billing.md` |
+| Embedding prices · fixed infra tiers | `embeddings.md` · `infrastructure.md` |
 
-> Embedding-model prices, infra-tier costs and the competitor matrix are **volatile research** kept
-> in the **frozen** `@todo/SAAS-CHATBOT/PRICING/` (`embeddings.md`, `infrastructure.md`, `market.md`)
-> — dated reference, not re-maintained here. Re-derive locally if/when they become load-bearing.
+> Embedding-model prices and infra-tier costs are kept as **dated research** in `embeddings.md` /
+> `infrastructure.md` (2026-06-14 snapshots) — re-derive locally when they become load-bearing.
 
 ## Related ADRs
 

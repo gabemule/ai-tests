@@ -231,7 +231,7 @@ runtime authority — types are a convenience, the contract is the guard.
 **Decision:** Two distinct layers with distinct jobs:
 - **Billing source of truth = the provider's `usage`** returned on each response (input/output tokens).
   It is exactly what the provider charges, so it is the most faithful count by definition. The product's
-  usage logger persists this (see SAAS-CHATBOT ADR 011).
+  usage logger persists this (see MVP-SAAS ADR 011).
 - **Local pre-request counting = guard-rail only.** Used to compute an affordable `max_tokens` budget
   before generation so a single (streaming) answer can't push the wallet negative. It is an **estimate**,
   never the billing basis.

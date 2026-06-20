@@ -2,7 +2,7 @@
 
 > The **primary structure** of the project. Each feature is an independent unit with
 > explicit dependencies. Phases (F1–F4) are a *derived view* at the bottom.
-> Last updated: 2026-06-17
+> Last updated: 2026-06-19
 
 ---
 
@@ -23,7 +23,7 @@
 | 🟢 RAG Quality | The showcase protagonist — retrieval quality |
 | 🟡 Platform | Real multi-tenant product surface |
 | 🟠 Revenue | Monetization (modeled, validated last) |
-| ⚪ Future | Market-adjacency backlog (from the old `FUTURE/`) |
+| ⚪ Future | Market-adjacency backlog (promotable; adjacent to the RAG core) |
 
 ---
 
@@ -73,8 +73,7 @@
 ### ⚪ Future (backlog)
 
 First-class features like the rest — each has a `FEATURES/<slug>/PLAN.md` — but **not committed
-scope**. `Status: backlog`; any one can be **promoted** to a real layer freely. Distilled from the
-old `@todo/SAAS-CHATBOT/FUTURE/`.
+scope**. `Status: backlog`; any one can be **promoted** to a real layer freely.
 
 | Feature | depends_on | ADRs | One-liner |
 |---|---|---|---|
@@ -148,7 +147,7 @@ flowchart TB
     end
 ```
 
-> **27 active features** (🔵🟢🟡🟠) + **8 backlog** (⚪) = 29 total. Backlog cards depend on the
+> **21 active features** (🔵🟢🟡🟠) + **8 backlog** (⚪) = 29 total. Backlog cards depend on the
 > active graph but commit nothing; promote one by moving it into a real layer.
 
 

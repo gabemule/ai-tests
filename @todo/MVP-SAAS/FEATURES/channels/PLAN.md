@@ -2,7 +2,6 @@
 
 **Layer:** ⚪ Future · **Status:** backlog
 **depends_on:** chat-sse *(hard)* · **ADRs:** — *(new)*
-**Source:** `@todo/SAAS-CHATBOT/FUTURE/01-channels.md`
 
 ## Objective
 

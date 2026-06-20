@@ -2,7 +2,7 @@
 
 > Concept + diagrams. Companion to `FEATURES/README.md` (the feature graph),
 > `CONTEXT.md` (working knowledge), `PROGRESS.md` (status).
-> Last updated: 2026-06-17
+> Last updated: 2026-06-19
 
 ---
 

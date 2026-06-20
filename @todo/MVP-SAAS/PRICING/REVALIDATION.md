@@ -3,7 +3,7 @@
 > The economic model is built on **estimates**. This file ties each estimate to the **feature** that
 > turns it into a measured fact, so we re-validate at the right moment instead of trusting a number
 > indefinitely. The guiding rule: **measure before money depends on it.**
-> Last updated: 2026-06-17
+> Last updated: 2026-06-19
 
 ---
 
@@ -20,13 +20,13 @@
 
 | What | How | Cadence |
 |---|---|---|
-| Model $/1M (anchor, principal, economy) | `bash get-model-prices/fetch-openrouter-pricing.sh` → browse `get-model-prices/openrouter-pricing.html` | monthly, or when a model is deprecated/launched |
-| New candidate models | `get-model-prices/` dashboard "Newest" tab → benchmark quality | monthly |
+| Model $/1M (anchor, principal, economy) | `../research-app/` → `npm install && npm run dev`, hit **Scan** (curated tiers + live prices land in `db.json`) | monthly, or when a model is deprecated/launched |
+| New candidate models | `../research-app/` dashboard "Newest" tab → benchmark quality | monthly |
 | Stripe / PIX fees | check provider pricing pages | quarterly |
-| Embedding $/MB, infra tiers | frozen `@todo/SAAS-CHATBOT/PRICING/{embeddings,infrastructure}.md` (re-derive locally if load-bearing) | when load-bearing |
+| Embedding $/MB, infra tiers | `embeddings.md` / `infrastructure.md` (re-derive locally if load-bearing) | when load-bearing |
 
-> The `get-model-prices/` tooling already does **NEW/PROMO** diffing against dated snapshots, so a price drop
-> or a new model surfaces automatically on the next fetch.
+> The `../research-app/` tooling already does **NEW/PROMO** diffing against dated snapshots, so a price drop
+> or a new model surfaces automatically on the next Scan.
 
 ---
 

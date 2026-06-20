@@ -2,7 +2,6 @@
 
 **Layer:** ⚪ Future · **Status:** backlog *(exploratory)*
 **depends_on:** chat-sse *(hard)* · **ADRs:** — *(new)*
-**Source:** `@todo/SAAS-CHATBOT/FUTURE/05-embedded-ai-layer.md`
 
 ## Objective
 

@@ -2,7 +2,6 @@
 
 **Layer:** ⚪ Future · **Status:** backlog
 **depends_on:** chat-sse *(hard)* · guardrails *(soft)* · **ADRs:** 006
-**Source:** `@todo/SAAS-CHATBOT/FUTURE/08-tool-calling.md`
 
 ## Objective
 

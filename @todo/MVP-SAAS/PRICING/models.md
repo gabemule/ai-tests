@@ -1,10 +1,10 @@
 # PRICING — Generation models & routing intelligence (the margin engine)
 
 > Part of `PRICING/`. **This is where the margin comes from.** The *logic* below is durable; the
-> *prices* are 🔁 volatile — they come from our live tooling in `get-model-prices/` (run
-> `bash get-model-prices/fetch-openrouter-pricing.sh`, browse `get-model-prices/openrouter-pricing.html`). Re-fetch and
+> *prices* are 🔁 volatile — they come from our live tooling in `../research-app/` (run
+> `npm install && npm run dev`, hit the **Scan** button; curated tiers + live prices land in `db.json`). Re-fetch and
 > recompute the blend + spread before trusting any table.
-> Last updated: 2026-06-17 · numbers below are a **2026-06-14 snapshot**, illustrative only.
+> Last updated: 2026-06-19 · numbers below are a **2026-06-14 snapshot**, illustrative only.
 
 ---
 
@@ -23,7 +23,7 @@ actually runs; the difference (`anchor − real blended cost`) is the margin. (A
 | **Economy (~15%)** | a cheap-but-competent model (e.g. DeepSeek-class) | simple queries; best ROI tier |
 | **Premium (~5%)** | the anchor itself, on hard queries | quality backstop for the few queries that need it |
 
-> Exact model IDs + live per-1M-token prices + quality scores live in `get-model-prices/` (the
+> Exact model IDs + live per-1M-token prices + quality scores live in `../research-app/` (the
 > `project_models` set is tagged by tier: `anchor` / `principal` / `economy`). The dashboard's
 > **"Newest"** tab surfaces just-launched models to benchmark as candidates.
 
@@ -57,21 +57,24 @@ expiry never breaks the model.
   a deliberate move, never the default.
 - **Self-hosted Ollama (future exploration):** an open-source model on our own GPU has **no per-token
   cost** — trades variable token cost for **fixed GPU cost**, a 4th zero-token-cost routing tier. The
-  frozen `ANALYSIS/infra.md` suggested the breakeven arrives sooner than expected at our volumes;
+  curated `infrastructure.md` suggested the breakeven arrives sooner than expected at our volumes;
   re-derive locally before committing.
 
-### Managed billing variant — chosen: fixed per message
+### Managed billing variant — two candidates, decision deferred
 
-| Variant | How billed | Verdict |
+We keep **two billing models** on the table and pick once real `metering`/`model-routing` data lands.
+Both preserve the routing spread as ours (we never hand metered savings + markup to the customer).
+
+| Candidate | How billed | Argument |
 |---|---|---|
-| **Fixed per message** ✅ | flat per-message price, anchored on the premium model | **chosen** — routing savings are 100% ours; predictable bill; margin & router invisible |
-| Metered + markup | actual metered cost + ~20% | rejected — hands routing savings to the customer, kills the margin |
-| Prepaid credit + markup | generic credit + ~20% | rejected — same margin shape as metered, opaque "credit" feel |
+| **Fixed per message** | flat per-message price, anchored on the premium model | predictable bill; margin & router fully invisible; routing savings are 100% ours. Risk: heavy queries must be absorbed in aggregate, so the anchor needs a buffer |
+| **Metered per token** | per-token price on the customer's own metered tokens (ADR 011 local counting) | billed unit = metered unit → no message↔token conversion; heavy queries self-price (the user pays for what they burn); routing spread still ours because we price the token, not pass through cost |
+| ~~Metered + markup~~ | actual metered cost + ~20% | rejected — hands routing savings to the customer, kills the margin |
+| ~~Prepaid credit + markup~~ | generic credit + ~20% | rejected — same margin shape as metered+markup, opaque "credit" feel |
 
-> **Decision:** fixed per message, so the router is a real margin lever, not savings we give away.
-> Heavy-query risk is absorbed in aggregate; we calibrate the anchor with a buffer and monitor real mix
-> before ever lowering it. The exact per-message price is set once real `metering`/`model-routing` data
-> lands.
+> **Decision: deferred.** Both *fixed-per-message* and *metered-per-token* keep the router as a real
+> margin lever (unlike metered+markup). The choice between them needs real mix + difficulty data from
+> `metering`/`model-routing`; until then we document both side-by-side rather than lock in.
 
 ### The spread by volume (illustrative, snapshot)
 
@@ -90,4 +93,4 @@ fixed ~85% of revenue), so heavier tenants don't compress it — they *scale* it
 > floor** (`billing.md`): a ~1B-tokens/mo tenant on BYOK gives up ~$7.6k/mo of spread, so the
 > governance fee must recapture a meaningful share.
 >
-> **Re-validate these digits in `get-model-prices/`** — they are a dated snapshot, not a quote.
+> **Re-validate these digits in `../research-app/`** — they are a dated snapshot, not a quote.

@@ -1,15 +1,15 @@
-# benchmark-app
+# models-app
 
 > ⚠️ **Prototype / proof-of-concept.** This is a **local example of where we want to get to**, not the
 > final implementation. The target is a more robust application that **persists the catalog to Supabase
-> alongside the rest of the SAAS-CHATBOT platform** — so the model list, prices and tiers can be read
+> alongside the rest of the MVP-SAAS platform** — so the model list, prices and tiers can be read
 > **directly from the DB** (instead of a local `db.json`). Treat the current Vite + lowdb stack as a
 > throwaway curation sandbox that proves the data model; the production version lives in the DB.
 
-Local **catalog / curation tool** for `router-adapters`: track model **pricing** (OpenRouter) ×
-**quality** (Artificial Analysis), curate our model set + tiers, and keep it all in a single
-**versioned `db.json`**. This is the **producer** half — it maintains the curated lists + thresholds
-that the router (the consumer) resolves against at runtime. See `../README.md` and `../CONTEXT.md`.
+Local **catalog / curation tool** consumed by the generic `router-adapters` library: track model
+**pricing** (OpenRouter) × **quality** (Artificial Analysis), curate our model set + tiers, and keep
+it all in a single **versioned `db.json`**. This is the **producer** half — it maintains the curated
+lists + thresholds that the router (the consumer) resolves against at runtime. See `../README.md`.
 
 Replaces the old `get-model-benchmark/` (bash scripts + static `file://` dashboard).
 

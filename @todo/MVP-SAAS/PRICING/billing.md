@@ -2,7 +2,7 @@
 
 > Part of `PRICING/`. The durable business logic of how money flows. Mostly 🔒 stable; only the
 > Stripe/PIX fee numbers are volatile (re-check against reality).
-> Last updated: 2026-06-17
+> Last updated: 2026-06-19
 
 ---
 
@@ -12,7 +12,7 @@ Two ways a tenant powers chat generation:
 
 | Mode | How it works | Best for | Our risk |
 |---|---|---|---|
-| **Managed** *(default, all tiers)* | Our key, **meter locally**, bill a **prepaid wallet** at our **per-message price** (anchored on the premium model; router runs a cheaper blended mix, the spread is our margin) | Everyone, Free → Enterprise | Controlled (prepaid + caps) |
+| **Managed** *(default, all tiers)* | Our key, **meter locally**, bill a **prepaid wallet** at our managed price — **per-message OR metered-per-token** (both under evaluation, `models.md`; anchored on the premium model, router runs a cheaper blended mix, the spread is our margin) | Everyone, Free → Enterprise | Controlled (prepaid + caps) |
 | **BYOK** *(Enterprise add-on)* | Tenant brings their LLM key; we never touch their billing | Enterprise w/ compliance / data-residency / dedicated-key needs | None — but forgoes our spread, so it's **priced** |
 
 **Managed-first positioning.** Managed is the **default mode on every tier** — it's where the
@@ -28,9 +28,11 @@ tiers; from then on BYOK is offered only as a **paid Enterprise add-on**.
 ### Managed = prepaid wallet + auto-recharge
 
 Each Managed tenant has a **credit wallet** (USD/BRL) on every tier (Free runs on a small included
-starter balance). Every Managed message debits **our per-message price** (anchored on the premium
-model; the router keeps real cost below it → the spread is our margin). The customer sees the
-**per-message price and their consumption**, never the underlying cost or spread.
+starter balance). Every Managed message debits **our managed price** — billed either **per message**
+or **per metered token** (the two candidates are documented side-by-side in `models.md`; choice
+deferred until real metering data). Either way it's anchored so the router keeps real cost below it →
+the spread is our margin. The customer sees the **price and their consumption**, never the underlying
+cost or spread.
 
 Customer-configurable controls: manual top-up · auto-recharge trigger (e.g. "when < $5") ·
 auto-recharge amount · monthly spend cap · saved payment method.

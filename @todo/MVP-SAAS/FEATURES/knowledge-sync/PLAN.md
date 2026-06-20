@@ -2,7 +2,6 @@
 
 **Layer:** ⚪ Future · **Status:** backlog
 **depends_on:** incremental-reembed *(hard)* · **ADRs:** 015
-**Source:** `@todo/SAAS-CHATBOT/FUTURE/07-knowledge-sync.md`
 
 ## Objective
 

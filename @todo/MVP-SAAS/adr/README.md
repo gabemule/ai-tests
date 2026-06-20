@@ -3,14 +3,14 @@
 > Source of truth for the platform's architecture & product decisions. One file per ADR.
 > `FEATURES/`, `ARCHITECTURE.md` and `CONTEXT.md` **reference** these by number — they do not
 > restate them. Economic rationale (price/margin) lives in `PRICING/`; billing ADRs link to it.
-> Last updated: 2026-06-17
+> Last updated: 2026-06-19
 
 ## Format
 
 Each ADR is short and uniform: **Status · Features · Context · Decision · Consequences** (+ an
 optional **Implementation contract**). Numbering is stable (never renumbered) because other docs
-reference ADRs by number (e.g. "ADR 016"). 001–018 are carried over from the frozen
-`@todo/SAAS-CHATBOT/` plan in clean format; **019 is new to this rebuild**.
+reference ADRs by number (e.g. "ADR 016"). 001–018 are carried over from the previous
+planning iteration in clean format; **019 is new to this rebuild**.
 
 ## Index
 

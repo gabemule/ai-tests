@@ -1,8 +1,8 @@
 # PRICING — Plans, caps & margin analysis
 
 > Part of `PRICING/`. Plan **structure** is durable logic (🔒); the **margin numbers** depend on the
-> volatile model/embedding/infra costs (🔁 — re-derive via `get-model-prices/` and the frozen `ANALYSIS/`).
-> Last updated: 2026-06-17 · price/margin figures are a **2026-06-14 snapshot**, illustrative only.
+> volatile model/embedding/infra costs (🔁 — re-derive via `../research-app/` and `infrastructure.md`).
+> Last updated: 2026-06-19 · price/margin figures are a **2026-06-14 snapshot**, illustrative only.
 
 ---
 
@@ -111,5 +111,5 @@ Swept across the embedding knob **K** (launch = 3, ceiling = 5):
 > ~48%), climbing ~10pp at Scale. The price sizing (Starter $19, Business $119) was chosen to hold
 > that floor.
 >
-> **Re-derive** these with live numbers from `get-model-prices/` (model prices) + the frozen `ANALYSIS/infra.md`
+> **Re-derive** these with live numbers from `../research-app/` (model prices) + `infrastructure.md`
 > (infra tiers) before treating as fact.

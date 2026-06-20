@@ -1,32 +1,30 @@
 # router-adapters
 
 Reusable library that **decides which model handles each request**. The application hands the router a
-category (`primary` / `economy`); the router returns the **cheapest available model that clears a
-quality floor** — turning model selection from hardcoded code into curated data.
+category (`economy` / `principal` / `premium`); the router returns the **cheapest available model that
+clears a quality floor** — turning model selection from hardcoded code into curated data.
 
 Part of the AI adapters ecosystem alongside `llm-adapters` and `embedding-adapters` (same Hexagonal
 pattern). Promoted from `@todo/FUTURE.md` (was the #2 candidate library).
 
 ## Why
 
-In SAAS-CHATBOT Managed mode the customer pays a fixed price anchored on the premium model, but most
+In MVP-SAAS Managed mode the customer pays a price anchored on the premium model, but most
 queries don't need it. Routing the bulk to cheaper models that still clear a quality bar is the margin
-spread (see `@todo/SAAS-CHATBOT/adr/014-model-routing-margin-lever.md`). This library is the **dynamic
+spread (see `@todo/MVP-SAAS/adr/014-model-routing-margin-lever.md`). This library is the **dynamic
 evolution** of ADR 014's static routing percentages: models leave the code and become curated data.
 
-## The two halves
+## Generic library — consumes an external catalog
 
-1. **The router (this library)** — runtime. Given a category, resolves the model by policy.
-2. **The catalog (`benchmark-app/`)** — the local curation tool that maintains the lists + thresholds
-   the router consumes. It scans live OpenRouter prices + Artificial Analysis scores, flags NEW/PROMO
-   models, and lets a human curate each tier. See `benchmark-app/README.md`.
+This is a **generic, product-agnostic** library (Port + adapters + resolver + telemetry), like its
+siblings `llm-adapters` / `embedding-adapters`. It **does not own** any model list — it reads a
+**catalog contract** (curated lists + thresholds) provided by the application.
 
-The router **consumes**; the benchmark-app **produces**.
+For the MVP-SAAS product, that catalog is produced by **`@todo/MVP-SAAS/research-app/`** (the
+curation tool: OpenRouter prices × Artificial Analysis scores), and the quality floor is
+refined by **`@todo/MVP-SAAS/FEATURES/retrieval-eval/`** (our own RAG eval → `rag_score`). The router only
+**consumes** the catalog; it never hosts or curates it.
 
-> ⚠️ **The `benchmark-app` is a prototype** — a local example of the catalog we want, not the final
-> implementation. The target is a more robust app that **persists the catalog to Supabase alongside the
-> SAAS-CHATBOT platform**, so the model list/prices/tiers are read **straight from the DB**. The current
-> Vite + lowdb `db.json` is a curation sandbox that proves the data model.
 
 ## Usage (intended)
 
@@ -34,19 +32,19 @@ The router **consumes**; the benchmark-app **produces**.
 const router = RouterProvider.create({ provider: 'heuristic' })
 
 const choice = await router.route({
-  category: 'primary',
+  category: 'economy',
   query: 'What are your business hours?',
-  context: { /* optional hints */ },
+  context: { /* optional retrieval/complexity signals */ },
 })
 // → { model: 'deepseek/deepseek-v4-flash', reason: 'cheapest above floor in economy' }
 ```
 
 ## Routing policy
 
-Per product tier the catalog exposes curated candidates (`primary` / `primary-alt`,
-`economy` / `economy-alt`), a **quality floor** (`bench-score-*`) and a **price ceiling**
-(`bench-price-*`). Resolution: pick the **cheapest** candidate that clears the floor, stays under the
-ceiling, and is currently available — fall back to `-alt` if the titular is down.
+Per product tier the catalog exposes curated candidates (`economy` / `economy-alt`,
+`principal` / `principal-alt`, `premium` / `premium-alt`), a **quality floor** (`bench-score-*`) and a
+**price ceiling** (`bench-price-*`). Resolution: pick the **cheapest** candidate that clears the floor,
+stays under the ceiling, and is currently available — fall back to `-alt` if the titular is down.
 
 > The floor is mandatory: "cheapest" without a floor drifts to the weakest model.
 
@@ -57,15 +55,23 @@ ceiling, and is currently available — fall back to `-alt` if the titular is do
 - **external** — OpenRouter Auto / NotDiamond (API-based routing services).
 - **ollama** — self-hosted open-source model as a zero-token-cost tier.
 
+## Telemetry (feeds the eval loop)
+
+The router exposes a **`TelemetryPort`**: each `route()` emits a **trace** (decision) and, after the
+model call, an **outcome** (tokens, cost, latency, confidence, cited-context, feedback). These traces
+are consumed by `@todo/MVP-SAAS/FEATURES/retrieval-eval/` (online `rag_score`) and `research-app/` (real mix / real
+blended cost) — closing the loop: the router's own decisions generate the evidence that improves the
+catalog it reads.
+
 ## Status
 
-Planning. The **benchmark-app** (catalog/curation tool) is built and live; the router library itself is
-not yet implemented. See `PLAN.md` for the build plan, `CONTEXT.md` for the knowledge base, and
-`CRON.md` for the (notify-only) catalog-freshness ideas.
+Planning. The catalog/curation tool (`research-app`) is built and live at
+`@todo/MVP-SAAS/research-app/`; the router library itself is not yet implemented. See
+`PLAN.md` for the build plan and `CONTEXT.md` for the knowledge base.
 
 ## Docs
 
-- `CONTEXT.md` — knowledge base (scope philosophy, two halves, architecture, pitfalls).
-- `PLAN.md` — build plan (contracts → resolver → strategies → parity).
-- `CRON.md` — notify-only crons to keep the catalog fresh.
-- `benchmark-app/` — the curation tool that produces the catalog.
+- `CONTEXT.md` — knowledge base (scope philosophy, catalog contract, architecture, pitfalls).
+- `PLAN.md` — build plan (contracts → resolver → strategies → telemetry → parity).
+- `@todo/MVP-SAAS/research-app/` — the curation tool that produces the catalog.
+- `@todo/MVP-SAAS/FEATURES/retrieval-eval/` — the RAG eval that refines the quality floor.

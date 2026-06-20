@@ -60,10 +60,9 @@ No longer a candidate — this concept graduated into its own library. The catal
 (WhatsApp first) behind one interface, so the same bot serves web widget, WhatsApp, Telegram, etc.
 
 **Why it matters:**
-- The vector that gets SAAS-CHATBOT closest to the BR atendimento niche (Zenvia/Blip/Movidesk/
+- The vector that gets MVP-SAAS closest to the BR atendimento niche (Zenvia/Blip/Movidesk/
   Tallos) **without becoming a support suite** — "RAG-on-docs on the customer's channel"
-- Born from the SAAS-CHATBOT market benchmark (see `@todo/SAAS-CHATBOT/PRICING.md` §2.3 and
-  `@todo/SAAS-CHATBOT/FUTURE/01-channels.md`)
+- Born from the MVP-SAAS market benchmark (see `@todo/MVP-SAAS/FEATURES/channels/PLAN.md`)
 - Channels are where the incumbents' high ticket lives; connecting to them harvests that value
   without inheriting the human-operation/BSP cost
 
@@ -91,7 +90,7 @@ channel.onMessage(async (msg) => {
 - **SMS / RCS** - via BSP/Twilio (future)
 
 **Priority:** ⭐⭐⭐⭐ (4/5)
-- High strategic value for SAAS-CHATBOT, low deviation from the RAG core
+- High strategic value for MVP-SAAS, low deviation from the RAG core
 - WhatsApp is the dominant BR channel — biggest reach lever locally
 - Clear adapter-pattern fit (uniform send/receive across channels)
 
@@ -100,12 +99,12 @@ channel.onMessage(async (msg) => {
 ### 🔌 connector-adapters (knowledge source sync)
 
 **Purpose:** Connect external content sources (Google Drive, Notion, URLs) behind one interface and
-**detect changes** so the SAAS-CHATBOT can **auto re-embed only what changed** — keeping the bot's
+**detect changes** so the MVP-SAAS can **auto re-embed only what changed** — keeping the bot's
 knowledge in sync without manual re-uploads.
 
 **Why it matters:**
 - Turns the knowledge base from a **static snapshot** into a **living, synced** one
-- Born from SAAS-CHATBOT (see `@todo/SAAS-CHATBOT/FUTURE/07-knowledge-sync.md`)
+- Born from MVP-SAAS (see `@todo/MVP-SAAS/FEATURES/knowledge-sync/PLAN.md`)
 - Reuses the existing ingestion pipeline (parse → chunk → embed → upsert); only adds a source
   connector + a change trigger
 
@@ -128,7 +127,7 @@ for (const file of changes) {
 - **Cloud storage** (S3 / Dropbox) - bucket/folder sync
 
 **Priority:** ⭐⭐⭐⭐ (4/5)
-- High value for SAAS-CHATBOT (always-current bot), low deviation from the RAG core
+- High value for MVP-SAAS (always-current bot), low deviation from the RAG core
 - Clear adapter-pattern fit (uniform list-changes / fetch across sources)
 - **Boundary:** static/textual content only — live/exact data belongs in `tool-adapters`
 
@@ -143,7 +142,7 @@ product search, stock) — turning RAG-only answers into **RAG + actions** (agen
 **Why it matters:**
 - Answers **live, exact data** that embeddings can't (a spreadsheet of changing prices/stock is the
   wrong fit for embedding — see `connector-adapters` boundary)
-- Born from SAAS-CHATBOT (see `@todo/SAAS-CHATBOT/FUTURE/08-tool-calling.md`)
+- Born from MVP-SAAS (see `@todo/MVP-SAAS/FEATURES/tool-calling/PLAN.md`)
 - Deepens the AI-config moat — the suites treat AI as a shallow add-on
 
 **Use case:**
@@ -165,7 +164,7 @@ const result = await tool.invoke({ orderId: '123' })
 - **Read-only first** — defer write/mutating actions until a confirmation design exists
 
 **Priority:** ⭐⭐⭐⭐ (4/5)
-- Big product jump for SAAS-CHATBOT (RAG + actions), reuses `llm-adapters` function calling
+- Big product jump for MVP-SAAS (RAG + actions), reuses `llm-adapters` function calling
 - Security design is the main cost, not the AI core
 
 ---
@@ -416,7 +415,7 @@ const music = await audioGen.generate({
 |------|---------|----------|-----------|
 | 1 | **reranker-adapters** | ⭐⭐⭐⭐⭐ | Complements embeddings, critical for RAG |
 | 2 | **router-adapters** | ✅ promoted | Graduated to `@todo/router-adapters/` — lowers avg LLM cost, raises Managed-mode margin |
-| 3 | **channel-adapters** | ⭐⭐⭐⭐ | Delivers RAG bot on WhatsApp & co — key SAAS-CHATBOT reach lever (BR) |
+| 3 | **channel-adapters** | ⭐⭐⭐⭐ | Delivers RAG bot on WhatsApp & co — key MVP-SAAS reach lever (BR) |
 | 4 | **connector-adapters** | ⭐⭐⭐⭐ | Always-current bot — auto re-embed synced sources (Drive/Notion/URL) |
 | 5 | **tool-adapters** | ⭐⭐⭐⭐ | RAG + actions — live data via the customer's APIs (function calling) |
 | 6 | **speech-adapters** | ⭐⭐⭐⭐ | Growing demand, clear use case |
@@ -433,8 +432,8 @@ const music = await audioGen.generate({
 
 1. **Phase 1 (Current):** `llm-adapters` + `embedding-adapters` (MVP)
 2. **Phase 2:** `reranker-adapters` (natural next step, complements embeddings)
-3. **Phase 3:** `router-adapters` ✅ promoted to `@todo/router-adapters/` (cost optimization for SAAS-CHATBOT Managed mode — catalog tool built, router lib in planning)
-4. **Phase 4:** `channel-adapters` (WhatsApp-first reach for SAAS-CHATBOT — see `@todo/SAAS-CHATBOT/FUTURE/01-channels.md`)
+3. **Phase 3:** `router-adapters` ✅ promoted to `@todo/router-adapters/` (cost optimization for MVP-SAAS Managed mode — catalog tool built, router lib in planning)
+4. **Phase 4:** `channel-adapters` (WhatsApp-first reach for MVP-SAAS — see `@todo/MVP-SAAS/FEATURES/channels/PLAN.md`)
 5. **Phase 5:** `speech-adapters` + `tts-adapters` (voice ecosystem)
 6. **Phase 6:** Evaluate demand for others based on actual usage
 

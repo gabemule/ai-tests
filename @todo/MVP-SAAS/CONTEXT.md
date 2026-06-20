@@ -1,7 +1,7 @@
 # CONTEXT.md — MVP-SAAS Knowledge Base
 
 > Maintained for context recovery between sessions. Read this first.
-> Last updated: 2026-06-17
+> Last updated: 2026-06-19
 
 ## Stack & Infra
 
@@ -45,8 +45,9 @@
 ## LLM modes (the economic core)
 
 - **Managed = GA-target default** on every tier: we hold the key, meter usage locally,
-  bill a prepaid wallet at a per-message price **anchored on the premium model**; margin =
-  routing spread (~85%), no markup. (ADR 009/013/014)
+  bill a prepaid wallet; margin = routing spread (~85%), no markup. **Billing unit is an
+  open decision** — two candidates kept side-by-side (`fixed-per-message` vs
+  `metered-per-token`), choice deferred until real metering data. (ADR 009/013/014)
 - **Phasing:** BYOK ships first (F1–F2) as the technical bootstrap (no wallet, zero
   financial risk); Managed lands at GA and becomes default; BYOK then is the **paid
   Enterprise-only add-on** sold on governance/compliance.
@@ -66,8 +67,8 @@
 
 ## Current State
 
-- **Planning only.** No code written. This workspace was rebuilt 2026-06-17 from the
-  frozen `@todo/SAAS-CHATBOT/` reference into a feature-graph model.
+- **Planning only.** No code written. This workspace was rebuilt 2026-06-17 into a
+  feature-graph model.
 - Active focus: materialize the feature catalog + ADRs. See `PROGRESS.md`.
 
 ## Active Decisions (ADRs)

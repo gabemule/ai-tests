@@ -2,7 +2,6 @@
 
 **Layer:** ⚪ Future · **Status:** backlog
 **depends_on:** chat-sse *(hard)* · rbac *(soft, future `agent` role)* · **ADRs:** — *(new)*
-**Source:** `@todo/SAAS-CHATBOT/FUTURE/02-agent-console.md`
 
 ## Objective
 

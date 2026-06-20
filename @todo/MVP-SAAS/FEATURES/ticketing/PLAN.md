@@ -2,7 +2,6 @@
 
 **Layer:** ⚪ Future · **Status:** backlog
 **depends_on:** agent-console *(soft, co-evolves)* · **ADRs:** — *(new)*
-**Source:** `@todo/SAAS-CHATBOT/FUTURE/03-ticketing.md`
 
 ## Objective
 

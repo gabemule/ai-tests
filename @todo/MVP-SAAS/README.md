@@ -2,7 +2,7 @@
 
 > Active workspace for the whitelabel RAG chatbot platform.
 > Rebuilt from scratch on a **feature-graph model** (showcase-first).
-> Last updated: 2026-06-17
+> Last updated: 2026-06-19
 
 ---
 
@@ -21,7 +21,6 @@ reimplementation.
 | File | Purpose |
 |---|---|
 | `README.md` *(this)* | Entry point — what it is, how to navigate, status |
-| `PLAN-REVALIDATE-MVP.md` | Rebuild spec + resume prompt (read to continue from zero) |
 | `CONTEXT.md` | Compiled project knowledge (read first on a new session) |
 | `PROGRESS.md` | Source of truth for "where are we" |
 | `ARCHITECTURE.md` | Concept + diagrams (components, ER, flows) |
@@ -29,6 +28,7 @@ reimplementation.
 | `FEATURES/` | **The primary structure** — one folder per independent feature |
 | `FEATURES/README.md` | Feature catalog: dependency graph + recommended queue |
 | `PRICING/` | Economic model (margin thesis, plans) — distilled |
+| `research-app/` | Live model-pricing tooling (Vite + lowdb OpenRouter/AA scanner) |
 
 ## The model in one line
 
@@ -42,12 +42,6 @@ not the primary structure. See `FEATURES/README.md`.
 end-to-end AI product engineering (multi-tenant RAG, ingestion pipeline, retrieval
 quality, distribution). Revenue features (wallet, routing, billing) are real but
 sequenced after the showcase core.
-
-## Reference (the old plan)
-
-The previous planning iteration lives, frozen, at `@todo/SAAS-CHATBOT/`. It is the
-**historical reference** — not edited anymore. This workspace recreates what survives
-the new model, and only what makes sense for it.
 
 ## Incubation
 

@@ -5,9 +5,10 @@
 
 ## Context
 
-In Managed mode the customer pays a fixed per-message price **anchored on the premium model**
-(Sonnet 4.6, $9/1M). Most queries don't need premium quality, so running everything on the premium
-model would waste the margin opportunity. The margin is not a markup — it's the routing spread.
+In Managed mode the customer pays a managed price **anchored on the premium model**
+(Sonnet 4.6, $9/1M) — billed either per-message or per metered token (see Decision). Most queries
+don't need premium quality, so running everything on the premium model would waste the margin
+opportunity. The margin is not a markup — it's the routing spread.
 
 ## Decision
 
@@ -18,8 +19,12 @@ model would waste the margin opportunity. The margin is not a markup — it's th
   - Blended ≈ $1.35/1M vs. the $9 anchor → **~85% spread**, ours.
 - Routing works **in aggregate** (law of large numbers), never by throttling individual users to a
   cheap model.
-- **Managed billing variant = fixed-per-message** — routing savings are 100% ours; the exact
-  per-message price is calibrated with real usage data.
+- **Managed billing variant: two candidates, decision deferred** (`PRICING/models.md`):
+  - **fixed-per-message** — flat anchored price; predictable bill; router fully invisible.
+  - **metered-per-token** — price the customer's own metered tokens (ADR 011 local counting); billed
+    unit = metered unit, heavy queries self-price.
+  Both keep routing savings 100% ours (unlike metered+markup). The choice — and the exact price — is
+  calibrated once real `metering`/`model-routing` usage data lands.
 
 ## Consequences
 
