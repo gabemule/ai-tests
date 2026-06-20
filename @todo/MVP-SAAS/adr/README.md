@@ -3,14 +3,15 @@
 > Source of truth for the platform's architecture & product decisions. One file per ADR.
 > `FEATURES/`, `ARCHITECTURE.md` and `CONTEXT.md` **reference** these by number — they do not
 > restate them. Economic rationale (price/margin) lives in `PRICING/`; billing ADRs link to it.
-> Last updated: 2026-06-19
+> Last updated: 2026-06-20
 
 ## Format
 
 Each ADR is short and uniform: **Status · Features · Context · Decision · Consequences** (+ an
 optional **Implementation contract**). Numbering is stable (never renumbered) because other docs
 reference ADRs by number (e.g. "ADR 016"). 001–018 are carried over from the previous
-planning iteration in clean format; **019 is new to this rebuild**.
+planning iteration in clean format; **019 (confidence-gate) and 020 (admin/operator surface) are new
+to this rebuild**.
 
 ## Index
 
@@ -41,6 +42,7 @@ planning iteration in clean format; **019 is new to this rebuild**.
 | [017](./017-embedding-parity-runtime-invariant.md) | Embedding parity is a runtime invariant | Accepted | ingestion, retrieval | Same model/dim/normalization both sides or silent degradation |
 | [018](./018-ingestion-job-contract.md) | Ingestion job contract (the "sacred seam") | Accepted | job-contract | Versioned API↔worker job schema, validated on both Node + Python |
 | [019](./019-confidence-gate.md) | Retrieval confidence gate (floor + optional ceiling) | Accepted | confidence-gate | Refuse to hallucinate below a threshold; optionally skip the LLM on near-exact matches |
+| [020](./020-admin-operator-surface.md) | Admin/operator surface = separate app, cross-tenant privileged role | Accepted | admin-app | Operator console bypasses RLS by design (inverse of ADR 016); houses Research + cost×revenue |
 
 ## What changed vs. the frozen plan
 
@@ -49,3 +51,5 @@ planning iteration in clean format; **019 is new to this rebuild**.
 - **Phase tags (F1–F4)** in the old ADRs were replaced by **feature references** (the slugs in
   `FEATURES/README.md`) — phases are now only a derived view.
 - **019 is new** — the confidence gate did not exist in the old plan.
+- **020 is new** — the admin/operator surface (cross-tenant console, the inverse privilege domain of
+  ADR 016) did not exist in the old plan; it owns `admin-app` + the Research module + cost×revenue.

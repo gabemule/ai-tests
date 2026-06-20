@@ -20,8 +20,23 @@
               "icon": "lucide-file",
               "title": "README"
             }
+          },
+          {
+            "id": "9a40ef0c2cf50374",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "@todo/MVP-SAAS/README.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "README"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -94,7 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "@todo/MVP-SAAS/FEATURES/README.md",
+                "file": "@todo/MVP-SAAS/README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -113,7 +128,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "@todo/MVP-SAAS/FEATURES/README.md",
+                "file": "@todo/MVP-SAAS/README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -156,7 +171,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "@todo/MVP-SAAS/FEATURES/README.md",
+                "file": "@todo/MVP-SAAS/README.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -183,8 +198,16 @@
       "bases:Criar nova base": false
     }
   },
-  "active": "864f9609962ef38c",
+  "active": "1044279cc9b5ae2f",
   "lastOpenFiles": [
+    "@todo/MVP-SAAS/FEATURES/README.md",
+    "@todo/MVP-SAAS/FEATURES/revenue-analytics/PLAN.md",
+    "@todo/MVP-SAAS/FEATURES/revenue-analytics",
+    "@todo/MVP-SAAS/FEATURES/cost-attribution/PLAN.md",
+    "@todo/MVP-SAAS/FEATURES/cost-attribution",
+    "@todo/MVP-SAAS/FEATURES/admin-app/PLAN.md",
+    "@todo/MVP-SAAS/FEATURES/admin-app",
+    "@todo/MVP-SAAS/adr/020-admin-operator-surface.md",
     "@todo/MVP-SAAS/research-app/analise-modelos-rag-pricing.pdf",
     "@todo/MVP-SAAS/PRICING/market.md",
     "@todo/MVP-SAAS/PRICING/infra.md",
@@ -196,10 +219,6 @@
     "@todo/MVP-SAAS/research-app/node_modules/rxjs/dist/types/internal/observable/dom/fetch.d.ts",
     "@todo/MVP-SAAS/research-app/node_modules/rxjs/dist/types/internal/observable/dom/animationFrames.d.ts.map",
     "@todo/MVP-SAAS/research-app/node_modules/rxjs/dist/types/internal/observable/dom/animationFrames.d.ts",
-    "@todo/MVP-SAAS/research-app/node_modules/rxjs/dist/types/internal/observable/dom/WebSocketSubject.d.ts.map",
-    "@todo/MVP-SAAS/research-app/node_modules/rxjs/dist/types/internal/observable/dom/WebSocketSubject.d.ts",
-    "@todo/MVP-SAAS/research-app/node_modules/rxjs/dist/esm5/internal/observable/dom/webSocket.js.map",
-    "@todo/MVP-SAAS/research-app/node_modules/rxjs/dist/esm5/internal/observable/dom/webSocket.js",
     "@todo/MVP-SAAS/research-app/node_modules/dotenv/skills/dotenv/SKILL.md",
     "@todo/MVP-SAAS/research-app/node_modules/dotenv/skills/dotenvx/SKILL.md",
     "@todo/MVP-SAAS/research-app/node_modules/concurrently/docs/cli/terminating.md",
@@ -218,10 +237,6 @@
     "@todo/MVP-SAAS/research-app/node_modules/@rolldown/binding-darwin-arm64/README.md",
     "@todo/MVP-SAAS/research-app/node_modules/@rolldown/pluginutils/README.md",
     "@todo/MVP-SAAS/research-app/node_modules/yargs-parser/README.md",
-    "@todo/MVP-SAAS/research-app/node_modules/yargs-parser/CHANGELOG.md",
-    "@todo/MVP-SAAS/research-app/node_modules/yargs/README.md",
-    "@todo/MVP-SAAS/research-app/node_modules/y18n/README.md",
-    "@todo/MVP-SAAS/research-app/node_modules/y18n/CHANGELOG.md",
     "@todo/MVP-SAAS/research-app/public/icons.svg",
     "@todo/MVP-SAAS/research-app/public/favicon.svg",
     "@todo/SAAS-CHATBOT/research-app/node_modules/concurrently/docs/demo.gif",

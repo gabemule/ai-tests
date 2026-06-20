@@ -56,7 +56,7 @@
         "in_per_1m": 5,
         "out_per_1m": 25,
         "avg_per_1m": 15,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -82,7 +82,7 @@
         "in_per_1m": 5,
         "out_per_1m": 30,
         "avg_per_1m": 17.5,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -121,7 +121,7 @@
         "in_per_1m": 5,
         "out_per_1m": 25,
         "avg_per_1m": 15,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -147,7 +147,7 @@
         "in_per_1m": 3,
         "out_per_1m": 15,
         "avg_per_1m": 9,
-        "tier": "anchor",
+        "tier": "premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -160,7 +160,7 @@
         "in_per_1m": 5,
         "out_per_1m": 25,
         "avg_per_1m": 15,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -186,7 +186,7 @@
         "in_per_1m": 3,
         "out_per_1m": 15,
         "avg_per_1m": 9,
-        "tier": "anchor-alt",
+        "tier": "premium-alt",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -199,7 +199,7 @@
         "in_per_1m": 1.25,
         "out_per_1m": 10,
         "avg_per_1m": 5.625,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -212,33 +212,7 @@
         "in_per_1m": 0.15,
         "out_per_1m": 0.6,
         "avg_per_1m": 0.375,
-        "tier": "reference",
-        "watchlist": true,
-        "is_new": false,
-        "is_promo": false
-      },
-      {
-        "id": "openai/gpt-4o",
-        "name": "OpenAI: GPT-4o",
-        "ctx": 128000,
-        "created": 1715558400,
-        "in_per_1m": 2.5,
-        "out_per_1m": 10,
-        "avg_per_1m": 6.25,
-        "tier": "reference",
-        "watchlist": true,
-        "is_new": false,
-        "is_promo": false
-      },
-      {
-        "id": "openai/gpt-4",
-        "name": "OpenAI: GPT-4",
-        "ctx": 8191,
-        "created": 1685232000,
-        "in_per_1m": 30,
-        "out_per_1m": 60,
-        "avg_per_1m": 45,
-        "tier": "reference",
+        "tier": "bench-score-economy",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -542,7 +516,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "z-ai/glm-5.2",
@@ -553,7 +529,9 @@
         "out_per_1m": 4.4,
         "avg_per_1m": 2.9000000000000004,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "principal-alt",
+        "watchlist": true
       },
       {
         "id": "openrouter/fusion",
@@ -564,7 +542,9 @@
         "out_per_1m": null,
         "avg_per_1m": null,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "moonshotai/kimi-k2.7-code",
@@ -575,7 +555,9 @@
         "out_per_1m": 3.5,
         "avg_per_1m": 2.12,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "~anthropic/claude-fable-latest",
@@ -586,7 +568,9 @@
         "out_per_1m": 50,
         "avg_per_1m": 30,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "anthropic/claude-fable-5",
@@ -597,7 +581,9 @@
         "out_per_1m": 50,
         "avg_per_1m": 30,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "nex-agi/nex-n2-pro:free",
@@ -608,7 +594,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "nvidia/nemotron-3.5-content-safety:free",
@@ -619,7 +607,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
@@ -630,7 +620,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "nvidia/nemotron-3-ultra-550b-a55b",
@@ -641,7 +633,9 @@
         "out_per_1m": 2.2,
         "avg_per_1m": 1.35,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "qwen/qwen3.7-plus",
@@ -652,7 +646,9 @@
         "out_per_1m": 1.28,
         "avg_per_1m": 0.8,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "principal",
+        "watchlist": true
       },
       {
         "id": "minimax/minimax-m3",
@@ -663,7 +659,9 @@
         "out_per_1m": 1.2,
         "avg_per_1m": 0.75,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "economy-alt",
+        "watchlist": true
       },
       {
         "id": "stepfun/step-3.7-flash",
@@ -674,7 +672,9 @@
         "out_per_1m": 1.15,
         "avg_per_1m": 0.6749999999999999,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "anthropic/claude-opus-4.8-fast",
@@ -685,7 +685,9 @@
         "out_per_1m": 50,
         "avg_per_1m": 30,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "anthropic/claude-opus-4.8",
@@ -696,7 +698,9 @@
         "out_per_1m": 25,
         "avg_per_1m": 15,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "bench-score-premium",
+        "watchlist": true
       },
       {
         "id": "qwen/qwen3.7-max",
@@ -707,7 +711,9 @@
         "out_per_1m": 3.75,
         "avg_per_1m": 2.5,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "principal-alt",
+        "watchlist": true
       },
       {
         "id": "x-ai/grok-build-0.1",
@@ -718,7 +724,9 @@
         "out_per_1m": 2,
         "avg_per_1m": 1.5,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "google/gemini-3.5-flash",
@@ -729,7 +737,9 @@
         "out_per_1m": 9,
         "avg_per_1m": 5.25,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "bench-price-premium",
+        "watchlist": true
       },
       {
         "id": "anthropic/claude-opus-4.7-fast",
@@ -740,7 +750,9 @@
         "out_per_1m": 150,
         "avg_per_1m": 90,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "perceptron/perceptron-mk1",
@@ -751,7 +763,9 @@
         "out_per_1m": 1.5,
         "avg_per_1m": 0.825,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "inclusionai/ring-2.6-1t",
@@ -762,7 +776,9 @@
         "out_per_1m": 0.625,
         "avg_per_1m": 0.35,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "google/gemini-3.1-flash-lite",
@@ -773,7 +789,9 @@
         "out_per_1m": 1.5,
         "avg_per_1m": 0.875,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "openai/gpt-chat-latest",
@@ -784,7 +802,9 @@
         "out_per_1m": 30,
         "avg_per_1m": 17.5,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "x-ai/grok-4.3",
@@ -795,7 +815,9 @@
         "out_per_1m": 2.5,
         "avg_per_1m": 1.875,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "principal-alt",
+        "watchlist": true
       },
       {
         "id": "ibm-granite/granite-4.1-8b",
@@ -806,7 +828,9 @@
         "out_per_1m": 0.09999999999999999,
         "avg_per_1m": 0.075,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "mistralai/mistral-medium-3-5",
@@ -817,7 +841,9 @@
         "out_per_1m": 7.5,
         "avg_per_1m": 4.5,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "openrouter/owl-alpha",
@@ -828,7 +854,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
@@ -839,7 +867,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "poolside/laguna-xs.2:free",
@@ -850,7 +880,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "poolside/laguna-m.1:free",
@@ -861,7 +893,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       }
     ],
     "all_models": [
@@ -1640,8 +1674,8 @@
         "in_per_1m": 0.09,
         "out_per_1m": 0.18,
         "avg_per_1m": 0.135,
-        "tier": null,
-        "watchlist": false,
+        "tier": "economy-alt",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -2290,8 +2324,8 @@
         "in_per_1m": 0.15,
         "out_per_1m": 0.6,
         "avg_per_1m": 0.375,
-        "tier": null,
-        "watchlist": false,
+        "tier": "bench-score-economy",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -2342,7 +2376,7 @@
         "in_per_1m": 0.15,
         "out_per_1m": 0.6,
         "avg_per_1m": 0.375,
-        "tier": "reference",
+        "tier": "bench-score-economy",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -2953,8 +2987,8 @@
         "in_per_1m": 0.3,
         "out_per_1m": 1.2,
         "avg_per_1m": 0.75,
-        "tier": null,
-        "watchlist": false,
+        "tier": "economy-alt",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -3824,8 +3858,8 @@
         "in_per_1m": 1.25,
         "out_per_1m": 2.5,
         "avg_per_1m": 1.875,
-        "tier": null,
-        "watchlist": false,
+        "tier": "principal-alt",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -4136,8 +4170,8 @@
         "in_per_1m": 1.4,
         "out_per_1m": 4.4,
         "avg_per_1m": 2.9000000000000004,
-        "tier": null,
-        "watchlist": false,
+        "tier": "principal-alt",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -4370,8 +4404,8 @@
         "in_per_1m": 1.5,
         "out_per_1m": 9,
         "avg_per_1m": 5.25,
-        "tier": null,
-        "watchlist": false,
+        "tier": "bench-price-premium",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -4474,7 +4508,7 @@
         "in_per_1m": 1.25,
         "out_per_1m": 10,
         "avg_per_1m": 5.625,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -4643,8 +4677,8 @@
         "in_per_1m": 2.5,
         "out_per_1m": 10,
         "avg_per_1m": 6.25,
-        "tier": "reference",
-        "watchlist": true,
+        "tier": null,
+        "watchlist": false,
         "is_new": false,
         "is_promo": false
       },
@@ -4734,8 +4768,8 @@
         "in_per_1m": 1.75,
         "out_per_1m": 14,
         "avg_per_1m": 7.875,
-        "tier": null,
-        "watchlist": false,
+        "tier": "bench-score-premium",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -4812,7 +4846,7 @@
         "in_per_1m": 3,
         "out_per_1m": 15,
         "avg_per_1m": 9,
-        "tier": "anchor",
+        "tier": "premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -4838,7 +4872,7 @@
         "in_per_1m": 3,
         "out_per_1m": 15,
         "avg_per_1m": 9,
-        "tier": "anchor-alt",
+        "tier": "premium-alt",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -4916,7 +4950,7 @@
         "in_per_1m": 5,
         "out_per_1m": 25,
         "avg_per_1m": 15,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -4942,7 +4976,7 @@
         "in_per_1m": 5,
         "out_per_1m": 25,
         "avg_per_1m": 15,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -4955,7 +4989,7 @@
         "in_per_1m": 5,
         "out_per_1m": 25,
         "avg_per_1m": 15,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -5007,7 +5041,7 @@
         "in_per_1m": 5,
         "out_per_1m": 30,
         "avg_per_1m": 17.5,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -5137,8 +5171,8 @@
         "in_per_1m": 30,
         "out_per_1m": 60,
         "avg_per_1m": 45,
-        "tier": "reference",
-        "watchlist": true,
+        "tier": null,
+        "watchlist": false,
         "is_new": false,
         "is_promo": false
       },
@@ -11772,7 +11806,7 @@
         "in_per_1m": 5,
         "out_per_1m": 25,
         "avg_per_1m": 15,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -11798,7 +11832,7 @@
         "in_per_1m": 5,
         "out_per_1m": 30,
         "avg_per_1m": 17.5,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -11837,7 +11871,7 @@
         "in_per_1m": 5,
         "out_per_1m": 25,
         "avg_per_1m": 15,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -11863,7 +11897,7 @@
         "in_per_1m": 3,
         "out_per_1m": 15,
         "avg_per_1m": 9,
-        "tier": "anchor",
+        "tier": "premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -11876,7 +11910,7 @@
         "in_per_1m": 5,
         "out_per_1m": 25,
         "avg_per_1m": 15,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -11902,7 +11936,7 @@
         "in_per_1m": 3,
         "out_per_1m": 15,
         "avg_per_1m": 9,
-        "tier": "anchor-alt",
+        "tier": "premium-alt",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -11915,7 +11949,7 @@
         "in_per_1m": 1.25,
         "out_per_1m": 10,
         "avg_per_1m": 5.625,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -11928,33 +11962,7 @@
         "in_per_1m": 0.15,
         "out_per_1m": 0.6,
         "avg_per_1m": 0.375,
-        "tier": "reference",
-        "watchlist": true,
-        "is_new": false,
-        "is_promo": false
-      },
-      {
-        "id": "openai/gpt-4o",
-        "name": "OpenAI: GPT-4o",
-        "ctx": 128000,
-        "created": 1715558400,
-        "in_per_1m": 2.5,
-        "out_per_1m": 10,
-        "avg_per_1m": 6.25,
-        "tier": "reference",
-        "watchlist": true,
-        "is_new": false,
-        "is_promo": false
-      },
-      {
-        "id": "openai/gpt-4",
-        "name": "OpenAI: GPT-4",
-        "ctx": 8191,
-        "created": 1685232000,
-        "in_per_1m": 30,
-        "out_per_1m": 60,
-        "avg_per_1m": 45,
-        "tier": "reference",
+        "tier": "bench-score-economy",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -12480,7 +12488,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "z-ai/glm-5.2",
@@ -12491,7 +12501,9 @@
         "out_per_1m": 4.4,
         "avg_per_1m": 2.9000000000000004,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "principal-alt",
+        "watchlist": true
       },
       {
         "id": "openrouter/fusion",
@@ -12502,7 +12514,9 @@
         "out_per_1m": null,
         "avg_per_1m": null,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "moonshotai/kimi-k2.7-code",
@@ -12513,7 +12527,9 @@
         "out_per_1m": 3.5,
         "avg_per_1m": 2.12,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "~anthropic/claude-fable-latest",
@@ -12524,7 +12540,9 @@
         "out_per_1m": 50,
         "avg_per_1m": 30,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "anthropic/claude-fable-5",
@@ -12535,7 +12553,9 @@
         "out_per_1m": 50,
         "avg_per_1m": 30,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "nex-agi/nex-n2-pro:free",
@@ -12546,7 +12566,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "nvidia/nemotron-3.5-content-safety:free",
@@ -12557,7 +12579,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
@@ -12568,7 +12592,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "nvidia/nemotron-3-ultra-550b-a55b",
@@ -12579,7 +12605,9 @@
         "out_per_1m": 2.2,
         "avg_per_1m": 1.35,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "qwen/qwen3.7-plus",
@@ -12590,7 +12618,9 @@
         "out_per_1m": 1.28,
         "avg_per_1m": 0.8,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "principal",
+        "watchlist": true
       },
       {
         "id": "minimax/minimax-m3",
@@ -12601,7 +12631,9 @@
         "out_per_1m": 1.2,
         "avg_per_1m": 0.75,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "economy-alt",
+        "watchlist": true
       },
       {
         "id": "stepfun/step-3.7-flash",
@@ -12612,7 +12644,9 @@
         "out_per_1m": 1.15,
         "avg_per_1m": 0.6749999999999999,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "anthropic/claude-opus-4.8-fast",
@@ -12623,7 +12657,9 @@
         "out_per_1m": 50,
         "avg_per_1m": 30,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "anthropic/claude-opus-4.8",
@@ -12634,7 +12670,9 @@
         "out_per_1m": 25,
         "avg_per_1m": 15,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "bench-score-premium",
+        "watchlist": true
       },
       {
         "id": "qwen/qwen3.7-max",
@@ -12645,7 +12683,9 @@
         "out_per_1m": 3.75,
         "avg_per_1m": 2.5,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "principal-alt",
+        "watchlist": true
       },
       {
         "id": "x-ai/grok-build-0.1",
@@ -12656,7 +12696,9 @@
         "out_per_1m": 2,
         "avg_per_1m": 1.5,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "google/gemini-3.5-flash",
@@ -12667,7 +12709,9 @@
         "out_per_1m": 9,
         "avg_per_1m": 5.25,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "bench-price-premium",
+        "watchlist": true
       },
       {
         "id": "anthropic/claude-opus-4.7-fast",
@@ -12678,7 +12722,9 @@
         "out_per_1m": 150,
         "avg_per_1m": 90,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "perceptron/perceptron-mk1",
@@ -12689,7 +12735,9 @@
         "out_per_1m": 1.5,
         "avg_per_1m": 0.825,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "inclusionai/ring-2.6-1t",
@@ -12700,7 +12748,9 @@
         "out_per_1m": 0.625,
         "avg_per_1m": 0.35,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "google/gemini-3.1-flash-lite",
@@ -12711,7 +12761,9 @@
         "out_per_1m": 1.5,
         "avg_per_1m": 0.875,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "openai/gpt-chat-latest",
@@ -12722,7 +12774,9 @@
         "out_per_1m": 30,
         "avg_per_1m": 17.5,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "x-ai/grok-4.3",
@@ -12733,7 +12787,9 @@
         "out_per_1m": 2.5,
         "avg_per_1m": 1.875,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": "principal-alt",
+        "watchlist": true
       },
       {
         "id": "ibm-granite/granite-4.1-8b",
@@ -12744,7 +12800,9 @@
         "out_per_1m": 0.09999999999999999,
         "avg_per_1m": 0.075,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "mistralai/mistral-medium-3-5",
@@ -12755,7 +12813,9 @@
         "out_per_1m": 7.5,
         "avg_per_1m": 4.5,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "openrouter/owl-alpha",
@@ -12766,7 +12826,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
@@ -12777,7 +12839,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "poolside/laguna-xs.2:free",
@@ -12788,7 +12852,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       },
       {
         "id": "poolside/laguna-m.1:free",
@@ -12799,7 +12865,9 @@
         "out_per_1m": 0,
         "avg_per_1m": 0,
         "is_new": false,
-        "is_promo": false
+        "is_promo": false,
+        "tier": null,
+        "watchlist": false
       }
     ],
     "all_models": [
@@ -13578,8 +13646,8 @@
         "in_per_1m": 0.09,
         "out_per_1m": 0.18,
         "avg_per_1m": 0.135,
-        "tier": null,
-        "watchlist": false,
+        "tier": "economy-alt",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -14228,8 +14296,8 @@
         "in_per_1m": 0.15,
         "out_per_1m": 0.6,
         "avg_per_1m": 0.375,
-        "tier": null,
-        "watchlist": false,
+        "tier": "bench-score-economy",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -14267,7 +14335,7 @@
         "in_per_1m": 0.15,
         "out_per_1m": 0.6,
         "avg_per_1m": 0.375,
-        "tier": "reference",
+        "tier": "bench-score-economy",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -14891,8 +14959,8 @@
         "in_per_1m": 0.3,
         "out_per_1m": 1.2,
         "avg_per_1m": 0.75,
-        "tier": null,
-        "watchlist": false,
+        "tier": "economy-alt",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -15762,8 +15830,8 @@
         "in_per_1m": 1.25,
         "out_per_1m": 2.5,
         "avg_per_1m": 1.875,
-        "tier": null,
-        "watchlist": false,
+        "tier": "principal-alt",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -16074,8 +16142,8 @@
         "in_per_1m": 1.4,
         "out_per_1m": 4.4,
         "avg_per_1m": 2.9000000000000004,
-        "tier": null,
-        "watchlist": false,
+        "tier": "principal-alt",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -16308,8 +16376,8 @@
         "in_per_1m": 1.5,
         "out_per_1m": 9,
         "avg_per_1m": 5.25,
-        "tier": null,
-        "watchlist": false,
+        "tier": "bench-price-premium",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -16412,7 +16480,7 @@
         "in_per_1m": 1.25,
         "out_per_1m": 10,
         "avg_per_1m": 5.625,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -16581,8 +16649,8 @@
         "in_per_1m": 2.5,
         "out_per_1m": 10,
         "avg_per_1m": 6.25,
-        "tier": "reference",
-        "watchlist": true,
+        "tier": null,
+        "watchlist": false,
         "is_new": false,
         "is_promo": false
       },
@@ -16672,8 +16740,8 @@
         "in_per_1m": 1.75,
         "out_per_1m": 14,
         "avg_per_1m": 7.875,
-        "tier": null,
-        "watchlist": false,
+        "tier": "bench-score-premium",
+        "watchlist": true,
         "is_new": false,
         "is_promo": false
       },
@@ -16750,7 +16818,7 @@
         "in_per_1m": 3,
         "out_per_1m": 15,
         "avg_per_1m": 9,
-        "tier": "anchor",
+        "tier": "premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -16776,7 +16844,7 @@
         "in_per_1m": 3,
         "out_per_1m": 15,
         "avg_per_1m": 9,
-        "tier": "anchor-alt",
+        "tier": "premium-alt",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -16854,7 +16922,7 @@
         "in_per_1m": 5,
         "out_per_1m": 25,
         "avg_per_1m": 15,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -16880,7 +16948,7 @@
         "in_per_1m": 5,
         "out_per_1m": 25,
         "avg_per_1m": 15,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -16893,7 +16961,7 @@
         "in_per_1m": 5,
         "out_per_1m": 25,
         "avg_per_1m": 15,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -16945,7 +17013,7 @@
         "in_per_1m": 5,
         "out_per_1m": 30,
         "avg_per_1m": 17.5,
-        "tier": "premium-expensive",
+        "tier": "bench-score-premium",
         "watchlist": true,
         "is_new": false,
         "is_promo": false
@@ -17075,8 +17143,8 @@
         "in_per_1m": 30,
         "out_per_1m": 60,
         "avg_per_1m": 45,
-        "tier": "reference",
-        "watchlist": true,
+        "tier": null,
+        "watchlist": false,
         "is_new": false,
         "is_promo": false
       },

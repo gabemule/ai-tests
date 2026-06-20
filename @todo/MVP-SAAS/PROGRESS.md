@@ -19,8 +19,9 @@ Blocker: none.
 - [x] `FEATURES/README.md` — catalog + dependency graph + queue + derived F1–F4 view
 - [x] `PROGRESS.md` *(this)*
 - [x] `ARCHITECTURE.md` — concept + diagrams
-- [x] `adr/` — surviving ADRs 001–018 (clean) + ADR 019 (confidence-gate) + `adr/README.md` index
-- [x] `FEATURES/<slug>/PLAN.md` — all 21 active features + 8 ⚪ Future backlog (29 total)
+- [x] `adr/` — surviving ADRs 001–018 (clean) + ADR 019 (confidence-gate) + ADR 020 (admin/operator
+  surface) + `adr/README.md` index
+- [x] `FEATURES/<slug>/PLAN.md` — all 24 active features + 8 ⚪ Future backlog (32 total)
 - [x] `PRICING/` — **self-contained** (README · billing · models · plans · REVALIDATION · embeddings ·
   infrastructure) + live tooling in `research-app/` (Vite + lowdb OpenRouter/AA scanner)
 
@@ -50,6 +51,7 @@ Status per feature. `todo` = planned, not started. See `FEATURES/<slug>/PLAN.md`
 - [ ] `widget-security` — todo
 - [ ] `incremental-reembed` — todo
 - [ ] `portal` — todo
+- [ ] `admin-app` — todo
 
 ### 🟠 Revenue
 - [ ] `metering` — todo
@@ -58,6 +60,8 @@ Status per feature. `todo` = planned, not started. See `FEATURES/<slug>/PLAN.md`
 - [ ] `managed-mode` — todo
 - [ ] `billing` — todo
 - [ ] `guardrails` — todo
+- [ ] `cost-attribution` — todo
+- [ ] `revenue-analytics` — todo
 
 ### ⚪ Future (backlog — each has a `PLAN.md`, `Status: backlog`, promotable)
 - [ ] `channels` — backlog
@@ -97,9 +101,18 @@ Status per feature. `todo` = planned, not started. See `FEATURES/<slug>/PLAN.md`
 - 2026-06-17: **FUTURE backlog promoted to first-class features** — each of the 8 cards now has a
   `FEATURES/<slug>/PLAN.md` (`Layer: ⚪ Future`, `Status: backlog`), same format as the 21 active
   ones, promotable to a real layer freely. FEATURES/README ⚪ section is now a full catalog (29 total).
+  *(Counts as of this 2026-06-17 entry; later grew to 24 active / 32 total — see the 2026-06-20 entry.)*
 - 2026-06-17: **Consistency sweep + granularity review done** — ADR refs / `depends_on` / queue all
   consistent; 21 active features judged well-sized (no merges/splits). Minor note: `guardrails` sits
   in the 🟠 Revenue layer though it's conceptually governance — kept as-is (no Governance layer
   defined; the derived F3 view already treats it as governance).
+- 2026-06-20: **Admin/operator surface added** (`admin-app` + ADR 020). The plan had a tenant `portal`
+  but **no operator console** — *our* cross-tenant surface to manage customers and see cost×revenue per
+  tenant. Decided: (a) `admin-app` is a **separate app on a privileged role** (the deliberate inverse of
+  RLS/ADR 016); (b) the `research-app` **graduates into a Research module** of the admin (lowdb →
+  Supabase); (c) added two Revenue features — `cost-attribution` (real cost/tenant) and
+  `revenue-analytics` (cost × revenue → margin/tenant). `admin-app` is an **active** feature (not
+  backlog) because monetization needs it. Counts: **21 → 24 active** (32 total). The cost×revenue core
+  depends on the revenue layer (`metering`/`billing`), so it sequences after it.
 
 

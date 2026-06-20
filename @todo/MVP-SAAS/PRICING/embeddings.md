@@ -38,12 +38,12 @@ Example: ingesting a 200-page PDF (~100k tokens) with Qwen3 8B (`$0.01/1M`) ≈ 
 > **Two embedding cost surfaces, both covered by the plan:**
 > 1. **Ingestion embedding** — document → vectors. One-time per doc, **plus re-embeds when content
 >    changes** (`../FEATURES/knowledge-sync/`). This is the **only embedding cost that can grow** with
->    a tenant, so it's bounded by a **reingestion budget** per plan (see `plans.md` §6 / §7.3).
+>    a tenant, so it's bounded by a **reingestion budget** per plan (see `plans.md` → "Reingestion budget").
 > 2. **Query-time embedding** — every chat question is embedded before retrieval. Tiny: e.g. Pro at
 >    2,000 msgs/mo × ~50 tokens ≈ 100k tokens ≈ **$0.000002/mo**. Folded into the plan/per-message
 >    price; never billed separately.
 >
 > **Rule of thumb:** at **$0.02/1M tokens**, embedding costs **~$0.005 per MB of text** (1MB ≈ 250k
 > tokens). So a tenant's max embedding cost ≈ `storage_MB × K × $0.005`, where **K = how many times
-> per month the base is reprocessed** (see `plans.md` §7.3). K is the only real AI cost lever per
+> per month the base is reprocessed** (see `plans.md` → "Reingestion budget"). K is the only real AI cost lever per
 > tenant.

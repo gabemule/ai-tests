@@ -4,7 +4,7 @@
 > (margin engine, billing modes, plan structure) lives here as ours; the **volatile provider prices**
 > live in `../research-app/` (our live catalog tooling — code, not a doc to keep in sync).
 > Companion to `../adr/` (decisions) and `../FEATURES/` (revenue layer).
-> Last updated: 2026-06-19
+> Last updated: 2026-06-20
 >
 > **Estimates, not quotes.** Every number here is an order-of-magnitude anchor to reason about plans
 > and margins, **not** a billing source of truth. Provider prices drift; re-fetch via `../research-app/` and
@@ -115,7 +115,13 @@ Provider prices are **not** hand-copied into these docs. They are fetched live b
 
 009 (Managed default + BYOK add-on) · 010 (embeddings always managed) · 011 (local metering) ·
 012 (Stripe + `PaymentProvider`) · 013 (managed-first positioning) · 014 (routing as margin lever) ·
-015 (incremental re-embed bounds the only per-tenant-growing cost).
+015 (incremental re-embed bounds the only per-tenant-growing cost) · 020 (admin/operator surface —
+where cost×revenue **per tenant** is measured, turning these estimates into real margin numbers).
+
+> **Where cost × revenue becomes real.** Everything here is *modeled*. The two dimensions —
+> **cost** (`cost-attribution`: tokens × Research unit costs + infra) and **revenue** (`billing`/
+> `wallet`) — are crossed **per tenant** in the **admin console** (`revenue-analytics`, ADR 020),
+> closing the loop `REVALIDATION.md` describes.
 
 ## Open questions
 

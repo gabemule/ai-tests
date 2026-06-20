@@ -3,7 +3,7 @@
 > The economic model is built on **estimates**. This file ties each estimate to the **feature** that
 > turns it into a measured fact, so we re-validate at the right moment instead of trusting a number
 > indefinitely. The guiding rule: **measure before money depends on it.**
-> Last updated: 2026-06-19
+> Last updated: 2026-06-20
 
 ---
 
@@ -38,6 +38,7 @@
 | Real blended cost-per-message | ~$1.19/1M (modeled mix, `db.json` 2026-06-18) | **`model-routing`** | Compute the *actual* blend from real `metering` traffic; compare to the modeled mix. |
 | Routing quality impact | assumed neutral | **`model-routing`** + **`retrieval-eval`** | Routing decisions don't drop eval quality below an agreed threshold. |
 | **The ~85% spread** | modeled | **`model-routing`** (on `metering` data) | `(anchor − measured blend) / anchor` computed on real traffic — confirms or corrects 85%. |
+| **Margin per tenant** | modeled | **`revenue-analytics`** (on `cost-attribution`) | Cost (tokens × Research unit costs + infra) vs. revenue (subscription + wallet) measured **per tenant** in the admin console (ADR 020). |
 | Per-message anchor price | TBD | **`managed-mode`** / **`billing`** | Set once real usage exists; calibrated with a buffer over measured cost. |
 | ~45% worst-case margin floor | modeled (K=5 ceiling) | **`incremental-reembed`** | Measured effective K (~1–2) confirms real cost sits far below the worst case. |
 | BYOK Enterprise floor | referenced on forgone spread | **`billing`** (Enterprise deals) | Negotiated floor set so BYOK never undercuts the Managed spread. |

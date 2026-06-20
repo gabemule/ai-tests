@@ -2,7 +2,7 @@
 
 > The **primary structure** of the project. Each feature is an independent unit with
 > explicit dependencies. Phases (F1–F4) are a *derived view* at the bottom.
-> Last updated: 2026-06-19
+> Last updated: 2026-06-20
 
 ---
 
@@ -58,6 +58,7 @@
 | `widget-security` | widget-v0 *(hard)*, api-keys *(hard)* | 004 | Origin + domain-ownership proof + session token + abuse rate-limit |
 | `incremental-reembed` | ingestion *(hard)* | 015 | Diff per chunk hash → re-embed only changed chunks |
 | `portal` | core-api *(hard)*, rbac *(soft)*, api-keys *(soft)* | — | Next.js admin: orgs/bots/docs/keys/domains/dashboards |
+| `admin-app` | core-api *(hard)*, rbac *(soft)* | **020** | Operator console (cross-tenant, privileged): tenant mgmt + Research module (graduated `research-app`) |
 
 ### 🟠 Revenue (modeled; validated last)
 
@@ -69,6 +70,8 @@
 | `managed-mode` | wallet *(hard)*, model-routing *(hard)* | 009, 011, 013 | Managed default: wallet + routing + real-time hard cap |
 | `billing` | wallet *(hard)* | 012 | Stripe + plans + `PaymentProvider` (PIX/boleto for BR) |
 | `guardrails` | chat-sse *(hard)* | 006 | Prompt scoping + I/O filtering + injection resistance |
+| `cost-attribution` | metering *(hard)*, admin-app *(hard)* | 011, 020 | Real cost per tenant: tokens × Research unit costs + infra allocation |
+| `revenue-analytics` | billing *(hard)*, cost-attribution *(hard)* | 020 | Cost × revenue → margin per tenant + aggregate (MRR, top consumers) |
 
 ### ⚪ Future (backlog)
 
@@ -119,6 +122,8 @@ flowchart TB
         api --> portal
         rbac -.soft.-> portal
         keys -.soft.-> portal
+        api --> admin[admin-app]
+        rbac -.soft.-> admin
     end
 
     subgraph rev["🟠 Revenue"]
@@ -130,6 +135,10 @@ flowchart TB
         routing --> managed
         wallet --> billing
         chat --> guard[guardrails]
+        meter --> costattr[cost-attribution]
+        admin --> costattr
+        billing --> revan[revenue-analytics]
+        costattr --> revan
     end
 
     subgraph fut["⚪ Future (backlog)"]
@@ -147,7 +156,7 @@ flowchart TB
     end
 ```
 
-> **21 active features** (🔵🟢🟡🟠) + **8 backlog** (⚪) = 29 total. Backlog cards depend on the
+> **24 active features** (🔵🟢🟡🟠) + **8 backlog** (⚪) = 32 total. Backlog cards depend on the
 > active graph but commit nothing; promote one by moving it into a real layer.
 
 
@@ -165,16 +174,18 @@ core chain, RAG quality jumps ahead of revenue.
 4. **`reranking`** — completes the RAG-quality trio.
 5. **`guardrails` (minimal: injection + I/O filtering)** — lands **before** the widget goes public,
    because an embeddable LLM surface is a live injection/abuse target the moment it's exposed.
-6. **`widget-security` + `rbac` + `api-keys` + `portal`** — the "real product" surface.
+6. **`widget-security` + `rbac` + `api-keys` + `portal` + `admin-app` (shell)** — the "real product" surface.
+   The admin shell (tenant management + Research module) can land here; its cost×revenue analytics wait for revenue.
 7. **`incremental-reembed`** — bounds re-embed cost; unblocks knowledge-sync later.
 8. **`metering` (shadow)** — start measuring without charging.
 9. **`model-routing` → `wallet` → `managed-mode` → `billing`** — revenue, validated last, on a measured base.
-10. **`guardrails` (full)** — system-prompt scoping config + hardening, before broad external rollout.
+10. **`cost-attribution` → `revenue-analytics`** — per-tenant cost × revenue → margin; turns the modeled spread into a measured number (needs `metering` + `billing`).
+11. **`guardrails` (full)** — system-prompt scoping config + hardening, before broad external rollout.
 
 > **Why this order:** showcase value (RAG quality) is front-loaded; the unvalidated
 > economic thesis (routing spread) is de-risked by `metering` shadow mode + `retrieval-eval`
 > *before* money depends on it. **Guardrails are split:** a minimal injection/output filter ships
-> *before* the public widget (step 5); the full per-bot scoping/hardening lands later (step 10).
+> *before* the public widget (step 5); the full per-bot scoping/hardening lands later (step 11).
 
 ---
 

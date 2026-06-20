@@ -87,4 +87,4 @@ concrete per-service config and the resulting monthly infra cost. **Tenant count
 > The jump from **MVP (~$5)** to **Early (~$71)** is the steepest *relative* step — it's where the
 > first paying tenants force always-on Railway Pro + Supabase Pro. After that, infra grows
 > **sub-linearly** with tenants (Growth ~$105 for ~10× the MVP load, Scale ~$220 for ~100×), so
-> margin per tenant **improves** as we climb (see the cost × revenue scenarios in `plans.md` §7).
+> margin per tenant **improves** as we climb (see the cost × revenue scenarios in `plans.md` → "Margin analysis").

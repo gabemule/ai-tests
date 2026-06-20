@@ -2,7 +2,7 @@
 
 > Concept + diagrams. Companion to `FEATURES/README.md` (the feature graph),
 > `CONTEXT.md` (working knowledge), `PROGRESS.md` (status).
-> Last updated: 2026-06-19
+> Last updated: 2026-06-20
 
 ---
 
@@ -44,7 +44,8 @@ flowchart TB
         widget["chatbot-widget<br/>(&lt;script&gt; embed)"]
     end
     subgraph platform["MVP-SAAS Platform"]
-        portal["chatbot-portal<br/>(Next.js admin)"]
+        portal["chatbot-portal<br/>(Next.js · tenant admin)"]
+        admin["chatbot-admin<br/>(operator console · cross-tenant)"]
         api["chatbot-api<br/>(NestJS / Node)"]
         worker["chatbot-ingestion-worker<br/>(Python)"]
     end
@@ -62,7 +63,8 @@ flowchart TB
         prov["LLM &amp; Embedding APIs"]
     end
 
-    portal -- "HTTPS (admin)" --> api
+    portal -- "HTTPS (tenant admin)" --> api
+    admin -- "privileged role · cross-tenant (ADR 020)" --> pg
     widget -- "HTTPS / SSE (chat)" --> api
     api -- "enqueue job" --> q
     q -- "consume" --> worker
@@ -82,7 +84,13 @@ flowchart TB
   usage/limits, ingestion *orchestration* (enqueues jobs). Node adapters for chat + query-embed.
 - **chatbot-ingestion-worker (Python)** — the muscle. Parses (pypdf/pdfminer/unstructured/
   python-docx/pandas), chunks, embeds (Python `embedding-adapters`), upserts pgvector.
-- **chatbot-portal (Next.js)** — the admin (orgs/bots/docs/keys/domains/dashboards).
+- **chatbot-portal (Next.js)** — the **tenant's** admin (orgs/bots/docs/keys/domains/dashboards),
+  RLS-scoped to one org.
+- **chatbot-admin (operator console)** — **our** surface, the third app. Cross-tenant by design via a
+  **privileged role** (the deliberate inverse of RLS, ADR 020): tenant management, the **Research
+  module** (graduated `research-app` — model/embedding catalog + unit costs), and cost×revenue
+  analytics (`cost-attribution` / `revenue-analytics`). Physically separate, own operator auth,
+  audited. **Largest blast radius in the system** — never a route inside `portal`.
 - **chatbot-widget** — the distribution (publishable key + domain validation).
 
 ## 4. Domain model (multi-tenant)
@@ -99,6 +107,7 @@ erDiagram
     CHUNK ||--|| EMBEDDING : "vectorized as"
     BOT ||--o{ CONVERSATION : "chats"
     CONVERSATION ||--o{ MESSAGE : "contains"
+    OPERATOR ||--o{ ADMIN_AUDIT : "logs"
 
     ORGANIZATION { uuid id PK; string name; string plan }
     MEMBER { uuid id PK; uuid tenant_id FK; string email; string role }
@@ -111,7 +120,14 @@ erDiagram
     CONVERSATION { uuid id PK; uuid bot_id FK; uuid tenant_id; string status; timestamp created_at }
     MESSAGE { uuid id PK; uuid conversation_id FK; uuid tenant_id; string role; text content; int tokens_in; int tokens_out; timestamp created_at }
     WALLET_ENTRY { uuid id PK; uuid tenant_id FK; string type; string idempotency_key; bigint amount; string reason; timestamp created_at }
+    OPERATOR { uuid id PK; string email; string role }
+    ADMIN_AUDIT { uuid id PK; uuid operator_id FK; string action; uuid target_tenant_id; json detail; timestamp created_at }
 ```
+
+> **`OPERATOR` / `ADMIN_AUDIT` are NOT tenant-scoped (ADR 020).** They live outside the `tenant_id`
+> RLS boundary — operators are not tenant members, and the audit trail is the operator plane's
+> append-only log (every privileged cross-tenant write). Only the `chatbot-admin` privileged role
+> touches them; the API/worker/portal never do.
 
 > **Isolation is physical (ADR 016).** One uniform key — `tenant_id` everywhere (FK on
 > org-owned tables, denormalized on bot-scoped + hot-path tables) — so a single RLS policy

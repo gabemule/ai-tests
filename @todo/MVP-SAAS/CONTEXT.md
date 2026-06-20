@@ -1,7 +1,7 @@
 # CONTEXT.md — MVP-SAAS Knowledge Base
 
 > Maintained for context recovery between sessions. Read this first.
-> Last updated: 2026-06-19
+> Last updated: 2026-06-20
 
 ## Stack & Infra
 
@@ -10,7 +10,10 @@
   `embedding-adapters`.
 - **chatbot-ingestion-worker** — Python: parse → chunk → embed → pgvector. Uses the
   Python build of `embedding-adapters` + the rich parsing ecosystem.
-- **chatbot-portal** — Next.js (App Router) admin UI.
+- **chatbot-portal** — Next.js (App Router) **tenant** admin UI (RLS-scoped to one org).
+- **chatbot-admin** — Next.js **operator console** — *our* surface, cross-tenant by a privileged role
+  (the inverse of RLS; ADR 020). Houses tenant management, the **Research module** (graduated
+  `research-app`), and cost×revenue analytics. Physically separate app, own operator auth, audited.
 - **chatbot-widget** — embeddable `<script>` + chat UI.
 - **Postgres + pgvector** — single store (relational + vectors). RLS by `tenant_id`.
 - **Object storage** (S3-compatible / Supabase Storage) — raw uploaded files.
@@ -41,6 +44,7 @@
 | Governance | usage metering, rate limiting, per-plan limits, prompt security |
 | Distribution (Widget) | embeddable script, publishable key, domain validation |
 | Monetization | metering, wallet (ledger), routing, managed mode, billing |
+| Operator/Admin | cross-tenant console: tenant mgmt, model-cost research, cost×revenue per tenant (ADR 020) |
 
 ## LLM modes (the economic core)
 
@@ -74,7 +78,8 @@
 ## Active Decisions (ADRs)
 
 See `adr/README.md` for the full index. Survivors from the old plan + new #019
-(confidence-gate). ADRs are the source of truth for *why*; features reference them.
+(confidence-gate) and #020 (admin/operator surface). ADRs are the source of truth for *why*;
+features reference them.
 
 ## Known Pitfalls
 
@@ -91,5 +96,10 @@ See `adr/README.md` for the full index. Survivors from the old plan + new #019
 - **BYOK keys encrypted at rest** — never logged, never leave but the outbound LLM call. (ADR 005)
 - **Ingestion is CPU-heavy** — keep it off the request path (Python worker / async jobs). (ADR 007)
 - **The margin thesis is unvalidated** — Managed/routing land late; the ~85% is a model, not
-  measured. Revenue features carry this risk explicitly (`FEATURES/`).
+  measured. Revenue features carry this risk explicitly (`FEATURES/`). The admin console
+  (`cost-attribution` + `revenue-analytics`) turns it into a **measured per-tenant** number once
+  `metering`/`billing` exist (ADR 020).
 - **Graduation discipline** — depend on adapters' public interfaces only; no deep coupling.
+- **The admin console deliberately bypasses RLS** — `chatbot-admin` runs on a privileged cross-tenant
+  role (the inverse of ADR 016). This is intentional and is the system's largest blast radius: separate
+  app, separate operator auth, audited writes. The API/worker/portal stay RLS-subject (ADR 020).

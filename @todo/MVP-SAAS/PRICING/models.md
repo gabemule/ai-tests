@@ -27,7 +27,8 @@ actually runs; the difference (`anchor − real blended cost`) is the margin. (A
 > the premium tier sits ~50–56. The earlier "~score 97 / 99–100 frontier" framing was wrong; use the
 > real index above. Re-pull via `../research-app/` before trusting any score.
 > Exact model IDs + live per-1M-token prices + quality scores live in `../research-app/` (the
-> `project_models` set is tagged by tier: `anchor` / `principal` / `economy`). The dashboard's
+> `project_models` set is tagged by tier: `economy` / `principal` / `premium`, plus `-alt` backups and
+> `bench-price-*` / `bench-score-*` thresholds). The dashboard's
 > **"Newest"** tab surfaces just-launched models to benchmark as candidates.
 
 ### The spread (illustrative, snapshot)

@@ -47,6 +47,8 @@ owns the whole flow: fetch (scan), persist, and edit — all writing to a single
 - **Tier edit via `<select>`** of known tiers (Barney approved selects for this; the earlier "no select"
   constraint applied to the old static dashboard only).
 - Known tiers: anchor, anchor-alt, premium-expensive, principal, principal-alt, economy, economy-alt, reference.
+  *(historical — this tier vocabulary was later superseded by the 3-tier set `economy`/`principal`/`premium`
+  + `-alt` + `bench-price-*`/`bench-score-*`; see `../src/tiers.js`.)*
 - `ourModels.tiers` seeded 1:1 from the current `get-model-benchmark/our-models.json`.
 
 ## Layout

@@ -5,6 +5,10 @@
 > alongside the rest of the MVP-SAAS platform** — so the model list, prices and tiers can be read
 > **directly from the DB** (instead of a local `db.json`). Treat the current Vite + lowdb stack as a
 > throwaway curation sandbox that proves the data model; the production version lives in the DB.
+>
+> 🎓 **Graduation target (ADR 020):** this app graduates into the **Research module of `chatbot-admin`**
+> (the operator console), Supabase-backed — see `../FEATURES/admin-app/PLAN.md`. There it becomes the
+> SSOT for model/embedding unit costs that `cost-attribution` reads to compute per-tenant cost.
 
 Local **catalog / curation tool** consumed by the generic `router-adapters` library: track model
 **pricing** (OpenRouter) × **quality** (Artificial Analysis), curate our model set + tiers, and keep

@@ -21,8 +21,8 @@ that bake the token into the price.
 | **Business** | $119 | R$599 | 10 | 1,000 / 2 GB | 10,000 | 10 | 10 | all + OCR | **Managed** |
 | **Enterprise** | custom | custom | ∞ | custom | custom | custom | custom | all + OCR | **Managed** + BYOK *(paid add-on)* |
 
-> Tiers were sized so every plan holds **≥45% margin even at the worst-case usage ceiling** (§ worst
-> case below). Re-check prices when the underlying costs drift.
+> Tiers were sized so every plan holds **≥45% margin even at the worst-case usage ceiling** (see
+> "Worst-case cost per tenant" below). Re-check prices when the underlying costs drift.
 
 ### Reingestion budget (per plan)
 
