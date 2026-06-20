@@ -13,10 +13,10 @@ opportunity. The margin is not a markup — it's the routing spread.
 ## Decision
 
 - **Route each query by intent/complexity** across a blended mix (`PRICING/models.md`):
-  - ~80% → **Qwen3.7 Plus** (~$1/1M, principal workhorse)
-  - ~15% → **DeepSeek V4 Pro** (~$0.65/1M, economy)
-  - ~5% → **Sonnet 4.6** (hard queries, the anchor)
-  - Blended ≈ $1.35/1M vs. the $9 anchor → **~85% spread**, ours.
+  - ~80% → **Qwen3.7 Plus** ($0.80/1M avg, principal workhorse)
+  - ~15% → **DeepSeek V4 Pro** ($0.6525/1M avg, economy)
+  - ~5% → **Sonnet 4.6** ($9/1M, hard queries, the anchor)
+  - Blended ≈ $1.19/1M vs. the $9 anchor → **~87% measured, quoted ~85%**, ours (`db.json` 2026-06-18 scan).
 - Routing works **in aggregate** (law of large numbers), never by throttling individual users to a
   cheap model.
 - **Managed billing variant: two candidates, decision deferred** (`PRICING/models.md`):

@@ -14,7 +14,21 @@ runtime config concern.
 ## Decision
 
 Both sides MUST use the **same provider + model + dimension + normalization**, locked in a **single
-shared config source** (never two parallel configs), ideally guarded by a **parity test**.
+shared config source** (never two parallel configs), guarded by a **parity test**.
+
+**Where the single shared config physically lives (cross-language).** "Shared config" is not enough by
+itself across a Python/Node split — it needs a concrete home and a runtime check:
+
+- **Source of truth:** one language-neutral artifact — a checked-in `embedding-config.json`
+  (`{provider, model, dim, normalized, version}`) consumed identically by the Python worker and the
+  Node API. It is the **only** place these values are declared; neither side hard-codes them.
+- **Hash on the seam:** the config's content hash (`= embedding_version`) is carried in the
+  **ingestion job contract** (ADR 018) and written on every vector row. Query-time reads the same
+  artifact; a hash mismatch between the active config and a row's `embedding_version` is the
+  detectable parity failure.
+- **CI parity check:** a test in CI loads the artifact from **both** the Python and Node build paths
+  and asserts identical `{provider, model, dim, normalized, version}` — failing the build if they
+  diverge, so parity can never drift silently between the two languages.
 
 ## Consequences
 

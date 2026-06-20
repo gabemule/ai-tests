@@ -1,7 +1,7 @@
 # PRICING — Infrastructure
 
-> Part of `PRICING/`. Companion to `PRICING/README.md`. Last updated: 2026-06-14.
-> 🔁 Volatile — re-audit monthly (see `VALIDATION-PROMPTS.md` → infrastructure prompt).
+> Part of `PRICING/`. Companion to `PRICING/README.md`. Last updated: 2026-06-19 (prices: 2026-06-14 snapshot).
+> 🔁 Volatile — re-audit monthly (see `REVALIDATION.md` → provider-prices cadence).
 
 ## §1.1 — Fixed infra — per-service tier tables
 

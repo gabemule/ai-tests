@@ -1,7 +1,7 @@
 # Feature: retrieval
 
 **Layer:** 🔵 Core · **Status:** todo
-**depends_on:** ingestion *(hard)* · **ADRs:** 002, 016, 017
+**depends_on:** ingestion *(hard)* · **ADRs:** 002, 010, 016, 017
 
 ## Objective
 

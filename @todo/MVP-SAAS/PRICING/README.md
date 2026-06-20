@@ -62,14 +62,14 @@ For a customer the real number is **Total Cost of Ownership** = platform price +
 
 ```
 Competitor (bundled)  = plan price (token cost baked in, marked up opaquely)
-Our Managed           = our plan price + prepaid wallet spend (our per-message price)
+Our Managed           = our plan price + prepaid wallet spend (our managed price; unit TBD)
 Our BYOK (Enterprise) = our plan price + customer's own provider bill + governance add-on
 ```
 
-Our **Managed** mode is the like-for-like competitor: a **single predictable per-message price** (not
-a per-token bill the customer has to model) at a **lower platform base price** and with **higher
-message ceilings** (we don't cap hard to protect a bundled token budget). Illustrative TCO at ~3,000
-chats/mo *(estimates)*:
+Our **Managed** mode is the like-for-like competitor: a **predictable managed price** (billing unit
+still an open decision — `fixed-per-message` vs `metered-per-token`, see `models.md`) at a **lower
+platform base price** and with **higher message ceilings** (we don't cap hard to protect a bundled
+token budget). Illustrative TCO at ~3,000 chats/mo *(estimates)*:
 
 | Path | Platform | LLM cost | TCO / mo |
 |---|---|---|---|

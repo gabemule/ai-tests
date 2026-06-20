@@ -16,7 +16,8 @@ asynchronously and idempotently, with embedding parity locked to the query side.
 - Parse (start with PDF/txt/md) → chunk → embed with the Python `embedding-adapters`.
 - Upsert chunks/embeddings; write `embedding_model/dim/normalized/version` columns (ADR 017).
 - Idempotent handling keyed by `document_id` + content hash; DLQ after N failures.
-- Worker sets `app.tenant_id` transaction-locally from the validated job (ADR 016).
+- Worker sets `app.tenant_id` transaction-locally from the validated job (ADR 016); it connects on an
+  **RLS-subject role** (non-owner, no `BYPASSRLS` — see `core-db`), so the `tenant_id` set actually scopes.
 - Document status surface: `pending|processing|ready|failed` (poll `GET /jobs/{id}` or SSE).
 
 **Out:**

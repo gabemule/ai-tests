@@ -35,7 +35,7 @@
 | Estimate | Today's value *(snapshot)* | Validated by | What "validated" means |
 |---|---|---|---|
 | Per-tenant/message token usage | modeled | **`metering`** (shadow mode) | Real `usage` rows reconcile against the provider invoice within acceptable drift — **no charging yet**. |
-| Real blended cost-per-message | ~$1.35/1M (modeled mix) | **`model-routing`** | Compute the *actual* blend from real `metering` traffic; compare to the modeled mix. |
+| Real blended cost-per-message | ~$1.19/1M (modeled mix, `db.json` 2026-06-18) | **`model-routing`** | Compute the *actual* blend from real `metering` traffic; compare to the modeled mix. |
 | Routing quality impact | assumed neutral | **`model-routing`** + **`retrieval-eval`** | Routing decisions don't drop eval quality below an agreed threshold. |
 | **The ~85% spread** | modeled | **`model-routing`** (on `metering` data) | `(anchor − measured blend) / anchor` computed on real traffic — confirms or corrects 85%. |
 | Per-message anchor price | TBD | **`managed-mode`** / **`billing`** | Set once real usage exists; calibrated with a buffer over measured cost. |
@@ -58,6 +58,18 @@ Each step only starts once the previous one has produced numbers. By the time **
 the ~85% spread (`managed-mode`/`billing`), it has already been **measured** by `metering` +
 `model-routing` — never assumed. If the measured spread comes in materially below 85%, the anchor
 price (or the plan ladder) is re-calibrated **before** charging, not after.
+
+> ⚠️ **Where the routed traffic comes from (the measurement chicken-and-egg).** `metering` ships on
+> `chat-sse`, which is **BYOK-only** (a single tenant key, **no routing**) — so BYOK traffic alone
+> can validate per-message token *usage*, but **cannot** measure the routed blend or the spread (the
+> router only runs in Managed). To break the loop, the spread is measured on a **Managed shadow
+> corpus** *before* `managed-mode` charges anyone:
+> - **Internal dogfood Managed bots** (our own platform key) run the real `model-routing` blend over
+>   a representative query set, metered in shadow mode — producing the routed cost/quality numbers
+>   with **zero external billing**.
+> - `model-routing` therefore depends on this dogfood Managed path, **not** on BYOK traffic, for its
+>   blended-cost done-criterion. Only after the spread is confirmed on real routed traffic does
+>   `managed-mode` open Managed to paying tenants.
 
 > See `../FEATURES/README.md` (revenue layer) for the dependency graph, and `models.md` /
 > `billing.md` / `plans.md` for the assumptions each feature is validating.

@@ -1,11 +1,11 @@
 # benchmark-app — Progress
 
-**Status:** Complete · now lives at `@todo/router-adapters/benchmark-app/` (curation tool for the router lib)
+**Status:** Complete · now lives at **`MVP-SAAS/research-app/`** (live pricing/curation tool; see its `README.md`)
 
 ## Current Focus
-App built, validated, and moved into `@todo/router-adapters/` as the catalog/curation tool.
-Next step: none for the app itself — future work is the `router-adapters` library that consumes it
-(see `../../PLAN.md`).
+App built and validated, living at `MVP-SAAS/research-app/` as the catalog/curation tool that feeds
+`PRICING/`. Next step: none for the app itself — future work is the evolution to a "pricing oracle"
+(`EVOLUTION.md`) and the `router-adapters` library that will consume the curated catalog.
 Blocker: none.
 
 ## Progress

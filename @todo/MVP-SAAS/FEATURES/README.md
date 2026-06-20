@@ -37,7 +37,7 @@
 | `core-api` | core-db *(hard)* | 001 | NestJS skeleton + basic auth + single org |
 | `job-contract` | core-api *(hard)* | 018, 007 | Versioned API↔worker job schema, validated both sides |
 | `ingestion` | core-api *(hard)*, job-contract *(hard)* | 001, 007, 010, 017 | Python worker: parse → chunk → embed → pgvector |
-| `retrieval` | ingestion *(hard)* | 002, 016, 017 | Tenant-scoped similarity search over pgvector |
+| `retrieval` | ingestion *(hard)* | 002, 010, 016, 017 | Tenant-scoped similarity search over pgvector |
 | `chat-sse` | retrieval *(hard)* | 008, 009, 005, 011 | RAG chat (SSE) via `llm-adapters`, BYOK bootstrap |
 | `widget-v0` | chat-sse *(hard)* | 003 | Embeddable script + chat UI, single hardcoded domain |
 
@@ -163,15 +163,18 @@ core chain, RAG quality jumps ahead of revenue.
 2. **`retrieval-eval`** — rises early: it's pure showcase *and* it calibrates everything in RAG quality + routing.
 3. **`confidence-gate`** (floor first) — cheap, anti-hallucination, impressive.
 4. **`reranking`** — completes the RAG-quality trio.
-5. **`widget-security` + `rbac` + `api-keys` + `portal`** — the "real product" surface.
-6. **`incremental-reembed`** — bounds re-embed cost; unblocks knowledge-sync later.
-7. **`metering` (shadow)** — start measuring without charging.
-8. **`model-routing` → `wallet` → `managed-mode` → `billing`** — revenue, validated last, on a measured base.
-9. **`guardrails`** — before opening to real external tenants.
+5. **`guardrails` (minimal: injection + I/O filtering)** — lands **before** the widget goes public,
+   because an embeddable LLM surface is a live injection/abuse target the moment it's exposed.
+6. **`widget-security` + `rbac` + `api-keys` + `portal`** — the "real product" surface.
+7. **`incremental-reembed`** — bounds re-embed cost; unblocks knowledge-sync later.
+8. **`metering` (shadow)** — start measuring without charging.
+9. **`model-routing` → `wallet` → `managed-mode` → `billing`** — revenue, validated last, on a measured base.
+10. **`guardrails` (full)** — system-prompt scoping config + hardening, before broad external rollout.
 
 > **Why this order:** showcase value (RAG quality) is front-loaded; the unvalidated
 > economic thesis (routing spread) is de-risked by `metering` shadow mode + `retrieval-eval`
-> *before* money depends on it.
+> *before* money depends on it. **Guardrails are split:** a minimal injection/output filter ships
+> *before* the public widget (step 5); the full per-bot scoping/hardening lands later (step 10).
 
 ---
 
@@ -184,8 +187,8 @@ onto the old phase labels — not the primary structure.
 |---|---|---|
 | **F1 — MVP** | Prove the loop | core-db, core-api, job-contract, ingestion, retrieval, chat-sse, widget-v0 |
 | **F1.5 — Quality** *(new emphasis)* | RAG showcase | retrieval-eval, confidence-gate, reranking |
-| **F2 — Multi-tenant** | Platform | rbac, api-keys, widget-security, incremental-reembed, portal, metering (shadow) |
-| **F3 — Governance** | Production-ready | guardrails, rate limiting, plan limits, +docx/csv/xlsx |
+| **F2 — Multi-tenant** | Platform | rbac, api-keys, widget-security, incremental-reembed, portal, metering (shadow) · *guardrails (minimal: injection + I/O) lands here, before the public widget* |
+| **F3 — Governance** | Production-ready | guardrails (full: per-bot scoping + hardening), rate limiting, plan limits, +docx/csv/xlsx |
 | **F4 — GA** | Scale + revenue | model-routing, wallet, managed-mode, billing, OCR, URL crawl, moderation |
 
 > **What moved vs. the old plan:** RAG quality (`retrieval-eval`, `confidence-gate`,

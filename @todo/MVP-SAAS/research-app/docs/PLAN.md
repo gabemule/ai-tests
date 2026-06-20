@@ -1,9 +1,8 @@
 # benchmark-app — PLAN
 
-> **Note (relocated):** this is the original plan written when the app lived at
-> `MVP-SAAS/PRICING/benchmark-app/`. The app now lives at `@todo/router-adapters/benchmark-app/` as the
-> catalog/curation tool for the `router-adapters` library. Paths below are historical; the decisions
-> still hold.
+> **Note (historical):** this is the original plan written when the app was `benchmark-app` under
+> `MVP-SAAS/PRICING/`. The app now lives at **`MVP-SAAS/research-app/`** (see its `README.md` +
+> `EVOLUTION.md`). Paths and the `benchmark-app` name below are **historical**; the decisions still hold.
 
 ## Context
 

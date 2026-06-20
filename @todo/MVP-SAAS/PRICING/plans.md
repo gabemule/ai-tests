@@ -97,6 +97,11 @@ ours. So plan price is almost pure margin against fixed infra. After **Stripe fe
 The only AI cost that scales per tenant is **embedding**: `embed_cost = storage_MB × K × $0.005`.
 Swept across the embedding knob **K** (launch = 3, ceiling = 5):
 
+> **2× safety margin baked in:** the `$0.005/MB` rate is derived from **$0.02/1M** (OpenAI
+> `text-embedding-3-small`, the *fallback*). The chosen **default is Qwen3 Embedding 8B at $0.01/1M**
+> (`embeddings.md`) — **half** the cost — so real embedding spend is ~½ the table below. We keep the
+> conservative figure so the margin floor holds even on the fallback model.
+
 | Plan | Storage | K=1 | K=3 (launch) | K=5 (ceiling) |
 |---|---|---|---|---|
 | Free | 25 MB | $0.13 | $0.38 | $0.63 |

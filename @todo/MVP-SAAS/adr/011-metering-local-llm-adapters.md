@@ -37,6 +37,11 @@ only: blast-radius isolation + monthly reconciliation against the provider invoi
 
 ## Implementation contract (feature `managed-mode`)
 
+> **Unit-agnostic.** This hard-cap mechanism holds for **both** open billing-unit candidates
+> (`fixed-per-message` and `metered-per-token`, ADR 014): in either case the affordable budget is
+> derived from the wallet balance at the anchor price. The billing *unit* remains an open decision;
+> only the *protection mechanism* is specified here.
+
 The "next-request" hard cap protects the *next* message, but a single **streaming** answer is
 generated *after* the request is admitted and can run long — a heavy/adversarial prompt could push
 the wallet **negative within one response**. So:

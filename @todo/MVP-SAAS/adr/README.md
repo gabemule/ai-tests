@@ -14,7 +14,13 @@ planning iteration in clean format; **019 is new to this rebuild**.
 
 ## Index
 
-| # | Title | Status | Feature(s) | One-liner |
+> **"Primary owner" column** = the feature that most directly owns each decision, **not** an
+> exhaustive list of citing features. Other features may legitimately reference an ADR (e.g. ADR 016
+> is also cited by `retrieval`/`rbac`; ADR 011 by `chat-sse`/`managed-mode`; ADR 003 by `widget-v0`;
+> ADR 006 by `tool-calling`; ADR 015 by `knowledge-sync`). The authoritative ADR↔feature mapping is
+> each feature's own `PLAN.md` header (`ADRs:` line) + the catalog table in `FEATURES/README.md`.
+
+| # | Title | Status | Primary owner | One-liner |
 |---|---|---|---|---|
 | [001](./001-polyglot-split.md) | Polyglot split (NestJS + Python worker + Next.js) | Accepted | core-api, ingestion | Node where it's the common path; Python where the ecosystem matters |
 | [002](./002-postgres-pgvector-single-store.md) | Postgres + pgvector as single store | Accepted | core-db, retrieval | Relational + vectors together; correct multi-tenant setup |

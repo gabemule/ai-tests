@@ -17,6 +17,10 @@ the very first migration. This is the foundation every other feature builds on.
 - RLS policy on every tenant table: `USING (tenant_id = current_setting('app.tenant_id')::uuid)`,
   **default-deny / fail-closed**.
 - Transaction-local tenant set (`set_config('app.tenant_id', $1, true)`) + pooler in transaction mode.
+- **All app/worker DB roles are RLS-subject** — non-owner, **no `BYPASSRLS`**, and not the table owner
+  (Postgres table owners bypass RLS by default). The Node API *and* the Python worker connect on such a
+  role, or the whole isolation guarantee is silently void. `FORCE ROW LEVEL SECURITY` on tenant tables
+  as a belt-and-suspenders.
 
 **Out:**
 - Application/auth logic (→ `core-api`).

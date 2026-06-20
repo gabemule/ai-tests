@@ -16,6 +16,10 @@ on the modeled ~85% spread.
   (~80% workhorse / ~15% economy / ~5% premium anchor).
 - Routing works **in aggregate**, never throttling an individual user to a cheap model.
 - Measure the *actual* blended cost against `metering` data; measure quality impact against eval.
+- **Traffic source for validation:** the blend runs on an **internal dogfood Managed path** (our
+  platform key, shadow-metered) over a representative query set — **not** on BYOK `chat-sse` traffic,
+  which has no routing. This produces the routed cost/quality numbers with zero external billing,
+  *before* `managed-mode` charges anyone. (See `PRICING/REVALIDATION.md` § de-risking.)
 
 **Out:**
 - Wallet/charging (→ `wallet`/`managed-mode`).

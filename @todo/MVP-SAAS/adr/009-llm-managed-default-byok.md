@@ -14,9 +14,10 @@ generation: we hold the key (Managed) or the tenant brings their own (BYOK).
 - **Managed is the default mode on every tier (Free → Enterprise).** We use our key, **meter usage
   locally** (ADR 011), and bill via a **prepaid wallet + auto-recharge + monthly spend cap**, Stripe
   as gateway (ADR 012).
-- **No explicit markup.** The customer pays a single **per-message price anchored on the premium
-  model**; margin is generated **structurally by routing** a cheaper blended mix under the hood —
-  the spread (~85%) is ours (ADR 014). See `PRICING/`.
+- **No explicit markup.** The customer pays a **managed price anchored on the premium model** (billing
+  unit `fixed-per-message` **or** `metered-per-token` — open decision, ADR 014); margin is generated
+  **structurally by routing** a cheaper blended mix under the hood — the spread (~85%) is ours
+  (ADR 014). See `PRICING/`.
 - **BYOK is an Enterprise-only paid add-on** (sold on governance/compliance/data-residency, not
   savings). The platform never bills the tenant's LLM tokens in BYOK; pricing has a floor referenced
   on the forgone spread.

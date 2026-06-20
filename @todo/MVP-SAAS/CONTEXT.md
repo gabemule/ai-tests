@@ -80,8 +80,9 @@ See `adr/README.md` for the full index. Survivors from the old plan + new #019
 
 - **Tenant isolation must be physical** — RLS by `tenant_id`, fail-closed (zero rows when
   unset). Worker sets `app.tenant_id` transaction-locally too. A single filter bug = leak. (ADR 016)
-- **Embedding parity is a runtime invariant** — not a schema concern. Lock model/dim/
-  normalization in one shared config consumed by both Python and Node. (ADR 017)
+- **Embedding parity is a runtime invariant** — not a schema concern. Lock model/dim/normalization in
+  one language-neutral `embedding-config.json` consumed by both Python and Node, hash it into the job
+  contract + vector row (`embedding_version`), and assert parity in CI. (ADR 017)
 - **Two distinct schema concerns — don't conflate:** (a) adapter parity schema lives *in the
   libs* (keeps Python/TS builds identical); (b) ingestion job contract is a *product* concern,
   validated on both sides (ADR 018).
